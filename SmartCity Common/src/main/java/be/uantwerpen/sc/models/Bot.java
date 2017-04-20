@@ -84,7 +84,7 @@ public class Bot
             return false;
         if(state != null ? !state.equals(that.state) : that.state != null) return false;
 
-        if(type ! = null) !type.equals(that.type) : that.type != null) return false;
+        if(type != null ? !type.equals(that.type) : that.type != null) return false;
 
         return true;
     }

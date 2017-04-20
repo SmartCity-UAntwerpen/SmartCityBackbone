@@ -14,10 +14,12 @@ public class JobService
     @Autowired
     MqttJobPublisher mqttJobPublisher;
 
-    public boolean sendJob(Long botId, String command)
+    public boolean sendJob(Long botId, String command, String type)
     {
         Job job = new Job(0L, command);
-
-        return mqttJobPublisher.publishJob(job, botId);
+        if (type == null){
+            return false;
+        }
+        return mqttJobPublisher.publishJob(job, botId, type);
     }
 }

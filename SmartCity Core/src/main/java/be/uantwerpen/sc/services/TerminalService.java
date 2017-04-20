@@ -152,7 +152,6 @@ public class TerminalService
     private void printAllBots()
     {
         List<Bot> bots = botControlService.getAllBots();
-
         if(bots.isEmpty())
         {
             terminal.printTerminalInfo("There are no bots available to list.");
@@ -215,15 +214,19 @@ public class TerminalService
 
     private void sendJob(Long botId, String command)
     {
+        String type;
         if(botControlService.getBot((long)botId) == null)
         {
             //Could not find bot in database
             terminal.printTerminalError("Could not find bot with id: " + botId + "!");
-
+            type = null;
             return;
         }
+        else{
+            type = botControlService.getBot((long)botId).getType();
+        }
 
-        if(jobService.sendJob(botId, command))
+        if(jobService.sendJob(botId, command,type))
         {
             terminal.printTerminalInfo("Job send to bot with id: " + botId + ".");
         }
