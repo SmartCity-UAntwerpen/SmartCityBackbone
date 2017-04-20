@@ -68,7 +68,7 @@ public class Bot
 
     @Basic
     @Column(name= "type")
-    public String getType(){return this.type}
+    public String getType(){return this.type;}
 
     @Override
     public boolean equals(Object o)
