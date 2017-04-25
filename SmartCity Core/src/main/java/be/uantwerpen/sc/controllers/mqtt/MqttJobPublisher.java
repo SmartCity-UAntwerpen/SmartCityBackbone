@@ -29,11 +29,11 @@ public class MqttJobPublisher
     @Value("${mqtt.password:default}")
     private String mqttPassword;
 
-    public boolean publishJob(Job job, long robotID, String type)//, String type)
+    public boolean publishJob(Job job, long robotID, String type) //send job to bot with some ID, type specifies if the bot is a drone, car, light or robot
     {
         String content  = job.toString();
         int qos         = 2;
-        String topic    = type + "/" + robotID;//"robot/" + robotID;//type + "/" + robotID;
+        String topic    = "job/" + type + "/" + robotID;
         String broker   = "tcp://" + mqttIP + ":" + mqttPort;
 
         MemoryPersistence persistence = new MemoryPersistence();

@@ -94,11 +94,12 @@ public class BotController
         return "Something";
     }
 
-    @RequestMapping(value = "newRobot", method = RequestMethod.GET)
-    public Long newRobot()
+    @RequestMapping(value = "newRobot/{type}", method = RequestMethod.GET)  //when new bot subscribes, it sends a request with its type and gets an ID in return
+    public Long newRobot(@PathVariable("type") String type)
     {
         Bot bot = new Bot();
 
+        bot.setType(type);
         //Save bot in database and get bot new rid
         bot = botControlService.saveBot(bot);
 
