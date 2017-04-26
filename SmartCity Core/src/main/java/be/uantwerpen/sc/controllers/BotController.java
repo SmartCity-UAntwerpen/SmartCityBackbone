@@ -99,7 +99,6 @@ public class BotController
     {
         Bot bot = new Bot();
 
-        bot.setType(type);
         //Save bot in database and get bot new rid
         bot = botControlService.saveBot(bot);
 

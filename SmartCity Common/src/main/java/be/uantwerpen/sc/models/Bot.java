@@ -10,7 +10,6 @@ import javax.persistence.*;
 public class Bot
 {
     private Long id;
-    private String type; //bot/car/drone/light
     private Long jobId;
     private Long travelledDistance;
     private Integer percentageCompleted;
@@ -66,12 +65,6 @@ public class Bot
         this.state = state;
     }
 
-    @Basic
-    @Column(name= "type")
-    public String getType(){return this.type;}
-
-    public void setType(String type){this.type = type; }
-
     @Override
     public boolean equals(Object o)
     {
@@ -85,8 +78,6 @@ public class Bot
         if(percentageCompleted != null ? !percentageCompleted.equals(that.percentageCompleted) : that.percentageCompleted != null)
             return false;
         if(state != null ? !state.equals(that.state) : that.state != null) return false;
-
-        if(type != null ? !type.equals(that.type) : that.type != null) return false;
 
         return true;
     }
