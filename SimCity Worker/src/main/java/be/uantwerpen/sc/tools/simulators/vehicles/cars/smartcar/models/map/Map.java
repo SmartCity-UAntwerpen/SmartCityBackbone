@@ -56,4 +56,17 @@ public class Map
     {
         this.trafficLightEntities = trafficLightEntities;
     }
+
+    // Used for debugging purposes
+    @Override
+    public String toString() {
+        for(int i = 0; i < 20; i++) {
+            System.out.println("AbstractMap{" +
+                    "nodeList=" + nodeList.get(i).getNeighbours().get(0).getId() +
+                    '}');
+        }
+        return "AbstractMap{" +
+                "nodeList=" + nodeList.get(3).getNeighbours().get(0).getLength() +
+                '}';
+    }
 }

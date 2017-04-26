@@ -117,7 +117,7 @@ public class LocationHandler
                 return false;
             }
 
-            this.destinationLocation = startNode.getNeighbours().get(0).getStopId().getPid();
+            this.destinationLocation = startNode.getNeighbours().get(0).getStopPoint().getPid();
             this.destinationDistance = startNode.getNeighbours().get(0).getLength();
             this.travelledDistance = 0L;
 
@@ -242,7 +242,7 @@ public class LocationHandler
                 catch(ParseException e)
                 {
                     //Could not parse direction
-                    System.err.println("Could not parse start direction of link with id " + link.getLid());
+                    System.err.println("Could not parse start direction of link with id " + link.getId());
                     System.err.println(e.getMessage());
                 }
             }
@@ -258,11 +258,11 @@ public class LocationHandler
                 catch(ParseException e)
                 {
                     //Could not parse direction
-                    System.err.println("Could not parse end direction of link with id " + followLink.getLid());
+                    System.err.println("Could not parse end direction of link with id " + followLink.getId());
                     System.err.println(e.getMessage());
                 }
 
-                this.destinationLocation = followLink.getStopId().getPid();
+                this.destinationLocation = followLink.getStopPoint().getPid();
                 this.destinationDistance = followLink.getLength();
 
                 this.travelledDistance = 0;
