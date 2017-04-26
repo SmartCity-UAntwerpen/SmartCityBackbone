@@ -16,6 +16,7 @@ public class Link
     private Point startPoint;
     private Point stopPoint;
     private int weight;
+    private String type;
 
     @Id
     @Column(name = "lid")
@@ -132,6 +133,15 @@ public class Link
         this.weight = weight;
     }
 
+    @Basic
+    @Column(name = "accessible by")
+    public String getAccessibleBy(String type){return type; }
+
+    public void setAccessibleBy(String type)
+    {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "LinkEntity{" +
@@ -142,6 +152,7 @@ public class Link
                 ", startPoint=" + startPoint +
                 ", stopPoint=" + stopPoint +
                 ", weight=" + weight +
+                ", accesible by=" + type +
                 '}';
     }
 }
