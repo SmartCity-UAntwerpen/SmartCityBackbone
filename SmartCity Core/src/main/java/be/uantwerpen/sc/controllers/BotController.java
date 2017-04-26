@@ -1,7 +1,6 @@
 package be.uantwerpen.sc.controllers;
 
-import be.uantwerpen.sc.models.Bot;
-import be.uantwerpen.sc.models.Link;
+import be.uantwerpen.sc.models.*;
 import be.uantwerpen.sc.services.BotControlService;
 import be.uantwerpen.sc.services.LinkControlService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,15 +96,32 @@ public class BotController
     @RequestMapping(value = "newRobot/{type}", method = RequestMethod.GET)  //when new bot subscribes, it sends a request with its type and gets an ID in return
     public Long newRobot(@PathVariable("type") String type)
     {
-        Bot bot = new Bot();
+        Bot bot = null;
 
-        //Save bot in database and get bot new rid
-        bot = botControlService.saveBot(bot);
+        //check if requesting bot is car, drone, light or robot and return ID.
+        if(type.equals("car")){
+            bot = new Car();
+        }else if(type.equals("drone")){
+            bot = new Drone();
+        }else if(type.equals("light")) {
+            bot = new Light();
+        }else if(type.equals("robot")) {
+            bot = new Robot();
+        }else{
+            System.out.println(type + " is not a valid type");
+        }
 
-        Date date = new Date();
-        System.out.println("New robot created! - " + date.toString());
+        if(bot!=null) {
+            //Save bot in database and get bot new rid
+            bot = botControlService.saveBot(bot);
 
-        return bot.getId();
+            Date date = new Date();
+            System.out.println("New robot created! - " + date.toString());
+
+            return bot.getId();
+        }
+
+          return Long.valueOf(404);
     }
 
     @RequestMapping(value = "{id}/lid/{lid}", method = RequestMethod.GET)
