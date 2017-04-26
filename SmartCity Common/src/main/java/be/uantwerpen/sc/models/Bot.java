@@ -70,6 +70,8 @@ public class Bot
     @Column(name= "type")
     public String getType(){return this.type;}
 
+    public void setType(String type){this.type = type; }
+
     @Override
     public boolean equals(Object o)
     {
