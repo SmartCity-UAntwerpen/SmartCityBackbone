@@ -15,9 +15,6 @@ public class Bot
     private Integer percentageCompleted;
     private String state;
     private Link linkId;
-    private int maxPassengers;
-    private int currentPassengers;
-
 
     @Id
     @Column(name = "rid")
@@ -67,15 +64,6 @@ public class Bot
     {
         this.state = state;
     }
-
-    @Basic
-    @Column(name = "currentPassengers")
-    public int getCurrentPassengers(){return currentPassengers;}
-
-    public void setCurrentPassengers(int currentPassenger){this.currentPassengers = currentPassenger;}
-
-
-
 
     @Override
     public boolean equals(Object o)
