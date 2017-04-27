@@ -128,11 +128,8 @@ public class MqttLocationSubscriber
             connOpts.setPassword(mqttPassword.toCharArray());
             mqttSubscribeClient.connect(connOpts);
 
-            //Subscribe to all subtopics of the different vehicles
-            mqttSubscribeClient.subscribe("coordinates/ROBOT");//("BOT/#");
-            mqttSubscribeClient.subscribe("coordinates/CAR");
-            mqttSubscribeClient.subscribe("coordinates/DRONE");
-            mqttSubscribeClient.subscribe("coordinates/LIGHT");
+            mqttSubscribeClient.subscribe("coordinates/");
+
         }
         catch(MqttException e)
         {
