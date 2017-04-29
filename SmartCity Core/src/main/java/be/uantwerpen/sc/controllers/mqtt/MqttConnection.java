@@ -83,7 +83,7 @@ public class MqttConnection {
                         String[] tab = topic.split("/", 2);
                         String dbName = tab[0];
                         String collName = (tab.length > 1) ? tab[1] : tab[0];
-                        MongoClient mongoClient = new MongoClient("143.129.39.157", 27017);
+                        MongoClient mongoClient = new MongoClient("localhost", 27017);
                         DB db = mongoClient.getDB("messages");
                         DBCollection collection = db.getCollection("incoming");
                         BasicDBObject document = new BasicDBObject();
