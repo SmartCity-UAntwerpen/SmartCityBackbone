@@ -26,7 +26,7 @@ import java.util.prefs.Preferences;
 @Service
 public class MqttConnection {
 
-    private static final String broker = "tcp://143.129.39.118:1883";
+    private static final String broker = "tcp://143.129.39.151:1883";
     private static final String username = "root";
     private static final String password = "smartcity";
     private static final SimpleDateFormat SDF = new SimpleDateFormat("YYYYMMddHH:mm:ss");
@@ -50,8 +50,8 @@ public class MqttConnection {
             client.connect(connectOptions);
             System.out.println(SDF.format(new Date()) + " connected to MQTT");
             client.setCallback(new ConnectionCallback());
-            client.subscribe("job/5");
-            client.subscribe("pos/");
+            client.subscribe("job/#");
+            client.subscribe("pos/#");
         } catch (MqttException ex) {
             System.out.println(SDF.format(new Date()) + " not connected to MQTT");
             if (!client.isConnected()) {
@@ -87,7 +87,8 @@ public class MqttConnection {
                         DB db = mongoClient.getDB("messages");
                         DBCollection collection = db.getCollection("incoming");
                         BasicDBObject document = new BasicDBObject();
-                        document.put("message:", message);
+                        document.put("topic:", topic);
+                        document.put("message:", message.toString());
                         collection.insert(document);
                     } catch (UnknownHostException e) {
                         e.printStackTrace();
