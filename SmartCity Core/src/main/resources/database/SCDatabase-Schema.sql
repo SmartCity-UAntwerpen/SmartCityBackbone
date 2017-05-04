@@ -31,6 +31,7 @@ CREATE TABLE `bot` (
   `percentage_completed` int(11) DEFAULT NULL,
   `state` varchar(255) DEFAULT NULL,
   `link_id` bigint(20) DEFAULT NULL,
+  `vehicle_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`rid`),
   KEY `FK_g2k7qbjgq85d7hmmov6r4benu` (`link_id`),
   CONSTRAINT `FK_g2k7qbjgq85d7hmmov6r4benu` FOREIGN KEY (`link_id`) REFERENCES `link` (`lid`)

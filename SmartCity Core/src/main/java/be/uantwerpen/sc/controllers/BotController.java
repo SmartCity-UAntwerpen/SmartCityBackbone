@@ -93,12 +93,11 @@ public class BotController
         return "Something";
     }
 
-    @RequestMapping(value = "newRobot/{type}", method = RequestMethod.GET)  //when new bot subscribes, it sends a request with its type and gets an ID in return
+    @RequestMapping(value = "newBot/{type}", method = RequestMethod.GET)  //when new bot subscribes, it sends a request with its type and gets an ID in return
     public Long newRobot(@PathVariable("type") String type)
     {
         Bot bot = null;
-
-        //check if requesting bot is car, drone, light or robot and return ID.
+           //check if requesting bot is car, drone, light or robot and return ID.
         if(type.equals("car")){
             bot = new Car();
         }else if(type.equals("drone")){
@@ -109,19 +108,16 @@ public class BotController
             bot = new Robot();
         }else{
             System.out.println(type + " is not a valid type");
+            return Long.valueOf(404);
         }
 
-        if(bot!=null) {
-            //Save bot in database and get bot new rid
-            bot = botControlService.saveBot(bot);
+        //Save bot in database and get bot new rid
+        bot = botControlService.saveBot(bot);
 
-            Date date = new Date();
-            System.out.println("New robot created! - " + date.toString());
+        Date date = new Date();
+        System.out.println("New robot created! - " + date.toString());
 
-            return bot.getId();
-        }
-
-          return Long.valueOf(404);
+        return bot.getId();
     }
 
     @RequestMapping(value = "{id}/lid/{lid}", method = RequestMethod.GET)

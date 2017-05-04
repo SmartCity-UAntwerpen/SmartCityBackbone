@@ -6,6 +6,8 @@ import javax.persistence.*;
  * Created by Niels on 24/03/2016.
  */
 @Entity
+@Inheritance
+@DiscriminatorColumn(name="vehicle_type")
 @Table(name = "bot", schema = "", catalog = "smartcitydb")
 public class Bot
 {
