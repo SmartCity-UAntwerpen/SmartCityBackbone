@@ -108,7 +108,7 @@ public class BotController
             bot = new Robot();
         }else{
             System.out.println(type + " is not a valid type");
-            return Long.valueOf(404);
+            return Long.valueOf(-1);
         }
 
         //Save bot in database and get bot new rid

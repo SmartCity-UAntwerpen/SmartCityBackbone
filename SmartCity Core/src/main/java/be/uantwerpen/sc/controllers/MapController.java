@@ -67,6 +67,12 @@ public class MapController
         return mapControlService.buildMap().toString();
     }
 
+    @RequestMapping(value = "stringtopmapjson", method = RequestMethod.GET)
+    public String topMapStringJson()
+    {
+        return mapControlService.buildTopMapJson().toString();
+    }
+
     @RequestMapping(value = "random/{start}", method = RequestMethod.GET)
     public Path randomPath(@PathVariable("start") int start)
     {
