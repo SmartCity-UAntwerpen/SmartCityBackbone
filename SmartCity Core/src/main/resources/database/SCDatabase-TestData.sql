@@ -22,8 +22,15 @@
 DROP TABLE IF EXISTS smartcitydb.point;
 CREATE TABLE smartcitydb.point (
   `pid` bigint(20) NOT NULL AUTO_INCREMENT,
-  `rfid` varchar(255) DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`pid`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS smartcitydb.point_robot;
+CREATE TABLE smartcitydb.point_robot (
+  `pid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `rfid` varchar(255) DEFAULT NULL,
   `pointlock` int(11) DEFAULT '1',
   PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
@@ -36,7 +43,7 @@ CREATE TABLE smartcitydb.point (
 /*!40000 ALTER TABLE smartcitydb.point DISABLE KEYS */;
 INSERT INTO smartcitydb.point VALUES
   -- Parking
-  (1,'04 97 36 A2 7F 22 80','PARKING',0),
+ /* (1,'04 97 36 A2 7F 22 80','PARKING',0),
   (2,'04 41 70 92 1E 25 80','PARKING',0),
   (3,'04 70 39 32 06 27 80','PARKING',0),
   (4,'04 26 3E 92 1E 25 80','PARKING',0),
@@ -59,7 +66,7 @@ INSERT INTO smartcitydb.point VALUES
 
   -- Traffic-Lights
   (19,'04 C4 FD 12 A9 34 80','TRAFFICLIGHT',0),  -- T1
-  (20,'04 86 04 22 A9 34 84','TRAFFICLIGHT',0);  -- T2
+  (20,'04 86 04 22 A9 34 84','TRAFFICLIGHT',0);  -- T2*/
 /*!40000 ALTER TABLE smartcitydb.point ENABLE KEYS */;
 /*!40101 UNLOCK TABLES; */
 
@@ -70,18 +77,24 @@ INSERT INTO smartcitydb.point VALUES
 DROP TABLE IF EXISTS smartcitydb.link;
 CREATE TABLE smartcitydb.link (
   `lid` bigint(20) NOT NULL AUTO_INCREMENT,
-  `length` bigint(20) DEFAULT '1',
-  `start_direction` varchar(255) DEFAULT NULL,
   `start_point` bigint(20) DEFAULT NULL,
-  `stop_direction` varchar(255) DEFAULT NULL,
   `stop_point` bigint(20) DEFAULT NULL,
-  `weight` int(11) DEFAULT '1',
-  `type` varchar(255) DEFAULT NULL,
+  `weight` int(11) DEFAULT '-1',
+  `acces` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`lid`),
   KEY `fk_startpoint` (`start_point`),
   KEY `fk_stoppoint` (`stop_point`),
   CONSTRAINT `fk_startpoint` FOREIGN KEY (`start_point`) REFERENCES `point` (`pid`),
   CONSTRAINT `fk_stoppoint` FOREIGN KEY (`stop_point`) REFERENCES `point` (`pid`)
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS smartcitydb.link_robot
+CREATE TABLE smartcitydb.link_robot (
+  `lid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `length` bigint(20) DEFAULT '1',
+  `start_direction` varchar(255) DEFAULT NULL,
+  `stop_direction` varchar(255) DEFAULT NULL,
+   PRIMARY KEY (`lid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
 
 --
@@ -91,7 +104,7 @@ CREATE TABLE smartcitydb.link (
 /*!40101 LOCK TABLES smartcitydb.link WRITE; */
 /*!40000 ALTER TABLE smartcitydb.link DISABLE KEYS */;
 INSERT INTO smartcitydb.link VALUES
-  (1,10,'E',1,'W',7,1,'robot'), -- 1 -> 7
+  /*(1,10,'E',1,'W',7,1,'robot'), -- 1 -> 7
   (2,10,'W',7,'E',1,1,'robot'), -- 7 -> 1
 
   (3,380,'S',2,'N',10,1,'robot'), -- 2 -> 10
@@ -157,7 +170,7 @@ INSERT INTO smartcitydb.link VALUES
 
   (41,440,'S',19,'W',14,1,'robot'), -- T1 (19) -> 14
 
-  (42,440,'N',20,'E',15,1,'robot'); -- T2 (20) -> 15
+  (42,440,'N',20,'E',15,1,'robot'); -- T2 (20) -> 15*/
 /*!40000 ALTER TABLE smartcitydb.link ENABLE KEYS */;
 /*!40101 UNLOCK TABLES; */
 

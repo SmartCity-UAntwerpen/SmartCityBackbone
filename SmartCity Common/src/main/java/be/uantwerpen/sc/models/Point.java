@@ -6,13 +6,15 @@ import javax.persistence.*;
  * Created by Niels on 24/03/2016.
  */
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
 @Table(name = "point", schema = "", catalog = "smartcitydb")
 public class Point
 {
     private Long id;
-    private String rfid;
+
     private String type;
-    private int pointLock;
+    private String acces;
+
 
     @Id
     @Column(name = "pid")
@@ -27,17 +29,7 @@ public class Point
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "rfid")
-    public String getRfid()
-    {
-        return rfid;
-    }
 
-    public void setRfid(String rfid)
-    {
-        this.rfid = rfid;
-    }
 
     @Basic
     @Column(name = "type")
@@ -51,6 +43,18 @@ public class Point
         this.type = type;
     }
 
+    @Basic
+    @Column(name = "acces")
+    public String getAcces()
+    {
+        return type;
+    }
+
+    public void setAcces(String acces)
+    {
+        this.acces = acces;
+    }
+
     @Override
     public boolean equals(Object o)
     {
@@ -60,7 +64,6 @@ public class Point
         Point that = (Point) o;
 
         if(id != that.id) return false;
-        if(rfid != null ? !rfid.equals(that.rfid) : that.rfid != null) return false;
         if(type != null ? !type.equals(that.type) : that.type != null) return false;
 
         return true;
@@ -71,22 +74,9 @@ public class Point
     {
         int result = (int)(id % Integer.MAX_VALUE);
 
-        result = 31 * result + (rfid != null ? rfid.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
 
         return result;
-    }
-
-    @Basic
-    @Column(name = "pointlock")
-    public int getPointLock()
-    {
-        return pointLock;
-    }
-
-    public void setPointLock(int pointLock)
-    {
-        this.pointLock = pointLock;
     }
 
     @Override
@@ -94,9 +84,7 @@ public class Point
     {
         return "PointEntity{" +
                 "id=" + id +
-                ", rfid='" + rfid + '\'' +
                 ", type='" + type + '\'' +
-                ", pointLock=" + pointLock +
                 '}';
     }
 }

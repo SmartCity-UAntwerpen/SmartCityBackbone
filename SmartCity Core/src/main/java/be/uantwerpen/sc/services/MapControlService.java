@@ -78,4 +78,33 @@ public class MapControlService
 
         return mapJson;
     }
+
+    public MapJson buildTopMapJson()
+    {
+        MapJson mapJson = new MapJson();
+
+        List<Link> linkEntityList = linkControlService.getAllLinks();
+
+        for(Point point : pointControlService.getAllPoints())
+        {
+            NodeJson nodeJson = new NodeJson(point);
+
+            List<Neighbour> neighbourList = new ArrayList<Neighbour>();
+
+            for(Link link: linkEntityList)
+            {
+                if((link.getStartPoint().getId()) == (nodeJson.getPointEntity().getId()))
+                {
+                    neighbourList.add(new Neighbour(link));
+                }
+            }
+
+            nodeJson.setNeighbours(neighbourList);
+            mapJson.addNodeJson(nodeJson);
+        }
+
+        mapJson.setSize(mapJson.getNodeJsons().size());
+
+        return mapJson;
+    }
 }

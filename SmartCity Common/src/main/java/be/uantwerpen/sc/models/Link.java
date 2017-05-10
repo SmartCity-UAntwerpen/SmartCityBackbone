@@ -6,17 +6,15 @@ import javax.persistence.*;
  * Created by Niels on 24/03/2016.
  */
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
 @Table(name = "link", schema = "", catalog = "smartcitydb")
 public class Link
 {
     private Long id;
-    private Long length;
-    private String startDirection;
-    private String stopDirection;
     private Point startPoint;
     private Point stopPoint;
     private int weight;
-    private String type;
+    private String acces;
 
     @Id
     @Column(name = "lid")
@@ -31,41 +29,7 @@ public class Link
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "length")
-    public Long getLength()
-    {
-        return length;
-    }
 
-    public void setLength(Long length)
-    {
-        this.length = length;
-    }
-
-    @Basic
-    @Column(name = "start_direction")
-    public String getStartDirection()
-    {
-        return startDirection;
-    }
-
-    public void setStartDirection(String startDirection)
-    {
-        this.startDirection = startDirection;
-    }
-
-    @Basic
-    @Column(name = "stop_direction")
-    public String getStopDirection()
-    {
-        return stopDirection;
-    }
-
-    public void setStopDirection(String stopDirection)
-    {
-        this.stopDirection = stopDirection;
-    }
 
     @Override
     public boolean equals(Object o)
@@ -76,11 +40,6 @@ public class Link
         Link that = (Link) o;
 
         if(id != that.id) return false;
-        if(length != null ? !length.equals(that.length) : that.length != null) return false;
-        if(startDirection != null ? !startDirection.equals(that.startDirection) : that.startDirection != null)
-            return false;
-        if(stopDirection != null ? !stopDirection.equals(that.stopDirection) : that.stopDirection != null)
-            return false;
 
         return true;
     }
@@ -89,10 +48,6 @@ public class Link
     public int hashCode()
     {
         int result = (int)(id % Integer.MAX_VALUE);
-
-        result = 31 * result + (length != null ? length.hashCode() : 0);
-        result = 31 * result + (startDirection != null ? startDirection.hashCode() : 0);
-        result = 31 * result + (stopDirection != null ? stopDirection.hashCode() : 0);
 
         return result;
     }
@@ -134,25 +89,21 @@ public class Link
     }
 
     @Basic
-    @Column(name = "accessible by")
-    public String getAccessibleBy(String type){return type; }
+    @Column(name = "acces")
+    public String getAccess(String acces){return acces; }
 
-    public void setAccessibleBy(String type)
+    public void setAccess(String acces)
     {
-        this.type = type;
+        this.acces = acces;
     }
 
     @Override
     public String toString() {
         return "LinkEntity{" +
                 "lid=" + id +
-                ", length=" + length +
-                ", startDirection='" + startDirection + '\'' +
-                ", stopDirection='" + stopDirection + '\'' +
                 ", startPoint=" + startPoint +
                 ", stopPoint=" + stopPoint +
                 ", weight=" + weight +
-                ", accesible by=" + type +
                 '}';
     }
 }
