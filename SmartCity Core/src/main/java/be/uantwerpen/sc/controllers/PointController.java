@@ -28,7 +28,7 @@ public class PointController
         return points;
     }
 
-    @RequestMapping(value = "requestlock/{id}", method = RequestMethod.GET)
+   /* @RequestMapping(value = "requestlock/{id}", method = RequestMethod.GET)
     public boolean requestPointLock(@PathVariable("id") Long id)
     {
         synchronized(this)
@@ -55,9 +55,9 @@ public class PointController
         }
 
         return false;
-    }
+    }*/
 
-    @RequestMapping(value = "getlock/{id}", method = RequestMethod.GET)
+  /*  @RequestMapping(value = "getlock/{id}", method = RequestMethod.GET)
     public boolean getPointStatus(@PathVariable("id") Long id)
     {
         Point point = pointService.getPoint(id);
@@ -77,9 +77,9 @@ public class PointController
             default:
         }
         return true;
-    }
+    }*/
 
-    @RequestMapping(value = "setlock/{id}/{value}", method = RequestMethod.GET)
+ /*   @RequestMapping(value = "setlock/{id}/{value}", method = RequestMethod.GET)
     public boolean setPointStatus(@PathVariable("id") Long id, @PathVariable("value") int value)
     {
         synchronized (this)
@@ -97,5 +97,5 @@ public class PointController
 
             return true;
         }
-    }
+    }*/
 }

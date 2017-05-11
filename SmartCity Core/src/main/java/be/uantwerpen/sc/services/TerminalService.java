@@ -79,19 +79,19 @@ public class TerminalService
                 }
                 else
                 {
-                    if(commandString.split(" ", 2)[1].equals("bots"))
-                    {
-                        this.printAllBots();
-                    }
-                    else
-                    {
-                        terminal.printTerminalInfo("Unknown arguments! 'show {bots}'");
-                    }
+                if(commandString.split(" ", 2)[1].equals("bots"))
+                {
+                    this.printAllBots();
                 }
+                else
+                {
+                    terminal.printTerminalInfo("Unknown arguments! 'show {bots}'");
+                }
+            }
                 break;
             case "reset":
                 this.resetBots();
-                this.clearPointLocks();
+                //this.clearPointLocks();
                 break;
             case "delete":
                 if(commandString.split(" ", 2).length <= 1)
@@ -200,7 +200,7 @@ public class TerminalService
         }
     }
 
-    private void clearPointLocks()
+   /* private void clearPointLocks()
     {
         if(pointControlService.clearAllLocks())
         {
@@ -210,7 +210,7 @@ public class TerminalService
         {
             terminal.printTerminalError("Could not release all points.");
         }
-    }
+    }*/
 
     private void sendJob(Long botId, String command)
     {

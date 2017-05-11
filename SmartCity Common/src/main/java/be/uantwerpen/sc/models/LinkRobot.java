@@ -12,21 +12,9 @@ import javax.persistence.Table;
 @Table(name="link_robot", schema = "", catalog = "smartcitydb")
 public class LinkRobot extends Link {
 
-    private Long length;
     private String startDirection;
     private String stopDirection;
 
-    @Basic
-    @Column(name = "length")
-    public Long getLength()
-    {
-        return length;
-    }
-
-    public void setLength(Long length)
-    {
-        this.length = length;
-    }
 
     @Basic
     @Column(name = "start_direction")

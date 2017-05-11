@@ -32,7 +32,7 @@ public class PointControlService
         return pointRepository.save(point);
     }
 
-    public boolean clearAllLocks()
+  /*  public boolean clearAllLocks()
     {
         for(Point point : pointRepository.findAll())
         {
@@ -41,5 +41,5 @@ public class PointControlService
         }
 
         return true;
-    }
+    }*/
 }

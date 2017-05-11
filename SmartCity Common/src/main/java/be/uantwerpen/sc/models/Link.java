@@ -13,6 +13,7 @@ public class Link
     private Long id;
     private Point startPoint;
     private Point stopPoint;
+    private Long length;
     private int weight;
     private String acces;
 
@@ -87,6 +88,19 @@ public class Link
     {
         this.weight = weight;
     }
+
+    @Basic
+    @Column(name = "length")
+    public Long getLength()
+    {
+        return length;
+    }
+
+    public void setLength(Long length)
+    {
+        this.length = length;
+    }
+
 
     @Basic
     @Column(name = "acces")

@@ -31,7 +31,6 @@ CREATE TABLE `bot` (
   `percentage_completed` int(11) DEFAULT NULL,
   `state` varchar(255) DEFAULT NULL,
   `link_id` bigint(20) DEFAULT NULL,
-  `vehicle_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`rid`),
   KEY `FK_g2k7qbjgq85d7hmmov6r4benu` (`link_id`),
   CONSTRAINT `FK_g2k7qbjgq85d7hmmov6r4benu` FOREIGN KEY (`link_id`) REFERENCES `link` (`lid`)
@@ -47,21 +46,27 @@ DROP TABLE IF EXISTS `link`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `link` (
   `lid` bigint(20) NOT NULL AUTO_INCREMENT,
-  `length` bigint(20) DEFAULT '1',
-  `start_direction` varchar(255) DEFAULT NULL,
   `start_point` bigint(20) DEFAULT NULL,
-  `stop_direction` varchar(255) DEFAULT NULL,
   `stop_point` bigint(20) DEFAULT NULL,
-  `pid` bigint(20) DEFAULT NULL,
   `weight` int(11) DEFAULT '1',
+  `acces` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`lid`),
   KEY `fk_startpoint` (`start_point`),
   KEY `fk_stoppoint` (`stop_point`),
-  KEY `FK_fraaqnos7yp6t7drynxqo0ov` (`pid`),
-  CONSTRAINT `FK_fraaqnos7yp6t7drynxqo0ov` FOREIGN KEY (`pid`) REFERENCES `point` (`pid`),
   CONSTRAINT `fk_startpoint` FOREIGN KEY (`start_point`) REFERENCES `point` (`pid`),
   CONSTRAINT `fk_stoppoint` FOREIGN KEY (`stop_point`) REFERENCES `point` (`pid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `link_robot`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `link_robot` (
+  `lrid` bigint(20) NOT NULL,
+  `start_direction` varchar(255) DEFAULT NULL,
+  `stop_direction` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`lrid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,12 +78,24 @@ DROP TABLE IF EXISTS `point`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `point` (
   `pid` bigint(20) NOT NULL AUTO_INCREMENT,
-  `rfid` varchar(255) DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
-  `pointlock` int(11) DEFAULT '1',
+  `acces` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+
+DROP TABLE IF EXISTS `point_robot`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `point_robot` (
+  `prid` bigint(20) NOT NULL,
+  `rfid` varchar(255) DEFAULT NULL,
+  `pointlock` int(11) DEFAULT '1',
+  PRIMARY KEY (`prid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 
 --
 -- Table structure for table `trafficlight`
