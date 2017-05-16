@@ -24,6 +24,7 @@ CREATE TABLE smartcitydb.point (
   `pid` bigint(20) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) DEFAULT NULL,
   `acces` varchar(255) DEFAULT NULL,
+  `hub` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 

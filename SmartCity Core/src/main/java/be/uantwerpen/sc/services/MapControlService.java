@@ -2,6 +2,7 @@ package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.*;
 import be.uantwerpen.sc.models.map.*;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,7 @@ public class MapControlService
             map.addNode(node);
         }
 
-        map.setBotEntities(botControlService.getAllBots());
+    //    map.setBotEntities(botControlService.getAllBots());
         map.setTrafficlightEntity(trafficLightControlService.getAllTrafficLights());
 
         return map;
@@ -79,32 +80,23 @@ public class MapControlService
         return mapJson;
     }
 
-    public MapJson buildTopMapJson()
+    public CustomMap buildCustomMapJson(String type)
     {
-        MapJson mapJson = new MapJson();
+        CustomMap map = new CustomMap();
 
-        List<Link> linkEntityList = linkControlService.getAllLinks();
+        for(Link link : linkControlService.getAllLinks()){
+            if(type.equals(link.getAcces())){
+                map.addLink(link);
+            }
+        }
 
         for(Point point : pointControlService.getAllPoints())
         {
-            NodeJson nodeJson = new NodeJson(point);
-
-            List<Neighbour> neighbourList = new ArrayList<Neighbour>();
-
-            for(Link link: linkEntityList)
-            {
-                if((link.getStartPoint().getId()) == (nodeJson.getPointEntity().getId()))
-                {
-                    neighbourList.add(new Neighbour(link));
-                }
+            if(type.equals(point.getAcces())){
+            map.addPoint(point);
             }
-
-            nodeJson.setNeighbours(neighbourList);
-            mapJson.addNodeJson(nodeJson);
         }
 
-        mapJson.setSize(mapJson.getNodeJsons().size());
-
-        return mapJson;
+        return map;
     }
 }

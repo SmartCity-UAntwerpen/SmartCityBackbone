@@ -14,6 +14,7 @@ public class Point
 
     private String type;
     private String acces;
+    private int hub;
 
 
     @Id
@@ -29,8 +30,6 @@ public class Point
         this.id = id;
     }
 
-
-
     @Basic
     @Column(name = "type")
     public String getType()
@@ -41,6 +40,18 @@ public class Point
     public void setType(String type)
     {
         this.type = type;
+    }
+
+    @Basic
+    @Column(name = "hub")
+    public String getHub()
+    {
+        return type;
+    }
+
+    public void setHub(int hub)
+    {
+        this.hub = hub;
     }
 
     @Basic

@@ -104,7 +104,7 @@ public class Link
 
     @Basic
     @Column(name = "acces")
-    public String getAccess(String acces){return acces; }
+    public String getAcces(){return acces; }
 
     public void setAccess(String acces)
     {
