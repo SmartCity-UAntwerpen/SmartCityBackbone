@@ -1,6 +1,7 @@
 package be.uantwerpen.sc.tools;
 
 import be.uantwerpen.sc.models.Link;
+import be.uantwerpen.sc.models.LinkRobot;
 import be.uantwerpen.sc.models.Point;
 import be.uantwerpen.sc.models.sim.SimMap;
 import be.uantwerpen.sc.models.sim.SimPath;
@@ -24,10 +25,10 @@ public class MapBuilder{
 
     SimMap simMap;
 
-    ArrayList<Link> linkEntities;
+    ArrayList<LinkRobot> linkEntities;
     ArrayList<Point> pointEntities;
 
-    ArrayList<Link> linkEntitiesPointGeneration;
+    ArrayList<LinkRobot> linkEntitiesPointGeneration;
 
     //Keep track of point locations
     ArrayList<SimPoint> simPoints = new ArrayList<>();
@@ -41,10 +42,10 @@ public class MapBuilder{
     int currSizeY = 1;
     boolean mapReady = false;
 
-    public MapBuilder(Link[] linkEntities, Point[] pointEntities){
+    public MapBuilder(LinkRobot[] linkEntities, Point[] pointEntities){
 
-        this.linkEntities = new ArrayList<Link>(Arrays.asList(linkEntities));
-        this.linkEntitiesPointGeneration = new ArrayList<Link>(Arrays.asList(linkEntities));
+        this.linkEntities = new ArrayList<LinkRobot>(Arrays.asList(linkEntities));
+        this.linkEntitiesPointGeneration = new ArrayList<LinkRobot>(Arrays.asList(linkEntities));
         this.pointEntities = new ArrayList<Point>(Arrays.asList(pointEntities));
 
         simMap = new SimMap();
@@ -97,11 +98,11 @@ public class MapBuilder{
 
         ProcessingType processingType = ProcessingType.STRAIGHT;
 
-        Iterator<Link> linkIterator = linkEntities.iterator();
+        Iterator<LinkRobot> linkIterator = linkEntities.iterator();
 
         boolean firstFound = false;
         while(linkIterator.hasNext() && firstFound == false){
-            Link link = linkIterator.next();
+            LinkRobot link = linkIterator.next();
             if(processFirstLink(link, processingType)){
                 firstFound = true;
             }
@@ -115,7 +116,7 @@ public class MapBuilder{
             linkIterator = linkEntities.iterator();
             nextMode = true;
             while(linkIterator.hasNext()){
-                Link link = linkIterator.next();
+                LinkRobot link = linkIterator.next();
                 //Check if we can process this link with the current processing type
                 System.out.println(link.getId());
                 if(canProcessWithCurrentProcessingType(link, processingType)){
@@ -147,7 +148,7 @@ public class MapBuilder{
         return 0;
     }
 
-    private boolean canProcessWithCurrentProcessingType(Link link, ProcessingType type){
+    private boolean canProcessWithCurrentProcessingType(LinkRobot link, ProcessingType type){
         switch(type){
             case STRAIGHT:
                 if(link.getStartDirection().equals("N") && link.getStopDirection().equals("S") || link.getStartDirection().equals("S") && link.getStopDirection().equals("N"))  // Vertical
@@ -174,7 +175,7 @@ public class MapBuilder{
         return false;
     }
 
-    private boolean processFirstLink(Link link, ProcessingType type){
+    private boolean processFirstLink(LinkRobot link, ProcessingType type){
         SimPoint point = new SimPoint(link.getStartPoint().getId(), locX, locY);
         //Add first point to map
         simPoints.add(point);
@@ -184,7 +185,7 @@ public class MapBuilder{
         return processLink(link, type);
     }
 
-    private boolean processLink(Link link, ProcessingType type){
+    private boolean processLink(LinkRobot link, ProcessingType type){
         //Create new path
         path = new SimPath(link.getId());
         path.setLength(link.getLength());
@@ -320,7 +321,7 @@ public class MapBuilder{
         return true;
     }
 
-    private int[] findIntersect(Link link){
+    private int[] findIntersect(LinkRobot link){
         int[] intersect = {-1,-1,-1,-1};
 
         Long startId = link.getStartPoint().getId();
@@ -766,7 +767,7 @@ public class MapBuilder{
 
         //search for all of a point's accessed directions
         String c = "!";
-        for(Link link : linkEntitiesPointGeneration){
+        for(LinkRobot link : linkEntitiesPointGeneration){
             c="!";
             if(link.getStartPoint().getId()==id) {
                 c = link.getStartDirection();

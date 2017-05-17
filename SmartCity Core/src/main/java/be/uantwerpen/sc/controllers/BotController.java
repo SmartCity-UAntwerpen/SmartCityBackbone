@@ -94,7 +94,7 @@ public class BotController
         return "Something";
     }
 
-    @Produces("text/plain")
+    @Produces("application/json")
     @RequestMapping(value = "newBot/{type}", method = RequestMethod.GET)  //when new bot subscribes, it sends a request with its type and gets an ID in return
     public Long newRobot(@PathVariable("type") String type)
     {
@@ -117,7 +117,7 @@ public class BotController
         bot = botControlService.saveBot(bot);
 
         Date date = new Date();
-        System.out.println("New robot created! - " + date.toString());
+        System.out.println("New bot created with id: " + bot.getId() + " " + type + " - " + date.toString());
 
         return bot.getId();
     }

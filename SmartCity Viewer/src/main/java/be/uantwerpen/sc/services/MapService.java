@@ -87,7 +87,7 @@ public class MapService
         */
 
         //build Sim Map
-        mapBuilder = new MapBuilder(linkList, pointList);
+    //    mapBuilder = new MapBuilder(linkList, pointList);
 
         try
         {
