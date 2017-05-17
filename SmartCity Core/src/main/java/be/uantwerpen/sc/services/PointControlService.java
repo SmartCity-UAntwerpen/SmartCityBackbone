@@ -1,11 +1,10 @@
 package be.uantwerpen.sc.services;
 
-import be.uantwerpen.sc.models.Point;
+import be.uantwerpen.sc.models.points.Point;
 import be.uantwerpen.sc.repositories.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**

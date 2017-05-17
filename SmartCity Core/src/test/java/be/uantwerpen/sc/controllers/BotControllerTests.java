@@ -2,8 +2,7 @@ package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.SmartCityCoreApplication;
 import be.uantwerpen.sc.configurations.SystemPropertyActiveProfileResolver;
-import be.uantwerpen.sc.models.Link;
-import be.uantwerpen.sc.models.Point;
+import be.uantwerpen.sc.models.links.Link;
 import be.uantwerpen.sc.models.Bot;
 import be.uantwerpen.sc.services.BotControlService;
 import org.junit.Before;

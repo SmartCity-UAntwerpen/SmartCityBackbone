@@ -1,4 +1,4 @@
-package be.uantwerpen.sc.models;
+package be.uantwerpen.sc.models.points;
 
 import javax.persistence.*;
 

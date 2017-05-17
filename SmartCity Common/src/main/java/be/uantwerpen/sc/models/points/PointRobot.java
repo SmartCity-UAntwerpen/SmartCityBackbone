@@ -1,4 +1,6 @@
-package be.uantwerpen.sc.models;
+package be.uantwerpen.sc.models.points;
+
+import be.uantwerpen.sc.models.points.Point;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

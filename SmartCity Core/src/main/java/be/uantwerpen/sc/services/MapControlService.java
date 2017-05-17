@@ -1,12 +1,12 @@
 package be.uantwerpen.sc.services;
 
-import be.uantwerpen.sc.models.*;
+import be.uantwerpen.sc.models.links.Link;
 import be.uantwerpen.sc.models.map.*;
+import be.uantwerpen.sc.models.points.Point;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

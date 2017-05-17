@@ -1,6 +1,6 @@
 package be.uantwerpen.sc.controllers;
 
-import be.uantwerpen.sc.models.Link;
+import be.uantwerpen.sc.models.links.Link;
 import be.uantwerpen.sc.services.LinkControlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,11 +1,10 @@
 package be.uantwerpen.sc.services;
 
-import be.uantwerpen.sc.models.Link;
+import be.uantwerpen.sc.models.links.Link;
 import be.uantwerpen.sc.repositories.LinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**

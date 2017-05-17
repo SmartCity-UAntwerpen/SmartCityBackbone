@@ -1,7 +1,7 @@
 package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.Bot;
-import be.uantwerpen.sc.models.Link;
+import be.uantwerpen.sc.models.links.Link;
 import be.uantwerpen.sc.tools.Terminal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

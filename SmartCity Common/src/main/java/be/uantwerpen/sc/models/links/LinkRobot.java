@@ -1,4 +1,6 @@
-package be.uantwerpen.sc.models;
+package be.uantwerpen.sc.models.links;
+
+import be.uantwerpen.sc.models.links.Link;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

@@ -1,5 +1,7 @@
 package be.uantwerpen.sc.models;
 
+import be.uantwerpen.sc.models.links.Link;
+
 import javax.persistence.*;
 
 /**
