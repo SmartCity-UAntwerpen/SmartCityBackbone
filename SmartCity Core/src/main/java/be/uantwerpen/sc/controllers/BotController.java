@@ -6,6 +6,7 @@ import be.uantwerpen.sc.services.LinkControlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.Produces;
 import java.util.Date;
 import java.util.List;
 
@@ -93,6 +94,7 @@ public class BotController
         return "Something";
     }
 
+    @Produces("text/plain")
     @RequestMapping(value = "newBot/{type}", method = RequestMethod.GET)  //when new bot subscribes, it sends a request with its type and gets an ID in return
     public Long newRobot(@PathVariable("type") String type)
     {

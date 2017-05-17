@@ -106,7 +106,7 @@ public class Link
     @Column(name = "acces")
     public String getAcces(){return acces; }
 
-    public void setAccess(String acces)
+    public void setAcces(String acces)
     {
         this.acces = acces;
     }

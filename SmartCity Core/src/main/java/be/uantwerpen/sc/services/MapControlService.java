@@ -80,7 +80,7 @@ public class MapControlService
         return mapJson;
     }
 
-    public CustomMap buildCustomMapJson(String type)
+    public String buildCustomMapJson(String type)
     {
         CustomMap map = new CustomMap();
 
@@ -97,6 +97,10 @@ public class MapControlService
             }
         }
 
-        return map;
+        Gson gson = new Gson();
+
+        String mapString = gson.toJson(map);
+
+        return mapString;
     }
 }

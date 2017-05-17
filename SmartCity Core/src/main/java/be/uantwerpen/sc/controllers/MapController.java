@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.ws.rs.Produces;
 import java.util.List;
 
 /**
@@ -67,10 +68,11 @@ public class MapController
         return mapControlService.buildMap().toString();
     }
 
+    @Produces("application/json")
     @RequestMapping(value = "stringmapjson/{type}", method = RequestMethod.GET)
     public String customMapStringJson(@PathVariable("type") String type)
     {
-        return mapControlService.buildCustomMapJson(type).toString();
+        return mapControlService.buildCustomMapJson(type);
     }
 
     @RequestMapping(value = "random/{start}", method = RequestMethod.GET)
