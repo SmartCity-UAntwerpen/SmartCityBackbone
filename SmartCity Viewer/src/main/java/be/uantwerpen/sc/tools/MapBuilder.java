@@ -1,8 +1,7 @@
 package be.uantwerpen.sc.tools;
 
-import be.uantwerpen.sc.models.Link;
-import be.uantwerpen.sc.models.LinkRobot;
-import be.uantwerpen.sc.models.Point;
+import be.uantwerpen.sc.models.links.LinkRobot;
+import be.uantwerpen.sc.models.points.Point;
 import be.uantwerpen.sc.models.sim.SimMap;
 import be.uantwerpen.sc.models.sim.SimPath;
 import be.uantwerpen.sc.models.sim.SimPoint;

@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS smartcitydb.point;
 CREATE TABLE smartcitydb.point (
   `pid` bigint(20) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) DEFAULT NULL,
-  `acces` varchar(255) DEFAULT NULL,
+  `access` varchar(255) DEFAULT NULL,
   `hub` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
@@ -31,12 +31,12 @@ DROP TABLE IF EXISTS smartcitydb.point_car;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE smartcitydb.point_car (
-  `cid` int(11) NOT NULL,
+  `pid` int(11) NOT NULL,
   `x` float DEFAULT NULL,
   `y` float DEFAULT NULL,
   `z` float DEFAULT NULL,
   `w` float DEFAULT NULL,
-  PRIMARY KEY (`cid`)
+  FOREIGN KEY (`pid`) REFERENCES smartcitydb.point (`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -55,11 +55,11 @@ DROP TABLE IF EXISTS smartcitydb.point_drone;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE smartcitydb.point_drone (
-  `did` bigint(20) NOT NULL,
+  `pid` bigint(20) NOT NULL,
   `x` float DEFAULT NULL,
   `y` float DEFAULT NULL,
   `z` float DEFAULT NULL,
-  PRIMARY KEY (`did`)
+  FOREIGN KEY (`pid`) REFERENCES smartcitydb.point (`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -76,10 +76,10 @@ DROP TABLE IF EXISTS smartcitydb.point_robot;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE smartcitydb.point_robot (
-  `prid` bigint(20) NOT NULL,
+  `pid` bigint(20) NOT NULL,
   `rfid` varchar(255) DEFAULT NULL,
   `pointlock` int(11) DEFAULT NULL,
-  PRIMARY KEY (`prid`)
+  FOREIGN KEY (`pid`) REFERENCES smartcitydb.point (`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -123,10 +123,10 @@ DROP TABLE IF EXISTS smartcitydb.link_robot;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE smartcitydb.link_robot (
-  `lrid` bigint(20) NOT NULL,
+  `lid` bigint(20) NOT NULL,
   `start_direction` varchar(255) DEFAULT NULL,
   `stop_direction` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`lrid`)
+  FOREIGN KEY (`lid`) REFERENCES smartcitydb.link (`lid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -147,6 +147,7 @@ CREATE TABLE smartcitydb.bot (
   `job_id` bigint(20) DEFAULT NULL,
   `percentage_completed` int(11) DEFAULT NULL,
   `state` varchar(255) DEFAULT NULL,
+  `vehicle_type` varchar(255) DEFAULT NULL,
   `link_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`rid`),
   KEY `FK_g2k7qbjgq85d7hmmov6r4benu` (`link_id`),
