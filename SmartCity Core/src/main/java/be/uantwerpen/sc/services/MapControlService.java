@@ -85,14 +85,14 @@ public class MapControlService
         CustomMap map = new CustomMap();
 
         for(Link link : linkControlService.getAllLinks()){
-            if(type.equals(link.getAcces())){
+            if(type.equals(link.getAccess())){
                 map.addLink(link);
             }
         }
 
         for(Point point : pointControlService.getAllPoints())
         {
-            if(type.equals(point.getAcces())){
+            if(type.equals(point.getAccess())){
             map.addPoint(point);
             }
         }

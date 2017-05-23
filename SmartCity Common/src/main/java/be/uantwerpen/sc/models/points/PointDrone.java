@@ -9,9 +9,9 @@ import javax.persistence.Table;
  * Created by quent on 5/17/2017.
  */
 
-    @Entity
-    @Table(name="point_drone", schema = "", catalog = "smartcitydb")
-public class PointDrone {
+@Entity
+@Table(name="point_drone", schema = "", catalog = "smartcitydb")
+public class PointDrone extends Point {
 
     private float x;
     private float y;

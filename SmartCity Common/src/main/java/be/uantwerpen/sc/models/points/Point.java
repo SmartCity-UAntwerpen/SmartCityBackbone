@@ -13,8 +13,8 @@ public class Point
     private Long id;
 
     private String type;
-    private String acces;
-    private int hub;
+    private String access;
+    private Long hub;
 
 
     @Id
@@ -44,26 +44,26 @@ public class Point
 
     @Basic
     @Column(name = "hub")
-    public String getHub()
+    public Long getHub()
     {
-        return type;
+        return hub;
     }
 
-    public void setHub(int hub)
+    public void setHub(Long hub)
     {
         this.hub = hub;
     }
 
     @Basic
-    @Column(name = "acces")
-    public String getAcces()
+    @Column(name = "access")
+    public String getAccess()
     {
         return type;
     }
 
-    public void setAcces(String acces)
+    public void setAccess(String access)
     {
-        this.acces = acces;
+        this.access = access;
     }
 
     @Override

@@ -17,7 +17,7 @@ public class Link
     private Point stopPoint;
     private Long length;
     private int weight;
-    private String acces;
+    private String access;
 
     @Id
     @Column(name = "lid")
@@ -106,11 +106,11 @@ public class Link
 
     @Basic
     @Column(name = "acces")
-    public String getAcces(){return acces; }
+    public String getAccess(){return access; }
 
-    public void setAcces(String acces)
+    public void setAccess(String acces)
     {
-        this.acces = acces;
+        this.access = acces;
     }
 
     @Override
