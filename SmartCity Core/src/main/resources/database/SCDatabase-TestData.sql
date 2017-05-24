@@ -9,8 +9,8 @@ DROP TABLE IF EXISTS smartcitydb.point;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE smartcitydb.point (
   `pid` bigint(20) NOT NULL AUTO_INCREMENT,
-  `type` varchar(255) DEFAULT NULL,
   `access` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
   `hub` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;

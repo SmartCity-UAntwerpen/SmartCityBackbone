@@ -40,4 +40,22 @@ public class PointRobot extends Point {
     {
         this.pointLock = pointLock;
     }
+
+    @Override
+
+    public String toString()
+
+    {
+
+        return "PointEntity{" +
+
+                "id=" + getId() +
+
+                ", rfid='" + rfid + '\'' +
+
+                ", pointLock=" + pointLock +
+
+                '}';
+
+    }
 }

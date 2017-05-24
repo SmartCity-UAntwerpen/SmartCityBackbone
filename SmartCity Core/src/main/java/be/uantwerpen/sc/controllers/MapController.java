@@ -72,7 +72,14 @@ public class MapController
     @RequestMapping(value = "stringmapjson/{type}", method = RequestMethod.GET)
     public String customMapStringJson(@PathVariable("type") String type)
     {
-        return mapControlService.buildCustomMapJson(type);
+        return mapControlService.buildCustomMapJson(type).toString();
+    }
+
+    @Produces("application/json")
+    @RequestMapping(value = "topmapjson/", method = RequestMethod.GET)
+    public String topMapStringJson()
+    {
+        return mapControlService.buildTopMapJson().toString();
     }
 
     @RequestMapping(value = "random/{start}", method = RequestMethod.GET)

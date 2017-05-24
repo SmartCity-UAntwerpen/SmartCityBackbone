@@ -31,4 +31,15 @@ public class PointDrone extends Point {
     @Column(name = "z")
     public float getZ(){return z;}
     public void setZ(float z){this.z = z;}
+
+    @Override
+    public String toString()
+    {
+        return "PointEntity{" +
+                "id=" + getId() +
+                ", x=" + getX() +
+                ", y=" + getY() +
+                ", z=" + getZ() +
+                '}';
+    }
 }

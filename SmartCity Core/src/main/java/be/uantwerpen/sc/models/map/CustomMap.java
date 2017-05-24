@@ -39,4 +39,12 @@ public class CustomMap implements AbstractMap
 
     public List<Point> getPointList(){return pointList;}
 
+    @Override
+    public String toString() {
+        return "CustomMap{" +
+                "pointList=" + pointList +
+                ", linkList=" + linkList +
+                '}';
+    }
+
 }

@@ -90,12 +90,12 @@ public class Point
         return result;
     }
 
-    @Override
-    public String toString()
+    public String toStringBasic()
     {
         return "PointEntity{" +
                 "id=" + id +
                 ", type='" + type + '\'' +
+                ", hub=" + hub +
                 '}';
     }
 }

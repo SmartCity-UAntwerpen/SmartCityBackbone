@@ -21,6 +21,11 @@ public class LinkControlService
         return linkRepository.findAll();
     }
 
+    public Link saveLink(Link link)
+    {
+        return linkRepository.save(link);
+    }
+
     public Link getLink(Long id)
     {
         return linkRepository.findOne(id);

@@ -41,4 +41,28 @@ public class LinkRobot extends Link {
     {
         this.stopDirection = stopDirection;
     }
+
+    @Override
+
+    public String toString() {
+
+        return "LinkEntity{" +
+
+                "id=" + getId() +
+
+                ", length=" + getLength() +
+
+                ", startPoint=" + getStartPoint().getId() +
+
+                ", stopPoint=" + getStopPoint().getId() +
+
+                ", startDirection='" + startDirection + '\'' +
+
+                ", stopDirection='" + stopDirection + '\'' +
+
+                ", weight=" + getWeight() +
+
+                '}';
+
+    }
 }

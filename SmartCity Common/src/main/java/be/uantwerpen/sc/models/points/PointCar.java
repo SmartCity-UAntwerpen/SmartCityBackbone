@@ -36,4 +36,16 @@ public class PointCar extends Point{
     @Column(name = "w")
     public float getW(){return w;}
     public void setW(float w){this.w = w;}
+
+    @Override
+    public String toString()
+    {
+        return "PointEntity{" +
+                "id=" + getId() +
+                ", x=" + getX() +
+                ", y=" + getY() +
+                ", z=" + getZ() +
+                ", w=" + getW() +
+                '}';
+    }
 }

@@ -116,9 +116,18 @@ public class Link
     @Override
     public String toString() {
         return "LinkEntity{" +
-                "lid=" + id +
-                ", startPoint=" + startPoint +
-                ", stopPoint=" + stopPoint +
+                "id=" + id +
+                ", startPoint=" + startPoint.getId() +
+                ", stopPoint=" + stopPoint.getId() +
+                ", weight=" + weight +
+                '}';
+    }
+
+    public String toStringBasic() {
+        return "LinkEntity{" +
+                "id=" + id +
+                ", startPoint=" + startPoint.getId() +
+                ", stopPoint=" + stopPoint.getId() +
                 ", weight=" + weight +
                 '}';
     }
