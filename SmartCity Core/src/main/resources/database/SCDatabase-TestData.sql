@@ -22,7 +22,7 @@ CREATE TABLE smartcitydb.point (
 
 
 /*!40000 ALTER TABLE smartcitydb.point DISABLE KEYS */;
-INSERT INTO smartcitydb.point VALUES (1,'ENDPOINT','robot',1),(2,'ENDPOINT','robot',2),(3,'CROSSING','robot',0),(4,'CROSSING','robot',0),(5,'ENDPOINT','drone',1),(6,'ENDPOINT','drone',2),(7,'ENDPOINT','drone',3),(8,'ENDPOINT','car',1),(9,'CROSSING','car',NULL),(10,'ENDPOINT','car',2);
+INSERT INTO smartcitydb.point VALUES (1,'ENDPOINT','robot',1),(2,'ENDPOINT','robot',2),(3,'CROSSING','robot',0),(4,'CROSSING','robot',0),(5,'ENDPOINT','drone',1),(6,'ENDPOINT','drone',2),(7,'ENDPOINT','drone',3),(8,'ENDPOINT','car',1),(9,'CROSSING','car',0),(10,'ENDPOINT','car',2),(11,'ENDPOINT','car',4);
 /*!40000 ALTER TABLE smartcitydb.point ENABLE KEYS */;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -46,7 +46,7 @@ CREATE TABLE smartcitydb.point_car (
 
 
 /*!40000 ALTER TABLE smartcitydb.point_car DISABLE KEYS */;
-INSERT INTO smartcitydb.point_car VALUES (8,1,2,1,1),(9,5,4,1,1),(10,7,2,1,1);
+INSERT INTO smartcitydb.point_car VALUES (8,0.5,0,-1,0.02),(9,-13.4,-0.53,0.71,0.71),(10,-27.14,-1.11,-0.3,0.95),(11,-28.25,-9.19,-0.71,0.71);
 /*!40000 ALTER TABLE smartcitydb.point_car ENABLE KEYS */;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

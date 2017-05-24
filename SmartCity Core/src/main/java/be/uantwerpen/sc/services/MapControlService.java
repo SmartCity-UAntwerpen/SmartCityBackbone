@@ -135,7 +135,7 @@ public class MapControlService
                     Link topLink = new Link();
                     topLink.setLength(new Long(1));
                     topLink.setAccess("WAIT");
-                    topLink.setWeight(-1);
+                    topLink.setWeight(1);
                     topLink.setStartPoint(point);
                     topLink.setStopPoint(otherPoint);
                     linkControlService.saveLink(topLink);
@@ -151,6 +151,7 @@ public class MapControlService
         Point otherPoint;
         for(Link link : links){
             //get all links beginning from current point
+            links.remove(link);
             if(link.getStartPoint().equals(pointStart.getId())){
                 //check if the link ends in an endpoint, if it does, create toplink
                 if(link.getStopPoint().getType().equals("ENDPOINT")){
@@ -165,7 +166,7 @@ public class MapControlService
                                 Link topLink = new Link();
                                 topLink.setLength(new Long(1));
                                 topLink.setAccess(link.getAccess());
-                                topLink.setWeight(-1);
+                                topLink.setWeight(1);
                                 topLink.setStartPoint(pointStart);
                                 topLink.setStopPoint(otherPoint);
                                 linkControlService.saveLink(topLink);

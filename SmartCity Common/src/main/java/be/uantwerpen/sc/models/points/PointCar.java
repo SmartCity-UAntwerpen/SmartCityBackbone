@@ -40,12 +40,12 @@ public class PointCar extends Point{
     @Override
     public String toString()
     {
-        return "PointEntity{" +
-                "id=" + getId() +
-                ", x=" + getX() +
-                ", y=" + getY() +
-                ", z=" + getZ() +
-                ", w=" + getW() +
+        return "{" +
+                "\"id\":" + getId() +
+                ", \"x\":" + getX() +
+                ", \"y\":" + getY() +
+                ", \"z\":" + getZ() +
+                ", \"w\":" + getW() +
                 '}';
     }
 }

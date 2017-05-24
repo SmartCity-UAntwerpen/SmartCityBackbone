@@ -47,4 +47,15 @@ public class CustomMap implements AbstractMap
                 '}';
     }
 
+    public String toString(String type) {
+
+        if(type.equals("car")||type.equals("drone")){
+            return ""  + pointList + "";
+        }else{
+            return "CustomMap{" +
+                    "pointList=" + pointList +
+                    ", linkList=" + linkList +
+                    '}';
+        }
+      }
 }

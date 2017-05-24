@@ -35,11 +35,11 @@ public class PointDrone extends Point {
     @Override
     public String toString()
     {
-        return "PointEntity{" +
-                "id=" + getId() +
-                ", x=" + getX() +
-                ", y=" + getY() +
-                ", z=" + getZ() +
+        return "{" +
+                "\"id\":" + getId() +
+                ", \"x\":" + getX() +
+                ", \"y\":" + getY() +
+                ", \"z\":" + getZ() +
                 '}';
     }
 }
