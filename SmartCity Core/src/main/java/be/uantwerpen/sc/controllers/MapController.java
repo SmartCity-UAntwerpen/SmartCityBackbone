@@ -79,7 +79,7 @@ public class MapController
     @RequestMapping(value = "topmapjson/", method = RequestMethod.GET)
     public String topMapStringJson()
     {
-        return mapControlService.buildTopMapJson().toString();
+        return mapControlService.buildTopMapJson().toString("top");
     }
 
     @RequestMapping(value = "random/{start}", method = RequestMethod.GET)

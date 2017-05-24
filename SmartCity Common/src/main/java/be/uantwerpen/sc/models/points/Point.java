@@ -58,7 +58,7 @@ public class Point
     @Column(name = "access")
     public String getAccess()
     {
-        return type;
+        return access;
     }
 
     public void setAccess(String access)

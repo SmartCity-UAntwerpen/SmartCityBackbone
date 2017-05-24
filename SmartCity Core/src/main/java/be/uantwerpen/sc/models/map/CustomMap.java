@@ -41,9 +41,9 @@ public class CustomMap implements AbstractMap
 
     @Override
     public String toString() {
-        return "CustomMap{" +
-                "pointList=" + pointList +
-                ", linkList=" + linkList +
+        return "{" +
+                pointList +
+                linkList +
                 '}';
     }
 

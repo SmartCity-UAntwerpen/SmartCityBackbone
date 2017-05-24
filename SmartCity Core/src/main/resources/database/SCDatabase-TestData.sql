@@ -9,8 +9,8 @@ DROP TABLE IF EXISTS smartcitydb.point;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE smartcitydb.point (
   `pid` bigint(20) NOT NULL AUTO_INCREMENT,
-  `access` varchar(255) DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
+  `access` varchar(255) DEFAULT NULL,
   `hub` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
@@ -100,7 +100,7 @@ CREATE TABLE smartcitydb.link (
   `start_point` bigint(20) DEFAULT NULL,
   `stop_point` bigint(20) DEFAULT NULL,
   `weight` int(11) DEFAULT '1',
-  `acces` varchar(255) DEFAULT NULL,
+  `access` varchar(255) DEFAULT NULL,
   `length` bigint(11) DEFAULT NULL,
   PRIMARY KEY (`lid`),
   KEY `fk_startpoint` (`start_point`),
@@ -115,7 +115,7 @@ CREATE TABLE smartcitydb.link (
 --
 
 /*!40000 ALTER TABLE smartcitydb.link DISABLE KEYS */;
-INSERT INTO smartcitydb.link VALUES (1,1,3,1,'robot',1),(2,3,1,1,'robot',1),(3,3,4,1,'robot',1),(4,4,3,1,'robot',1),(5,4,2,1,'robot',1),(6,2,4,1,'robot',1),(7,5,6,2,'drone',10),(8,6,5,2,'drone',10),(9,6,7,2,'drone',10),(10,7,6,2,'drone',10),(11,5,7,2,'drone',10),(12,7,5,2,'drone',10),(13,8,9,1,'car',5),(14,9,8,1,'car',5),(15,9,10,1,'car',5),(16,10,9,1,'car',5),(17,1,5,3,'wait',1),(18,5,1,3,'wait',1),(19,1,8,3,'wait',1),(20,8,1,3,'wait',1),(21,5,8,3,'wait',1),(22,8,5,3,'wait',1),(23,2,10,3,'wait',1),(24,10,2,3,'wait',1);
+INSERT INTO smartcitydb.link VALUES (1,1,3,1,'robot',1),(2,3,1,1,'robot',1),(3,3,4,1,'robot',1),(4,4,3,1,'robot',1),(5,4,2,1,'robot',1),(6,2,4,1,'robot',1),(7,5,6,2,'drone',10),(8,6,5,2,'drone',10),(9,6,7,2,'drone',10),(10,7,6,2,'drone',10),(11,5,7,2,'drone',10),(12,7,5,2,'drone',10),(13,8,9,1,'car',5),(14,9,8,1,'car',5),(15,9,10,1,'car',5),(16,10,9,1,'car',5);
 /*!40000 ALTER TABLE smartcitydb.link ENABLE KEYS */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

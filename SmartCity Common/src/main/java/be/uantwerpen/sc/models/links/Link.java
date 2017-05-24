@@ -105,7 +105,7 @@ public class Link
 
 
     @Basic
-    @Column(name = "acces")
+    @Column(name = "access")
     public String getAccess(){return access; }
 
     public void setAccess(String acces)
@@ -119,6 +119,7 @@ public class Link
                 "id=" + id +
                 ", startPoint=" + startPoint.getId() +
                 ", stopPoint=" + stopPoint.getId() +
+                ", acces=" + access +
                 ", weight=" + weight +
                 '}';
     }
@@ -128,6 +129,7 @@ public class Link
                 "id=" + id +
                 ", startPoint=" + startPoint.getId() +
                 ", stopPoint=" + stopPoint.getId() +
+                ", acces=" + access +
                 ", weight=" + weight +
                 '}';
     }
