@@ -31,6 +31,9 @@ public class MapControlService
     @Autowired
     private TrafficLightControlService trafficLightControlService;
 
+    private CustomMap topMap;
+    private boolean topMapCreated = false;
+
     public Map buildMap()
     {
         Map map = new Map();
@@ -86,7 +89,9 @@ public class MapControlService
         CustomMap map = new CustomMap();
 
         for(Link link : linkControlService.getAllLinks()){
-            if(type.equals(link.getAccess())){
+            if(type.equals("top") && !link.getAccess().contains("Top")){
+                map.addLink(link);
+            }else if(type.equals(link.getAccess())){
                 map.addLink(link);
             }
         }
@@ -103,48 +108,55 @@ public class MapControlService
 
     //this function creates a top view of the hubs and links between individual hubs
     public CustomMap buildTopMapJson(){
-        CustomMap map = new CustomMap();
 
-        for(Point point : pointControlService.getAllPoints())
-        {
-            if(point.getHub()!=0){
-                map.addPoint(point);
-            }
-        }
+        if(topMapCreated){
+            return topMap;
+        }else {
+            CustomMap map = new CustomMap();
 
-        for(Point point : map.getPointList()){
-
-            List<Link> tempList = new ArrayList<Link>();
-
-            ////create paths between hubs
-            //narrow down the links to type
-            for(Link link : linkControlService.getAllLinks()){
-                if(point.getAccess().equals(link.getAccess())){
-                    tempList.add(link);
+            for (Point point : pointControlService.getAllPoints()) {
+                if (point.getHub() != 0) {
+                    map.addPoint(point);
                 }
             }
 
-            //create links
-            map = createTopLinks(point, point.getHub() ,tempList, map);
+            for (Point point : map.getPointList()) {
+
+                List<Link> tempList = new ArrayList<Link>();
+
+                ////create paths between hubs
+                //narrow down the links to type
+                for (Link link : linkControlService.getAllLinks()) {
+                    if (point.getAccess().equals(link.getAccess())) {
+                        tempList.add(link);
+                    }
+                }
+
+                //create links
+                map = createTopLinks(point, point.getHub(), tempList, map);
 
 
-            //create interconnection within hub
-            Long idHub = point.getId();
-            for(Point otherPoint : map.getPointList()){
-                if(idHub.equals(otherPoint.getHub()) && !point.equals(otherPoint)){
-                    Link topLink = new Link();
-                    topLink.setLength(new Long(1));
-                    topLink.setAccess("wait");
-                    topLink.setWeight(1);
-                    topLink.setStartPoint(point);
-                    topLink.setStopPoint(otherPoint);
-                    linkControlService.saveLink(topLink);
-                    map.addLink(topLink);
+                //create interconnection within hub
+                Long idHub = point.getId();
+                for (Point otherPoint : map.getPointList()) {
+                    if (idHub.equals(otherPoint.getHub()) && !point.equals(otherPoint)) {
+                        Link topLink = new Link();
+                        topLink.setLength(new Long(1));
+                        topLink.setAccess("wait");
+                        topLink.setWeight(1);
+                        topLink.setStartPoint(point);
+                        topLink.setStopPoint(otherPoint);
+                        linkControlService.saveLink(topLink);
+                        map.addLink(topLink);
+                    }
                 }
             }
-        }
 
-        return map;
+            topMap = map;
+            topMapCreated = true;
+
+            return map;
+        }
     }
 
     private CustomMap createTopLinks(Point pointStart, Long hub, List<Link> links, CustomMap map){
@@ -166,7 +178,7 @@ public class MapControlService
                                 otherPoint = point;
                                 Link topLink = new Link();
                                 topLink.setLength(new Long(1));
-                                topLink.setAccess(link.getAccess());
+                                topLink.setAccess(link.getAccess() + "Top");
                                 topLink.setWeight(1);
                                 topLink.setStartPoint(pointStart);
                                 topLink.setStopPoint(otherPoint);

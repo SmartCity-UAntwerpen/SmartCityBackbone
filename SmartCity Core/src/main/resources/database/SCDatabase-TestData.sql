@@ -149,6 +149,10 @@ CREATE TABLE smartcitydb.bot (
   `state` varchar(255) DEFAULT NULL,
   `vehicle_type` varchar(255) DEFAULT NULL,
   `link_id` bigint(20) DEFAULT NULL,
+  `x` float DEFAULT NULL,
+  `y` float DEFAULT NULL,
+  `z` float DEFAULT NULL,
+  `w` float DEFAULT NULL,
   PRIMARY KEY (`rid`),
   KEY `FK_g2k7qbjgq85d7hmmov6r4benu` (`link_id`),
   CONSTRAINT `FK_g2k7qbjgq85d7hmmov6r4benu` FOREIGN KEY (`link_id`) REFERENCES smartcitydb.link (`lid`)
