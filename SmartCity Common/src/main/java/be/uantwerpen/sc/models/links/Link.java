@@ -125,12 +125,12 @@ public class Link
     }
 
     public String toStringBasic() {
-        return "LinkEntity{" +
-                "id=" + id +
-                ", startPoint=" + startPoint.getId() +
-                ", stopPoint=" + stopPoint.getId() +
-                ", acces=" + access +
-                ", weight=" + weight +
-                '}';
+        return "{" +
+                "\"id\" : " + id +
+                ", \"startPoint\" : " + startPoint.getId() +
+                ", \"stopPoint\" : " + stopPoint.getId() +
+                ", \"acces\" : \"" + access +
+                "\", \"weight\" : " + weight +
+                "}";
     }
 }

@@ -39,6 +39,24 @@ public class CustomMap implements AbstractMap
 
     public List<Point> getPointList(){return pointList;}
 
+    public String getTopMapString(){
+        String str = "{links : [";
+        for(Link link : linkList){
+            str = str + link.toStringBasic();
+        }
+        str = str + "], points : [";
+
+        for(Point point : pointList){
+            str = str + point.toStringBasic();
+        }
+
+        str = str + "]}";
+
+        return str;
+    }
+
+
+
     @Override
     public String toString() {
         return "{" +
@@ -49,8 +67,8 @@ public class CustomMap implements AbstractMap
 
     public String toString(String type) {
 
-        if(type.equals("car")||type.equals("drone")){
-            return ""  + pointList + "";
+        if(type.equals("car")||type.equals("drone")) {
+            return "" + pointList + "";
         }else{
             return "CustomMap{" +
                     "pointList=" + pointList +

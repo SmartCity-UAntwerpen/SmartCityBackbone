@@ -92,10 +92,11 @@ public class Point
 
     public String toStringBasic()
     {
-        return "PointEntity{" +
-                "id=" + id +
-                ", type='" + type + '\'' +
-                ", hub=" + hub +
+        return "{" +
+                " \"id\" : " + id +
+                ", \"acces\" : " + access +
+                ", \"type\" : \"" + type + "\"" +
+                ", \"hub\" : " + hub +
                 '}';
     }
 }

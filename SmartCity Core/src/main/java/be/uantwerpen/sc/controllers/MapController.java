@@ -1,5 +1,6 @@
 package be.uantwerpen.sc.controllers;
 
+import be.uantwerpen.sc.models.map.CustomMap;
 import be.uantwerpen.sc.models.map.Map;
 import be.uantwerpen.sc.models.map.MapJson;
 import be.uantwerpen.sc.models.map.Path;
@@ -79,7 +80,8 @@ public class MapController
     @RequestMapping(value = "topmapjson/", method = RequestMethod.GET)
     public String topMapStringJson()
     {
-        return mapControlService.buildTopMapJson().toString("top");
+        CustomMap map = mapControlService.buildTopMapJson();
+        return map.getTopMapString();
     }
 
     @RequestMapping(value = "random/{start}", method = RequestMethod.GET)

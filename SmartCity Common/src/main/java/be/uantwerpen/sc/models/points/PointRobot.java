@@ -47,13 +47,13 @@ public class PointRobot extends Point {
 
     {
 
-        return "PointEntity{" +
+        return "{" +
 
-                "id=" + getId() +
+                "\"id\" : " + getId() +
 
-                ", rfid='" + rfid + '\'' +
+                ", \"rfid\" :\"" + rfid + "\"" +
 
-                ", pointLock=" + pointLock +
+                ", \"pointLock\" : " + pointLock +
 
                 '}';
 

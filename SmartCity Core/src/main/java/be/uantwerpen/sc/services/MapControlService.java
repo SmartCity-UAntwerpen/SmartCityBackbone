@@ -156,7 +156,6 @@ public class MapControlService
             if(link.getStartPoint().getId().equals(pointStart.getId())){
                 //check if the link ends in an endpoint, if it does, create toplink
 
-                System.out.println(link.getStopPoint().getType());
                 if(link.getStopPoint().getType().equals("ENDPOINT")){
                     //check if arrival point is same as start
                     if(link.getStopPoint().getHub().equals(hub)) {
