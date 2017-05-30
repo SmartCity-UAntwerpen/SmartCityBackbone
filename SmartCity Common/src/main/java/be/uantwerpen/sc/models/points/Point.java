@@ -12,9 +12,11 @@ public class Point
 {
     private Long id;
 
-    private String type;
+    private String pointType;
     private String access;
     private Long hub;
+    private int xCoord;
+    private int yCoord;
 
 
     @Id
@@ -32,14 +34,14 @@ public class Point
 
     @Basic
     @Column(name = "type")
-    public String getType()
+    public String getPointType()
     {
-        return type;
+        return pointType;
     }
 
-    public void setType(String type)
+    public void setPointType(String pointType)
     {
-        this.type = type;
+        this.pointType = pointType;
     }
 
     @Basic
@@ -66,6 +68,27 @@ public class Point
         this.access = access;
     }
 
+    @Basic
+    @Column(name = "xcoord")
+    public int getxCoord() {
+        return xCoord;
+    }
+
+    public void setxCoord(int xCoord) {
+        this.xCoord = xCoord;
+    }
+
+    @Basic
+    @Column(name = "ycoord")
+    public int getyCoord() {
+        return yCoord;
+    }
+
+    public void setyCoord(int yCoord) {
+        this.yCoord = yCoord;
+    }
+
+
     @Override
     public boolean equals(Object o)
     {
@@ -75,7 +98,7 @@ public class Point
         Point that = (Point) o;
 
         if(id != that.id) return false;
-        if(type != null ? !type.equals(that.type) : that.type != null) return false;
+        if(pointType != null ? !pointType.equals(that.pointType) : that.pointType != null) return false;
 
         return true;
     }
@@ -85,18 +108,18 @@ public class Point
     {
         int result = (int)(id % Integer.MAX_VALUE);
 
-        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (pointType != null ? pointType.hashCode() : 0);
 
         return result;
     }
 
-    public String toStringBasic()
+    public String toStringTop()
     {
         return "{" +
                 " \"id\" : " + id +
-                ", \"acces\" : " + access +
-                ", \"type\" : \"" + type + "\"" +
-                ", \"hub\" : " + hub +
+                ", \"type\" : \"" + access + //pointType referce to vehicle pointType in the Maas
+                "\", \"x\" : " + xCoord +
+                ", \"y\" : " + yCoord +
                 '}';
     }
 }

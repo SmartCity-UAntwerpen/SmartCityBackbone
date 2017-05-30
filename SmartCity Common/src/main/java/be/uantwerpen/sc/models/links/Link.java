@@ -124,12 +124,12 @@ public class Link
                 '}';
     }
 
-    public String toStringBasic() {
+    public String toStringTop() {
         return "{" +
                 "\"id\" : " + id +
-                ", \"startPoint\" : " + startPoint.getId() +
-                ", \"stopPoint\" : " + stopPoint.getId() +
-                ", \"acces\" : \"" + access +
+                ", \"startPoint\" : " + startPoint.toStringTop() +
+                ", \"stopPoint\" : " + stopPoint.toStringTop() +
+                ", \"type\" : \"" + access + //type referce to vehicle type in Maas
                 "\", \"weight\" : " + weight +
                 "}";
     }

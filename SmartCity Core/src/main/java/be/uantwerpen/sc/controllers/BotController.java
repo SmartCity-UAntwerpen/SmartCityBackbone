@@ -168,9 +168,12 @@ public class BotController
         System.out.println("Bot with id: " + rid + " deleted from DB");
     }
 
-    @RequestMapping(value = "/resetbots}",method = RequestMethod.GET)
+    @RequestMapping(value = "/resetbots",method = RequestMethod.GET)
     public void resetBots()
     {
         botControlService.resetBots();
     }
+
+    @RequestMapping(value = "/getData", method = RequestMethod.GET)
+    public void posAll(){ botControlService.posAll(); }
 }

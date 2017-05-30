@@ -77,11 +77,19 @@ public class MapController
     }
 
     @Produces("application/json")
-    @RequestMapping(value = "topmapjson/", method = RequestMethod.GET)
-    public String topMapStringJson()
+    @RequestMapping(value = "topmapjson/links", method = RequestMethod.GET)
+    public String topLinksStringJson()
     {
         CustomMap map = mapControlService.buildTopMapJson();
-        return map.getTopMapString();
+        return map.getTopMapLinks();
+    }
+
+    @Produces("application/json")
+    @RequestMapping(value = "topmapjson/points", method = RequestMethod.GET)
+    public String topPointsStringJson()
+    {
+        CustomMap map = mapControlService.buildTopMapJson();
+        return map.getTopMapPoints();
     }
 
     @RequestMapping(value = "random/{start}", method = RequestMethod.GET)

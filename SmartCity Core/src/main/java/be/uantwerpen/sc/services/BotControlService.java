@@ -60,4 +60,9 @@ public class BotControlService
 
         return true;
     }
+
+    public void posAll() {
+        //posall subcores
+
+    }
 }

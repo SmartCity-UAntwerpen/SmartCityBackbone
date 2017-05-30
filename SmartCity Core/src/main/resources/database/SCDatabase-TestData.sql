@@ -11,6 +11,8 @@ CREATE TABLE smartcitydb.point (
   `pid` bigint(20) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) DEFAULT NULL,
   `access` varchar(255) DEFAULT NULL,
+  `xcoord` bigint(20) DEFAULT NULL,
+  `ycoord` bigint(20) DEFAULT NULL,
   `hub` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
@@ -22,7 +24,7 @@ CREATE TABLE smartcitydb.point (
 
 
 /*!40000 ALTER TABLE smartcitydb.point DISABLE KEYS */;
-INSERT INTO smartcitydb.point VALUES (1,'ENDPOINT','robot',1),(2,'ENDPOINT','robot',2),(3,'CROSSING','robot',0),(4,'CROSSING','robot',0),(5,'ENDPOINT','drone',1),(6,'ENDPOINT','drone',2),(7,'ENDPOINT','drone',3),(8,'ENDPOINT','car',1),(9,'CROSSING','car',0),(10,'ENDPOINT','car',2),(11,'ENDPOINT','car',4);
+INSERT INTO smartcitydb.point VALUES (1,'ENDPOINT','robot',0,0,1),(2,'ENDPOINT','robot',0,1,2),(3,'CROSSING','robot',0,2,0),(4,'CROSSING','robot',0,3,0),(5,'ENDPOINT','drone',1,0,1),(6,'ENDPOINT','drone',1,2,2),(7,'ENDPOINT','drone',1,3,3),(8,'ENDPOINT','car',2,2,1),(9,'CROSSING','car',2,3,0),(10,'ENDPOINT','car',2,4,2),(11,'ENDPOINT','car',5,5,4);
 /*!40000 ALTER TABLE smartcitydb.point ENABLE KEYS */;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

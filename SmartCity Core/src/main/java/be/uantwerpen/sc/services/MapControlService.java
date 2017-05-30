@@ -3,8 +3,6 @@ package be.uantwerpen.sc.services;
 import be.uantwerpen.sc.models.links.Link;
 import be.uantwerpen.sc.models.map.*;
 import be.uantwerpen.sc.models.points.Point;
-import be.uantwerpen.sc.repositories.LinkRepository;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -98,7 +96,9 @@ public class MapControlService
 
         for(Point point : pointControlService.getAllPoints())
         {
-            if(type.equals(point.getAccess())){
+            if(type.equals("top")){
+                map.addPoint(point);
+            }else if(type.equals(point.getAccess())){
             map.addPoint(point);
             }
         }
@@ -168,7 +168,7 @@ public class MapControlService
             if(link.getStartPoint().getId().equals(pointStart.getId())){
                 //check if the link ends in an endpoint, if it does, create toplink
 
-                if(link.getStopPoint().getType().equals("ENDPOINT")){
+                if(link.getStopPoint().getPointType().equals("ENDPOINT")){
                     //check if arrival point is same as start
                     if(link.getStopPoint().getHub().equals(hub)) {
                         //do nothing

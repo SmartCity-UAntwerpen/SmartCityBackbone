@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `point`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `point` (
   `pid` bigint(20) NOT NULL AUTO_INCREMENT,
-  `type` varchar(255) DEFAULT NULL,
+  `pointType` varchar(255) DEFAULT NULL,
   `access` varchar(255) DEFAULT NULL,
   `hub` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`pid`)
