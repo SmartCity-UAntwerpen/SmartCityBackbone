@@ -46,21 +46,21 @@ public class LinkRobot extends Link {
 
     public String toString() {
 
-        return "LinkEntity{" +
+        return "{" +
 
-                "id=" + getId() +
+                "\"id\" : " + getId() +
 
-                ", length=" + getLength() +
+                ", \"length\" : " + getLength() +
 
-                ", startPoint=" + getStartPoint().getId() +
+                ", \"startPoint\" : " + getStartPoint().getId() +
 
-                ", stopPoint=" + getStopPoint().getId() +
+                ", \"stopPoint\" : " + getStopPoint().getId() +
 
-                ", startDirection='" + startDirection + '\'' +
+                ", \"startDirection\" : \"" + startDirection + "\"" +
 
-                ", stopDirection='" + stopDirection + '\'' +
+                ", \"stopDirection\" : \"" + stopDirection + "\"" +
 
-                ", weight=" + getWeight() +
+                ", \"weight\" :" + getWeight() +
 
                 '}';
 

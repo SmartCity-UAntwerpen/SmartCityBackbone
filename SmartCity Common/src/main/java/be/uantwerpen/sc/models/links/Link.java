@@ -115,12 +115,12 @@ public class Link
 
     @Override
     public String toString() {
-        return "LinkEntity{" +
-                "id=" + id +
-                ", startPoint=" + startPoint.getId() +
-                ", stopPoint=" + stopPoint.getId() +
-                ", acces=" + access +
-                ", weight=" + weight +
+        return "{" +
+                "\"id\" :" + id +
+                ", \"startPoint\" : " + startPoint.getId() +
+                ", \"stopPoint\" : " + stopPoint.getId() +
+                ", \"acces\" : \" : " + access +
+                "\", \"weight\" :" + weight +
                 '}';
     }
 
@@ -129,7 +129,7 @@ public class Link
                 "\"id\" : " + id +
                 ", \"startPoint\" : " + startPoint.toStringTop() +
                 ", \"stopPoint\" : " + stopPoint.toStringTop() +
-                ", \"type\" : \"" + access + //type referce to vehicle type in Maas
+                ", \"vehicle\" : \"" + access +
                 "\", \"weight\" : " + weight +
                 "}";
     }

@@ -117,9 +117,9 @@ public class Point
     {
         return "{" +
                 " \"id\" : " + id +
-                ", \"type\" : \"" + access + //pointType referce to vehicle pointType in the Maas
-                "\", \"x\" : " + xCoord +
+                ", \"x\" : " + xCoord +
                 ", \"y\" : " + yCoord +
-                '}';
+                ", \"type\" : \"" + access + //pointType referce to vehicle pointType in the Maas
+                "\"}";
     }
 }
