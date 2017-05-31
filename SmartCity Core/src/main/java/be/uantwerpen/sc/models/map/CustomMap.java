@@ -40,24 +40,24 @@ public class CustomMap implements AbstractMap
     public List<Point> getPointList(){return pointList;}
 
     public String getTopMapLinks(){
-        String str = "{links : [";
+        String str = "[";
         for(Link link : linkList){
             str = str + link.toStringTop() + ",";
         }
 
-        str = str.substring(0, str.length()-1) + "]}";
+        str = str.substring(0, str.length()-1) + "]";
 
         return str;
     }
 
     public String getTopMapPoints(){
-        String str = "{points : [";
+        String str = "[";
 
         for(Point point : pointList){
             str = str + point.toStringTop() + ",";
         }
 
-        str = str.substring(0, str.length()-1) + "]}";
+        str = str.substring(0, str.length()-1) + "]";
 
         return str;
     }
