@@ -87,7 +87,7 @@ public class MapControlService
         CustomMap map = new CustomMap();
 
         for(Link link : linkControlService.getAllLinks()){
-            if(type.equals("top") && !link.getAccess().contains("Top")){
+            if(type.equals("visual") && !link.getAccess().contains("Top")){
                 map.addLink(link);
             }else if(type.equals(link.getAccess())){
                 map.addLink(link);
@@ -96,7 +96,7 @@ public class MapControlService
 
         for(Point point : pointControlService.getAllPoints())
         {
-            if(type.equals("top")){
+            if(type.equals("visual")){
                 map.addPoint(point);
             }else if(type.equals(point.getAccess())){
             map.addPoint(point);

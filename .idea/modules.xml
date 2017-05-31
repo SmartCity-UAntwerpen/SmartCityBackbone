@@ -7,7 +7,6 @@
       <module fileurl="file://$PROJECT_DIR$/SimCity/SCSimCity.iml" filepath="$PROJECT_DIR$/SimCity/SCSimCity.iml" />
       <module fileurl="file://$PROJECT_DIR$/SimCity Worker/SCSimCityWorker.iml" filepath="$PROJECT_DIR$/SimCity Worker/SCSimCityWorker.iml" />
       <module fileurl="file://$PROJECT_DIR$/SimCity/SimCity.iml" filepath="$PROJECT_DIR$/SimCity/SimCity.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SimCity Worker/SimCity Worker.iml" filepath="$PROJECT_DIR$/SimCity Worker/SimCity Worker.iml" />
       <module fileurl="file://$PROJECT_DIR$/SmartCity Central/SmartCity Central.iml" filepath="$PROJECT_DIR$/SmartCity Central/SmartCity Central.iml" />
       <module fileurl="file://$PROJECT_DIR$/SmartCity Common/SmartCity Common.iml" filepath="$PROJECT_DIR$/SmartCity Common/SmartCity Common.iml" />
       <module fileurl="file://$PROJECT_DIR$/SmartCity Core/SmartCity Core.iml" filepath="$PROJECT_DIR$/SmartCity Core/SmartCity Core.iml" />

@@ -39,7 +39,7 @@ public class CustomMap implements AbstractMap
 
     public List<Point> getPointList(){return pointList;}
 
-    public String getTopMapLinks(){
+    public String getTopMapLinksString(){
         String str = "[";
         for(Link link : linkList){
             str = str + link.toStringTop() + ",";
@@ -50,7 +50,7 @@ public class CustomMap implements AbstractMap
         return str;
     }
 
-    public String getTopMapPoints(){
+    public String getTopMapPointsString(){
         String str = "[";
 
         for(Point point : pointList){
@@ -62,6 +62,23 @@ public class CustomMap implements AbstractMap
         return str;
     }
 
+    public String getVisualPointsString(){
+        String str = "{\"pointlist\" :[";
+        for(Point point : pointList){
+            str = str + "{\"id\" : " + point.getId()
+                    + ", \"x\" : " + point.getxCoord()
+                    + ", \"y\" : " + point.getyCoord()
+                    + ", \"neigbours\" : [ ";
+            for(Link link : linkList){
+                if(link.getStartPoint().equals(point)){
+                    str = str + "{\"neighbour\" : " + link.getStopPoint().getId() + "},";
+                }
+            }
+            str = str.substring(0, str.length()-1) + "]},";
+        }
+        str = str.substring(0, str.length()-1) + "]}";
+        return str;
+    }
 
 
     @Override

@@ -73,6 +73,10 @@ public class MapController
     @RequestMapping(value = "stringmapjson/{type}", method = RequestMethod.GET)
     public String customMapStringJson(@PathVariable("type") String type)
     {
+        if(type.equals("visual")){
+            mapControlService.buildTopMapJson();
+            return mapControlService.buildCustomMapJson("visual").getVisualPointsString();
+        }
         return mapControlService.buildCustomMapJson(type).toString(type);
     }
 
@@ -81,7 +85,7 @@ public class MapController
     public String topLinksStringJson()
     {
         CustomMap map = mapControlService.buildTopMapJson();
-        return map.getTopMapLinks();
+        return map.getTopMapLinksString();
     }
 
     @Produces("application/json")
@@ -89,7 +93,7 @@ public class MapController
     public String topPointsStringJson()
     {
         CustomMap map = mapControlService.buildTopMapJson();
-        return map.getTopMapPoints();
+        return map.getTopMapPointsString();
     }
 
     @RequestMapping(value = "random/{start}", method = RequestMethod.GET)
