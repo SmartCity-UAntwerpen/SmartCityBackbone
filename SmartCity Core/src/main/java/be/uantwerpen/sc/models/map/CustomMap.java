@@ -68,7 +68,8 @@ public class CustomMap implements AbstractMap
             str = str + "{\"id\" : " + point.getId()
                     + ", \"x\" : " + point.getxCoord()
                     + ", \"y\" : " + point.getyCoord()
-                    + ", \"neigbours\" : [ ";
+                    + ", \"acces\" : \"" + point.getAccess()
+                    + "\", \"neigbours\" : [ ";
             for(Link link : linkList){
                 if(link.getStartPoint().equals(point)){
                     str = str + "{\"neighbour\" : " + link.getStopPoint().getId() + "},";

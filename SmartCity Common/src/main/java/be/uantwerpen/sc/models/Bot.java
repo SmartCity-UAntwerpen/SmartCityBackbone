@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Inheritance
 @DiscriminatorColumn(name="vehicle_type")
-@Table(name = "bot", schema = "", catalog = "smartcitydb")
+@Table(name = "bot", schema = "", catalog = "core")
 public class Bot
 {
     private Long id;

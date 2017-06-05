@@ -10,7 +10,7 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name="point_drone", schema = "", catalog = "smartcitydb")
+@Table(name="point_drone", schema = "", catalog = "core")
 public class PointDrone extends Point {
 
     private float x;

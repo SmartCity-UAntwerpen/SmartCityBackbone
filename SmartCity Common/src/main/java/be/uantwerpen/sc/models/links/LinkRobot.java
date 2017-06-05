@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * Created by quent on 5/10/2017.
  */
 @Entity
-@Table(name="link_robot", schema = "", catalog = "smartcitydb")
+@Table(name="link_robot", schema = "", catalog = "core")
 public class LinkRobot extends Link {
 
     private String startDirection;

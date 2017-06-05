@@ -9,7 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-@Table(name = "link", schema = "", catalog = "smartcitydb")
+@Table(name = "link", schema = "", catalog = "core")
 public class Link
 {
     private Long id;

@@ -1,6 +1,6 @@
 -- SmartCity Database Test Data Version 0.0.1, 21/07/2016
 --
--- Database: smartcitydb - 2016 UAntwerpen
+-- Database: core - 2016 UAntwerpen
 -- ----------------------------------------------------
 -- Server version   5.6.29
 
@@ -33,7 +33,7 @@ DROP TABLE IF EXISTS core.point_car;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE core.point_car (
-  `pid` int(11) NOT NULL,
+  `pid` bigint(11) NOT NULL,
   `x` float DEFAULT NULL,
   `y` float DEFAULT NULL,
   `z` float DEFAULT NULL,

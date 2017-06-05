@@ -7,7 +7,7 @@ import javax.persistence.*;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-@Table(name = "point", schema = "", catalog = "smartcitydb")
+@Table(name = "point", schema = "", catalog = "core")
 public class Point
 {
     private Long id;

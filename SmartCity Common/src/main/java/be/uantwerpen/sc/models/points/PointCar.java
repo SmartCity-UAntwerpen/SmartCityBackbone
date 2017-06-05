@@ -9,7 +9,7 @@ import javax.persistence.Table;
  * Created by quent on 5/17/2017.
  */
 @Entity
-@Table(name="point_car", schema = "", catalog = "smartcitydb")
+@Table(name="point_car", schema = "", catalog = "core")
 public class PointCar extends Point{
 
     private float x;
