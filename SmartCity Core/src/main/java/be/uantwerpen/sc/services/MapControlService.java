@@ -31,6 +31,7 @@ public class MapControlService
 
     private CustomMap topMap;
     private boolean topMapCreated = false;
+    private ArrayList<Link> referenceList;
 
     public Map buildMap()
     {
@@ -132,8 +133,10 @@ public class MapControlService
                     }
                 }
 
+                referenceList = new ArrayList<Link>();
+
                 //create links
-                map = createTopLinks(point, point.getHub(), tempList, map);
+                map = createTopLinks(point, point, point.getHub(), tempList, map);
 
 
                 //create interconnection within hub
@@ -159,43 +162,43 @@ public class MapControlService
         }
     }
 
-    private CustomMap createTopLinks(Point pointStart, Long hub, List<Link> links, CustomMap map){
+    private CustomMap createTopLinks(Point originalPoint, Point pointStart, Long hub, List<Link> links, CustomMap map){
         Point otherPoint;
 
         for(Link link : links){
             //get all links beginning from current point
 
-            if(link.getStartPoint().getId().equals(pointStart.getId())){
-                //check if the link ends in an endpoint, if it does, create toplink
+            //check referencelist if the the link has been handled already
+            if(!referenceList.contains(link)) {
 
-                if(link.getStopPoint().getPointType().equals("ENDPOINT")){
-                    //check if arrival point is same as start
-                    if(link.getStopPoint().getHub().equals(hub)) {
-                        //do nothing
-                    }else {
-                        for (Point point : pointControlService.getAllPoints()) {
-                            if (point.equals(link.getStopPoint())) {
-                                otherPoint = point;
-                                Link topLink = new Link();
-                                topLink.setLength(new Long(1));
-                                topLink.setAccess(link.getAccess() + "Top");
-                                topLink.setWeight(1);
-                                topLink.setStartPoint(pointStart);
-                                topLink.setStopPoint(otherPoint);
-                                linkControlService.saveLink(topLink);
-                                map.addLink(topLink);
+                if (link.getStartPoint().getId().equals(pointStart.getId())) {
+                    //check if the link ends in an endpoint, if it does, create toplink
+
+                    if (link.getStopPoint().getPointType().equals("ENDPOINT")) {
+                        //check if arrival point is same as start
+                        if (link.getStopPoint().getHub().equals(hub)) {
+                            //do nothing
+                        } else {
+                            for (Point point : pointControlService.getAllPoints()) {
+                                if (point.equals(link.getStopPoint())) {
+                                    otherPoint = point;
+                                    Link topLink = new Link();
+                                    topLink.setLength(new Long(1));
+                                    topLink.setAccess(link.getAccess() + "Top");
+                                    topLink.setWeight(1);
+                                    topLink.setStartPoint(originalPoint);
+                                    topLink.setStopPoint(otherPoint);
+                                    linkControlService.saveLink(topLink);
+                                    map.addLink(topLink);
+                                }
                             }
                         }
+                    } else {
+                        //add handled links to referencearray to prevent loops
+                        referenceList.add(link);
+
+                        createTopLinks(originalPoint, link.getStopPoint(), hub, links, map);
                     }
-                }else{
-                    //remove handled links from array to prevent loops
-                    ArrayList<Link> newlinks = new ArrayList<Link>();
-                    for(Link newlink : links){
-                        if(!newlink.equals(link)){
-                            newlinks.add(newlink);
-                        }
-                    }
-                    createTopLinks(link.getStopPoint(), hub, newlinks, map);
                 }
             }
         }

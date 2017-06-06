@@ -63,13 +63,14 @@ public class CustomMap implements AbstractMap
     }
 
     public String getVisualPointsString(){
-        String str = "{\"pointlist\" :[";
+        String str = "{\"pointList\" :[";
         for(Point point : pointList){
             str = str + "{\"id\" : " + point.getId()
                     + ", \"x\" : " + point.getxCoord()
                     + ", \"y\" : " + point.getyCoord()
-                    + ", \"acces\" : \"" + point.getAccess()
-                    + "\", \"neigbours\" : [ ";
+                    + ", \"access\" : \"" + point.getAccess()
+                    + ", \"type\" : \"" + point.getPointType()
+                    + "\", \"neighbours\" : [ ";
             for(Link link : linkList){
                 if(link.getStartPoint().equals(point)){
                     str = str + "{\"neighbour\" : " + link.getStopPoint().getId() + "},";

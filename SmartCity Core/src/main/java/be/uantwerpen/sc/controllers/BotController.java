@@ -174,6 +174,6 @@ public class BotController
         botControlService.resetBots();
     }
 
-    @RequestMapping(value = "/getData", method = RequestMethod.GET)
-    public void posAll(){ botControlService.posAll(); }
+    @RequestMapping(value = "/getAllVehicles", method = RequestMethod.GET)
+    public void posAll(){ botControlService.setPosAll(); }
 }
