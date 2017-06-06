@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.google.gson.JsonParser;
 
-import javax.transaction.Transactional;
-import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,6 +22,9 @@ public class BotControlService
 {
     @Autowired
     private BotRepository botRepository;
+
+    @Autowired
+    private LinkControlService linkControlService;
 
     public Bot saveBot(Bot bot)
     {
@@ -70,8 +72,6 @@ public class BotControlService
 
     public void setPosAll() {
 
-        LinkControlService service =  new LinkControlService();
-
         JsonParser parser = new JsonParser();
 
         JsonElement json = parser.parse("[{\"idVehicle\":1,\"idStart\":1,\"idEnd\":2,\"percentage\":75},{\"idVehicle\":2,\"idStart\":1,\"idEnd\":2,\"percentage\":50}]");
@@ -83,14 +83,12 @@ public class BotControlService
             JsonObject vehicle = (JsonObject) iterator.next();
             Long id = vehicle.get("idVehicle").getAsLong();
             Long start = vehicle.get("idStart").getAsLong();
-            Long stop = vehicle.get("idStop").getAsLong();
+            Long stop = vehicle.get("idEnd").getAsLong();
             int percentage = vehicle.get("percentage").getAsInt();
-
-            System.out.println(id + "\t" + start + "\t" + stop + "\t" + percentage);
 
             Bot bot = botRepository.findOne(id);
             if(bot!=null){
-                for(Link link : service.getAllLinks()) {
+                for(Link link : linkControlService.getAllLinks()) {
                     if (link.getStartPoint().getId().equals(start) && link.getStopPoint().getId().equals(stop)) {
                         bot.setLinkId(link);
                     }
@@ -102,8 +100,14 @@ public class BotControlService
         }
     }
 
-    public void getPosAll() {
-        //posall subcores
+    public String getPosAll() {
 
+        String str = "[ ";
+        for(Bot bot : getAllBots()){
+            str = str + bot.toString() + ",";
+        }
+        return str.substring(0, str.length()-1) + "]";
     }
+
+
 }

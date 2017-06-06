@@ -175,5 +175,9 @@ public class BotController
     }
 
     @RequestMapping(value = "/getAllVehicles", method = RequestMethod.GET)
-    public void posAll(){ botControlService.setPosAll(); }
+    public String posAll()
+    {
+        botControlService.setPosAll();
+        return botControlService.getPosAll();
+    }
 }

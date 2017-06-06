@@ -7,15 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="SCCore" />
-        <module name="SCSimCity" />
         <module name="SCSimCityWorker" />
         <module name="SCSmartCityViewer" />
-        <module name="SimCity" />
         <module name="SimCity Viewer" />
-        <module name="SmartCity Central" />
         <module name="SmartCity Common" />
         <module name="SmartCity Core" />
-        <module name="SmartCity Viewer" />
         <module name="SmartCityViewer" />
       </profile>
     </annotationProcessing>

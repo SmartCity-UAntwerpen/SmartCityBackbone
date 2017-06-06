@@ -15,9 +15,6 @@ import java.util.List;
 public class TerminalService
 {
     @Autowired
-    private JobService jobService;
-    
-    @Autowired
     private BotControlService botControlService;
 
     @Autowired
@@ -51,7 +48,7 @@ public class TerminalService
 
         switch(command)
         {
-            case "job":
+           /* case "job":
                 if(commandString.split(" ", 3).length <= 2)
                 {
                     terminal.printTerminalInfo("Missing arguments! 'job {botId} {command}");
@@ -71,7 +68,7 @@ public class TerminalService
                         terminal.printTerminalError(e.getMessage());
                     }
                 }
-                break;
+                break;*/
             case "show":
                 if(commandString.split(" ", 2).length <= 1)
                 {
@@ -212,7 +209,7 @@ public class TerminalService
         }
     }*/
 
-    private void sendJob(Long botId, String command)
+    /*private void sendJob(Long botId, String command)
     {
         if(botControlService.getBot((long)botId) == null)
         {
@@ -229,7 +226,7 @@ public class TerminalService
         {
             terminal.printTerminalError("Could not send job to bot with id: " + botId + "!");
         }
-    }
+    }*/
 
     private int parseInteger(String value) throws Exception
     {

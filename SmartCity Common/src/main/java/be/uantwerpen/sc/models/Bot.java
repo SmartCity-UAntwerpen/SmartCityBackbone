@@ -109,4 +109,30 @@ public class Bot
     {
         this.linkId = linkId;
     }
+
+    @Override
+    public String toString() {
+
+        Long idStart = 0L;
+        Long idStop = 0L;
+        Integer percentage = 0;
+
+        if(linkId!=null){
+            idStart = linkId.getStartPoint().getId();
+        }
+
+        if(linkId!=null){
+            idStop = linkId.getStopPoint().getId();
+        }
+
+        if(percentageCompleted!=null){
+            percentage = percentageCompleted;
+        }
+        return "{" +
+                "\"idVehicle\" :" + id +
+                ", \"idStart\" : " + idStart +
+                ", \"idEnd\" : " + idStop +
+                ", \"percentage\" : " + percentage +
+                "}";
+    }
 }

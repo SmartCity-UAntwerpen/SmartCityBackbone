@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="EntryPointsManager">
-    <entry_points version="2.0" />
-  </component>
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/SimCity Worker" />
     <file type="web" url="file://$PROJECT_DIR$/SmartCity Core" />
@@ -11,10 +8,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/SimCity Viewer/pom.xml" />
-        <option value="$PROJECT_DIR$/SimCity/pom.xml" />
-        <option value="$PROJECT_DIR$/SmartCity Central/pom.xml" />
         <option value="$PROJECT_DIR$/SmartCity Core/pom.xml" />
-        <option value="$PROJECT_DIR$/SmartCity Viewer/pom.xml" />
         <option value="$PROJECT_DIR$/SmartCity Common/pom.xml" />
       </list>
     </option>

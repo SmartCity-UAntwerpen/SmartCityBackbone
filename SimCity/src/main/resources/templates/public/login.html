@@ -28,13 +28,13 @@
                 <form name="loginForm" th:action="@{/login}" action="/login" method="POST">
                     <div class="input-group">
                         <span class="input-group-addon" id="usernameAddon" style="margin-bottom: -1px; border-bottom-left-radius: 0"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
-                        <input type="text" class="form-control" id="username" name="username" value="" th:placeholder="#{login.username}" style="font-size: 16px; padding: 10px; height: auto; margin-bottom: -1px; border-bottom-right-radius: 0" aria-describedby="usernameAddon"/>
+                        <input pointType="text" class="form-control" id="username" name="username" value="" th:placeholder="#{login.username}" style="font-size: 16px; padding: 10px; height: auto; margin-bottom: -1px; border-bottom-right-radius: 0" aria-describedby="usernameAddon"/>
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon" id="passwordAddon" style="border-top-left-radius: 0"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></span>
-                        <input type="password" class="form-control" id="password" name="password" th:placeholder="#{login.password}" style="font-size: 16px; padding: 10px; height: auto; border-top-right-radius: 0" aria-describedby="passwordAddon"/>
+                        <input pointType="password" class="form-control" id="password" name="password" th:placeholder="#{login.password}" style="font-size: 16px; padding: 10px; height: auto; border-top-right-radius: 0" aria-describedby="passwordAddon"/>
                     </div>
-                    <input type="submit" id="login" th:value="#{login.login}" class="btn btn-primary btn-lg btn-block" style="margin-top:10px"/>
+                    <input pointType="submit" id="login" th:value="#{login.login}" class="btn btn-primary btn-lg btn-block" style="margin-top:10px"/>
                 </form>
             </div>
             <div class="languageselect" style="margin-top:20px">
