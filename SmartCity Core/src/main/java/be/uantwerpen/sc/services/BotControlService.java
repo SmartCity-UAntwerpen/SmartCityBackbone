@@ -7,9 +7,26 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import com.google.gson.JsonParser;
+import org.springframework.web.util.UriComponentsBuilder;
+import sun.rmi.runtime.Log;
 
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.ProcessingException;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -72,10 +89,96 @@ public class BotControlService
 
     public void setPosAll() {
 
+        String stringDrone = "[]";
+        String stringCar = "[]";
+        String stringRobot = "[]";
+
+        try {
+
+            URL urlDrone = new URL("http://146.175.140.38:8082/posAll");
+            URL urlCar = new URL("http://146.175.140.17:8081/posAll");
+            URL urlRobot = new URL("http://146.175.140.38:8082/posAll");
+
+            HttpURLConnection connDrone = (HttpURLConnection) urlDrone.openConnection();
+            HttpURLConnection connCar = (HttpURLConnection) urlCar.openConnection();
+            HttpURLConnection connRobot = (HttpURLConnection) urlRobot.openConnection();
+            connDrone.setRequestMethod("GET");
+            connCar.setRequestMethod("GET");
+            connRobot.setRequestMethod("GET");
+
+            connDrone.setRequestProperty("Accept", "application/json");
+            connCar.setRequestProperty("Accept", "application/json");
+            connRobot.setRequestProperty("Accept", "application/json");
+
+            if (connDrone.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + connDrone.getResponseCode());
+            }
+
+            if (connCar.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + connCar.getResponseCode());
+            }
+
+            if (connRobot.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + connRobot.getResponseCode());
+            }
+
+            BufferedReader brDrone = new BufferedReader(new InputStreamReader(
+                    (connDrone.getInputStream())));
+
+            BufferedReader brCar = new BufferedReader(new InputStreamReader(
+                    (connCar.getInputStream())));
+
+            BufferedReader brRobot= new BufferedReader(new InputStreamReader(
+                    (connRobot.getInputStream())));
+
+            System.out.println("posAll returned: ");
+            while ((stringDrone = brDrone.readLine()) != null) {
+                System.out.println(stringDrone + "\n");
+            }
+
+            while ((stringCar = brCar.readLine()) != null) {
+                System.out.println(stringCar + "\n");
+            }
+
+            while ((stringRobot = brRobot.readLine()) != null) {
+                System.out.println(stringRobot + "\n");
+            }
+
+            if(stringDrone == null){
+                stringDrone = "[]";
+            }
+
+            if(stringCar == null){
+                stringCar = "[]";
+            }
+
+            if(stringRobot == null){
+                stringRobot = "[]";
+            }
+
+            connDrone.disconnect();
+            connCar.disconnect();
+            connRobot.disconnect();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         JsonParser parser = new JsonParser();
 
-        JsonElement json = parser.parse("[{\"idVehicle\":1,\"idStart\":1,\"idEnd\":2,\"percentage\":75},{\"idVehicle\":2,\"idStart\":1,\"idEnd\":2,\"percentage\":50}]");
-        JsonArray vehicleArray = json.getAsJsonArray();
+        stringDrone = stringDrone.substring(0, stringDrone.length()-1);
+        stringCar = stringCar.substring(1);
+        stringCar = stringCar.substring(0, stringCar.length()-1);
+        stringRobot = stringRobot.substring(1);
+        String stringVehicles = stringDrone + stringCar + stringRobot;
+
+        JsonElement jsonVehicles = parser.parse(stringVehicles);
+        JsonArray vehicleArray = jsonVehicles.getAsJsonArray();
 
         Iterator<JsonElement> iterator = vehicleArray.iterator();
         while(iterator.hasNext())
@@ -109,5 +212,8 @@ public class BotControlService
         return str.substring(0, str.length()-1) + "]";
     }
 
+    public String getPosOne(Long id) {
 
+        return getBot(id).toString();
+    }
 }

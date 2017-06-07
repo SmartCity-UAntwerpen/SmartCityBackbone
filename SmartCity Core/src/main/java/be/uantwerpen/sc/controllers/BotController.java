@@ -180,4 +180,11 @@ public class BotController
         botControlService.setPosAll();
         return botControlService.getPosAll();
     }
+
+    @RequestMapping(value = "/getOneVehicle/{id}", method = RequestMethod.GET)
+    public String posOne(@PathVariable("id") Long id)
+    {
+        botControlService.setPosAll();
+        return botControlService.getPosOne(id);
+    }
 }

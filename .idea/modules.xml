@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SmartCity Core/SCCore.iml" filepath="$PROJECT_DIR$/SmartCity Core/SCCore.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SimCity Worker/SCSimCityWorker.iml" filepath="$PROJECT_DIR$/SimCity Worker/SCSimCityWorker.iml" />
+      <module fileurl="file://C:\Users\quent\IdeaProjects\SmartCityProject\SimCity Worker\SCSimCityWorker.iml" filepath="C:\Users\quent\IdeaProjects\SmartCityProject\SimCity Worker\SCSimCityWorker.iml" />
       <module fileurl="file://$PROJECT_DIR$/SmartCity Common/SmartCity Common.iml" filepath="$PROJECT_DIR$/SmartCity Common/SmartCity Common.iml" />
       <module fileurl="file://$PROJECT_DIR$/SmartCity Core/SmartCity Core.iml" filepath="$PROJECT_DIR$/SmartCity Core/SmartCity Core.iml" />
     </modules>
