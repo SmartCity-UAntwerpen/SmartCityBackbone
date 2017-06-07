@@ -69,7 +69,7 @@ public class CustomMap implements AbstractMap
                     + ", \"x\" : " + point.getxCoord()
                     + ", \"y\" : " + point.getyCoord()
                     + ", \"access\" : \"" + point.getAccess()
-                    + ", \"type\" : \"" + point.getPointType()
+                    + "\", \"type\" : \"" + point.getPointType()
                     + "\", \"neighbours\" : [ ";
             for(Link link : linkList){
                 if(link.getStartPoint().equals(point)){
