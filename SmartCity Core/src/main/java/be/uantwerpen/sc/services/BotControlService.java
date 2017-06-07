@@ -95,9 +95,9 @@ public class BotControlService
 
         try {
 
-            URL urlDrone = new URL("http://146.175.140.38:8082/posAll");
-            URL urlCar = new URL("http://146.175.140.17:8081/posAll");
-            URL urlRobot = new URL("http://146.175.140.38:8082/posAll");
+            URL urlDrone = new URL("http://143.129.39.151:8082/posAll");
+            URL urlCar = new URL("http://143.129.39.151:8081/carmanager/posAll");
+            URL urlRobot = new URL("http://143.129.39.151:8082/posAll");
 
             HttpURLConnection connDrone = (HttpURLConnection) urlDrone.openConnection();
             HttpURLConnection connCar = (HttpURLConnection) urlCar.openConnection();
@@ -110,53 +110,26 @@ public class BotControlService
             connCar.setRequestProperty("Accept", "application/json");
             connRobot.setRequestProperty("Accept", "application/json");
 
-            if (connDrone.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : HTTP error code : "
-                        + connDrone.getResponseCode());
+            if (connDrone.getResponseCode() == 200) {
+                System.out.println("yes");
+                BufferedReader brDrone = new BufferedReader(new InputStreamReader((connDrone.getInputStream())));
+                while ((stringDrone = brDrone.readLine()) != null) {
+                     //System.out.println(stringDrone + "\n");
+                }
             }
 
-            if (connCar.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : HTTP error code : "
-                        + connCar.getResponseCode());
+            if (connCar.getResponseCode() == 200) {
+                BufferedReader brCar = new BufferedReader(new InputStreamReader((connCar.getInputStream())));
+                while ((stringCar = brCar.readLine()) != null) {
+                    // System.out.println(stringCar + "\n");
+                }
             }
 
-            if (connRobot.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : HTTP error code : "
-                        + connRobot.getResponseCode());
-            }
-
-            BufferedReader brDrone = new BufferedReader(new InputStreamReader(
-                    (connDrone.getInputStream())));
-
-            BufferedReader brCar = new BufferedReader(new InputStreamReader(
-                    (connCar.getInputStream())));
-
-            BufferedReader brRobot= new BufferedReader(new InputStreamReader(
-                    (connRobot.getInputStream())));
-
-            System.out.println("posAll returned: ");
-            while ((stringDrone = brDrone.readLine()) != null) {
-                System.out.println(stringDrone + "\n");
-            }
-
-            while ((stringCar = brCar.readLine()) != null) {
-                System.out.println(stringCar + "\n");
-            }
-
-            while ((stringRobot = brRobot.readLine()) != null) {
-                System.out.println(stringRobot + "\n");
-            }
-
-            if(stringDrone == null){
-                stringDrone = "[]";
-            }
-
-            if(stringCar == null){
-                stringCar = "[]";
-            }
-
-            if(stringRobot == null){
-                stringRobot = "[]";
+            if (connRobot.getResponseCode() == 200) {
+                BufferedReader brRobot= new BufferedReader(new InputStreamReader((connRobot.getInputStream())));
+                while ((stringRobot = brRobot.readLine()) != null) {
+                    //  System.out.println(stringRobot + "\n");
+                }
             }
 
             connDrone.disconnect();
@@ -171,16 +144,35 @@ public class BotControlService
 
         JsonParser parser = new JsonParser();
 
-        stringDrone = stringDrone.substring(0, stringDrone.length()-1);
-        stringCar = stringCar.substring(1);
-        stringCar = stringCar.substring(0, stringCar.length()-1);
-        stringRobot = stringRobot.substring(1);
+        if(stringDrone != null && stringDrone.length()>2){
+            stringDrone = stringDrone.substring(0, stringDrone.length()-1) + ",";
+        }else{
+            stringDrone = "[ ";
+        }
+
+        if(stringCar != null && stringCar.length()>2) {
+            stringCar = stringCar.substring(1);
+            stringCar = stringCar.substring(0, stringCar.length() - 1) + ",";
+        }else{
+            stringCar = " ";
+        }
+
+        if(stringRobot != null && stringRobot.length()>2){
+            stringRobot = stringRobot.substring(1);
+
+        }else{
+            stringRobot = "]";
+        }
+
         String stringVehicles = stringDrone + stringCar + stringRobot;
+
+        System.out.println("string json: " + stringVehicles);
 
         JsonElement jsonVehicles = parser.parse(stringVehicles);
         JsonArray vehicleArray = jsonVehicles.getAsJsonArray();
 
         Iterator<JsonElement> iterator = vehicleArray.iterator();
+
         while(iterator.hasNext())
         {
             JsonObject vehicle = (JsonObject) iterator.next();
