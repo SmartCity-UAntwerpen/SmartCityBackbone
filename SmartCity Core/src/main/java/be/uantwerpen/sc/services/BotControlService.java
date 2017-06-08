@@ -111,7 +111,6 @@ public class BotControlService
             connRobot.setRequestProperty("Accept", "application/json");
 
             if (connDrone.getResponseCode() == 200) {
-                System.out.println("yes");
                 BufferedReader brDrone = new BufferedReader(new InputStreamReader((connDrone.getInputStream())));
                 while ((stringDrone = brDrone.readLine()) != null) {
                      //System.out.println(stringDrone + "\n");
@@ -166,7 +165,7 @@ public class BotControlService
 
         String stringVehicles = stringDrone + stringCar + stringRobot;
 
-        System.out.println("string json: " + stringVehicles);
+        //System.out.println("string vehicles: " + stringVehicles);
 
         JsonElement jsonVehicles = parser.parse(stringVehicles);
         JsonArray vehicleArray = jsonVehicles.getAsJsonArray();
