@@ -197,11 +197,11 @@ public class BotControlService
 
     public String getPosAll() {
 
-        String str = "[ ";
+        String str = "{\"vehicles\" : [ ";
         for(Bot bot : getAllBots()){
             str = str + bot.toString() + ",";
         }
-        return str.substring(0, str.length()-1) + "]";
+        return str.substring(0, str.length()-1) + "]}";
     }
 
     public String getPosOne(Long id) {
