@@ -35,4 +35,30 @@ public class Car extends Bot{
     public float getW(){return w;}
     public void setW(float w){this.w = w;}
 
+    @Override
+    public String toString() {
+
+        Long idStart = 0L;
+        Long idStop = 0L;
+        Integer percentage = 0;
+
+        if(getLinkId()!=null){
+            idStart = getLinkId().getStartPoint().getId();
+        }
+
+        if(getLinkId()!=null){
+            idStop = getLinkId().getStopPoint().getId();
+        }
+
+        if(getPercentageCompleted()!=null){
+            percentage = getPercentageCompleted();
+        }
+        return "{" +
+                "\"idVehicle\" :" + getId() +
+                ", \"idStart\" : " + idStart +
+                ", \"idEnd\" : " + idStop +
+                ", \"percentage\" : " + percentage +
+                ", \"type\" : \"car\"}";
+    }
+
 }

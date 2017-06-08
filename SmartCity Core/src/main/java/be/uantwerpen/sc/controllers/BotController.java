@@ -187,4 +187,10 @@ public class BotController
         botControlService.setPosAll();
         return botControlService.getPosOne(id);
     }
+
+    @RequestMapping(value = "/clearBots", method = RequestMethod.GET)
+    public void deleteAll()
+    {
+        botControlService.resetBots();
+    }
 }
