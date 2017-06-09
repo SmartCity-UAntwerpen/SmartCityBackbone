@@ -143,14 +143,25 @@ public class MapControlService
                 Long idHub = point.getHub();
                 for (Point otherPoint : map.getPointList()) {
                     if (idHub.equals(otherPoint.getHub()) && !point.equals(otherPoint)) {
-                        Link topLink = new Link();
-                        topLink.setLength(new Long(1));
-                        topLink.setAccess("wait");
-                        topLink.setWeight(1);
-                        topLink.setStartPoint(point);
-                        topLink.setStopPoint(otherPoint);
-                        linkControlService.saveLink(topLink);
-                        map.addLink(topLink);
+
+                        boolean testDuplicate = false;
+                        for(Link refLink : linkControlService.getAllLinks()){
+                            if(otherPoint.equals(refLink.getStopPoint()) && point.equals(refLink.getStartPoint()) && refLink.getAccess().equals("wait")){
+                                testDuplicate = true;
+                                map.addLink(refLink);
+                            }
+                        }
+
+                        if(!testDuplicate) {
+                            Link topLink = new Link();
+                            topLink.setLength(new Long(1));
+                            topLink.setAccess("wait");
+                            topLink.setWeight(1);
+                            topLink.setStartPoint(point);
+                            topLink.setStopPoint(otherPoint);
+                            linkControlService.saveLink(topLink);
+                            map.addLink(topLink);
+                        }
                     }
                 }
             }
@@ -187,6 +198,7 @@ public class MapControlService
 
                                 if(link.getStopPoint().equals(refLink.getStopPoint()) && originalPoint.equals(refLink.getStartPoint()) && refAccess.equals(refLink.getAccess())){
                                     testDuplicate = true;
+                                    map.addLink(refLink);
                                 }
                             }
 

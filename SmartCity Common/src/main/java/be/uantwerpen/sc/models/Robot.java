@@ -13,9 +13,9 @@ public class Robot extends Bot{
     @Override
     public String toString() {
 
+
         Long idStart = 0L;
         Long idStop = 0L;
-        Integer percentage = 0;
 
         if(getLinkId()!=null){
             idStart = getLinkId().getStartPoint().getId();
@@ -25,15 +25,14 @@ public class Robot extends Bot{
             idStop = getLinkId().getStopPoint().getId();
         }
 
-        if(getPercentageCompleted()!=null){
-            percentage = getPercentageCompleted();
-        }
-        return "{" +
+        String str = "{" +
                 "\"idVehicle\" :" + getId() +
                 ", \"idStart\" : " + idStart +
                 ", \"idEnd\" : " + idStop +
-                ", \"percentage\" : " + percentage +
+                ", \"percentage\" : " + getPercentageCompleted() +
                 ", \"type\" : \"robot\"}";
+
+        return str;
     }
 
 }

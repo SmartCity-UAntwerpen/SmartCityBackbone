@@ -7,27 +7,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import com.google.gson.JsonParser;
-import org.springframework.web.util.UriComponentsBuilder;
-import sun.rmi.runtime.Log;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.ProcessingException;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -204,7 +192,6 @@ public class BotControlService
     }
 
     public String getPosOne(Long id) {
-
-        return getBot(id).toString();
+          return getBot(id).toString();
     }
 }

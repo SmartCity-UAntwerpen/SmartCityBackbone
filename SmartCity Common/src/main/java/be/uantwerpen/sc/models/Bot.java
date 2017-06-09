@@ -113,9 +113,10 @@ public class Bot
     @Override
     public String toString() {
 
+        System.out.println("\"to String\" in process");
+
         Long idStart = 0L;
         Long idStop = 0L;
-        Integer percentage = 0;
 
         if(linkId!=null){
             idStart = linkId.getStartPoint().getId();
@@ -125,14 +126,14 @@ public class Bot
             idStop = linkId.getStopPoint().getId();
         }
 
-        if(percentageCompleted!=null){
-            percentage = percentageCompleted;
-        }
-        return "{" +
+        String str =  "{" +
                 "\"idVehicle\" :" + id +
                 ", \"idStart\" : " + idStart +
                 ", \"idEnd\" : " + idStop +
-                ", \"percentage\" : " + percentage +
+                ", \"percentage\" : " + getPercentageCompleted() +
                 "}";
+        System.out.println("to string returns: " + str);
+
+        return str;
     }
 }

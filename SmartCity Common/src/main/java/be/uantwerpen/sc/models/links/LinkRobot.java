@@ -43,7 +43,6 @@ public class LinkRobot extends Link {
     }
 
     @Override
-
     public String toString() {
 
         return "{" +

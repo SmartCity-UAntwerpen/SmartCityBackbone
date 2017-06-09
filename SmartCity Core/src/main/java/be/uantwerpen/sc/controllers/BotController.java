@@ -115,6 +115,8 @@ public class BotController
         }
 
         //Save bot in database and get bot new rid
+
+        bot.setPercentageCompleted(0);
         bot = botControlService.saveBot(bot);
 
         Date date = new Date();
@@ -189,8 +191,10 @@ public class BotController
     }
 
     @RequestMapping(value = "/clearBots", method = RequestMethod.GET)
-    public void deleteAll()
+    public String deleteAll()
     {
         botControlService.resetBots();
+
+        return "Bots Destroyed...";
     }
 }
