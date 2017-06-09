@@ -194,7 +194,7 @@ public class BotController
     public String deleteAll()
     {
         botControlService.resetBots();
-
+        System.out.println("Bots Destroyed...");
         return "Bots Destroyed...";
     }
 }

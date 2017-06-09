@@ -113,26 +113,25 @@ public class Bot
     @Override
     public String toString() {
 
-        System.out.println("\"to String\" in process");
-
         Long idStart = 0L;
         Long idStop = 0L;
 
-        if(linkId!=null){
-            idStart = linkId.getStartPoint().getId();
+
+        if(getLinkId()!=null){
+            idStart = getLinkId().getStartPoint().getId();
         }
 
-        if(linkId!=null){
-            idStop = linkId.getStopPoint().getId();
+        if(getLinkId()!=null){
+            idStop = getLinkId().getStopPoint().getId();
         }
 
-        String str =  "{" +
-                "\"idVehicle\" :" + id +
+
+        String str = "{" +
+                "\"idVehicle\" :" + getId() +
                 ", \"idStart\" : " + idStart +
                 ", \"idEnd\" : " + idStop +
                 ", \"percentage\" : " + getPercentageCompleted() +
                 "}";
-        System.out.println("to string returns: " + str);
 
         return str;
     }

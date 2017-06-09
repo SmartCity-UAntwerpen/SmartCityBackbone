@@ -3,12 +3,9 @@ package be.uantwerpen.sc.services;
 import be.uantwerpen.sc.models.Bot;
 import be.uantwerpen.sc.models.links.Link;
 import be.uantwerpen.sc.repositories.BotRepository;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.google.gson.JsonParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -77,15 +74,16 @@ public class BotControlService
 
     public void setPosAll() {
 
-        String stringDrone = "[]";
-        String stringCar = "[]";
-        String stringRobot = "[]";
+        String received;
+        String stringDrone = "";
+        String stringCar = "";
+        String stringRobot = "";
 
         try {
 
             URL urlDrone = new URL("http://143.129.39.151:8082/posAll");
             URL urlCar = new URL("http://143.129.39.151:8081/carmanager/posAll");
-            URL urlRobot = new URL("http://143.129.39.151:8082/posAll");
+            URL urlRobot = new URL("http://143.129.39.151:8083/posAll");
 
             HttpURLConnection connDrone = (HttpURLConnection) urlDrone.openConnection();
             HttpURLConnection connCar = (HttpURLConnection) urlCar.openConnection();
@@ -100,23 +98,32 @@ public class BotControlService
 
             if (connDrone.getResponseCode() == 200) {
                 BufferedReader brDrone = new BufferedReader(new InputStreamReader((connDrone.getInputStream())));
-                while ((stringDrone = brDrone.readLine()) != null) {
-                     //System.out.println(stringDrone + "\n");
+                while ((received = brDrone.readLine()) != null) {
+                     System.out.println("Response from dronecore: " + received);
+                     stringDrone = received;
                 }
+            }else {
+                System.out.println("Responsecode returned: " + connDrone.getResponseCode());
             }
 
             if (connCar.getResponseCode() == 200) {
                 BufferedReader brCar = new BufferedReader(new InputStreamReader((connCar.getInputStream())));
-                while ((stringCar = brCar.readLine()) != null) {
-                    // System.out.println(stringCar + "\n");
+                while ((received= brCar.readLine()) != null) {
+                     System.out.println("Response from carcore: " + received);
+                     stringCar = received;
                 }
+            }else {
+                System.out.println("Responsecode returned: " + connCar.getResponseCode());
             }
 
             if (connRobot.getResponseCode() == 200) {
                 BufferedReader brRobot= new BufferedReader(new InputStreamReader((connRobot.getInputStream())));
-                while ((stringRobot = brRobot.readLine()) != null) {
-                    //  System.out.println(stringRobot + "\n");
+                while ((received = brRobot.readLine()) != null) {
+                      System.out.println("Response from robotcore: " + received);
+                      stringRobot = received;
                 }
+            }else {
+                System.out.println("Responsecode returned: " + connRobot.getResponseCode());
             }
 
             connDrone.disconnect();
@@ -131,29 +138,32 @@ public class BotControlService
 
         JsonParser parser = new JsonParser();
 
-        if(stringDrone != null && stringDrone.length()>2){
+        if(!stringDrone.isEmpty() && stringDrone.length() > 3){
             stringDrone = stringDrone.substring(0, stringDrone.length()-1) + ",";
         }else{
             stringDrone = "[ ";
         }
 
-        if(stringCar != null && stringCar.length()>2) {
+        if(!stringCar.isEmpty() && stringCar.length() > 3) {
             stringCar = stringCar.substring(1);
             stringCar = stringCar.substring(0, stringCar.length() - 1) + ",";
         }else{
-            stringCar = " ";
+            stringCar = "";
         }
 
-        if(stringRobot != null && stringRobot.length()>2){
+        if(!stringRobot.isEmpty() && stringRobot.length() > 3){
             stringRobot = stringRobot.substring(1);
 
         }else{
             stringRobot = "]";
+            if(!stringCar.isEmpty() && stringCar.length() > 3){
+                stringCar = stringCar.substring(0, stringCar.length() - 1);
+            }
         }
 
         String stringVehicles = stringDrone + stringCar + stringRobot;
+        System.out.println("vehicleString: " + stringVehicles);
 
-        //System.out.println("string vehicles: " + stringVehicles);
 
         JsonElement jsonVehicles = parser.parse(stringVehicles);
         JsonArray vehicleArray = jsonVehicles.getAsJsonArray();
@@ -162,22 +172,46 @@ public class BotControlService
 
         while(iterator.hasNext())
         {
-            JsonObject vehicle = (JsonObject) iterator.next();
-            Long id = vehicle.get("idVehicle").getAsLong();
-            Long start = vehicle.get("idStart").getAsLong();
-            Long stop = vehicle.get("idEnd").getAsLong();
-            int percentage = vehicle.get("percentage").getAsInt();
+            JsonElement element = iterator.next();
 
-            Bot bot = botRepository.findOne(id);
-            if(bot!=null){
-                for(Link link : linkControlService.getAllLinks()) {
-                    if (link.getStartPoint().getId().equals(start) && link.getStopPoint().getId().equals(stop)) {
-                        bot.setLinkId(link);
+            if (!(element instanceof JsonNull)) {
+                JsonObject vehicle = (JsonObject) element;
+                Long id = vehicle.get("idVehicle").getAsLong();
+                Long start = vehicle.get("idStart").getAsLong();
+                Long stop = vehicle.get("idEnd").getAsLong();
+                int percentage = vehicle.get("percentage").getAsInt();
+
+
+                Bot bot = botRepository.findOne(id);
+                if(bot!=null){
+
+                    System.out.println("idVehicle" + id + ", idStart: " + start + ", idEnd: " + stop + ", percentage: " + percentage);
+
+
+                    bot.setPercentageCompleted(percentage);
+
+                    if(percentage==100){
+                        for(Link link : linkControlService.getAllLinks()) {
+                            if (link.getStopPoint().getId().equals(stop)) {
+                                bot.setLinkId(link);
+                                System.out.println("parked: " +id);
+                                break;
+                            }
+                        }
                     }
-                }
 
-                bot.setPercentageCompleted(percentage);
-                saveBot(bot);
+                    for(Link link : linkControlService.getAllLinks()) {
+                        if (link.getStartPoint().getId().equals(start) && link.getStopPoint().getId().equals(stop)) {
+                            bot.setLinkId(link);
+                            break;
+                        }
+                    }
+
+                    bot.setPercentageCompleted(percentage);
+                    saveBot(bot);
+                }else{
+                    System.out.println("bot with id \'" + id + "\' not found");
+                }
             }
         }
     }
@@ -192,6 +226,7 @@ public class BotControlService
     }
 
     public String getPosOne(Long id) {
-          return getBot(id).toString();
+
+        return getBot(id).toString();
     }
 }

@@ -148,7 +148,10 @@ public class MapControlService
                         for(Link refLink : linkControlService.getAllLinks()){
                             if(otherPoint.equals(refLink.getStopPoint()) && point.equals(refLink.getStartPoint()) && refLink.getAccess().equals("wait")){
                                 testDuplicate = true;
-                                map.addLink(refLink);
+                                if(!map.getLinkList().contains(refLink)){
+                                    map.addLink(refLink);
+                                }
+                                break;
                             }
                         }
 
@@ -198,7 +201,10 @@ public class MapControlService
 
                                 if(link.getStopPoint().equals(refLink.getStopPoint()) && originalPoint.equals(refLink.getStartPoint()) && refAccess.equals(refLink.getAccess())){
                                     testDuplicate = true;
-                                    map.addLink(refLink);
+                                    if(!map.getLinkList().contains(refLink)){
+                                        map.addLink(refLink);
+                                    }
+                                    break;
                                 }
                             }
 
