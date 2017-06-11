@@ -2,7 +2,6 @@ package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.map.CustomMap;
 import be.uantwerpen.sc.services.*;
-import be.uantwerpen.sc.tools.Vertex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.Produces;
-import java.util.List;
 
 /**
  * Created by Niels on 3/04/2016.
