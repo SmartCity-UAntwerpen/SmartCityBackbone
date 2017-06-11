@@ -1,9 +1,6 @@
 package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.map.CustomMap;
-import be.uantwerpen.sc.models.map.Map;
-import be.uantwerpen.sc.models.map.MapJson;
-import be.uantwerpen.sc.models.map.Path;
 import be.uantwerpen.sc.services.*;
 import be.uantwerpen.sc.tools.Vertex;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,50 +22,8 @@ public class MapController
     @Autowired
     private MapControlService mapControlService;
 
-    @Autowired
-    private PathPlanningService pathPlanningService;
-
-    @RequestMapping(method = RequestMethod.GET)
-    public Map getMap()
-    {
-        return mapControlService.buildMap();
-    }
-
-    @RequestMapping(value = "json", method = RequestMethod.GET)
-    public MapJson getMapJson()
-    {
-        MapJson mapJson = mapControlService.buildMapJson();
-
-        return mapJson;
-    }
-
-    @RequestMapping(value = "{start}/path/{stop}", method = RequestMethod.GET)
-    public Path PathPlanning(@PathVariable("start") int start, @PathVariable("stop") int stop)
-    {
-        List<Vertex> path = pathPlanningService.Calculatepath(null,start,stop);
-
-        return new Path(path);
-    }
-
-    @RequestMapping(value = "testpath/{start}/path/{stop}", method = RequestMethod.GET)
-    public Path PathPlanning2(@PathVariable("start") int start, @PathVariable("stop") int stop)
-    {
-        List<Vertex> path = pathPlanningService.CalculatepathNonInterface(start,stop);
-        return new Path(path);
-    }
-
-    @RequestMapping(value = "stringmapjson", method = RequestMethod.GET)
-    public String mapStringJson()
-    {
-        return mapControlService.buildMapJson().toString();
-    }
-
-    @RequestMapping(value = "stringmap", method = RequestMethod.GET)
-    public String mapString()
-    {
-        return mapControlService.buildMap().toString();
-    }
-
+    //returns a map for the given type of vehicle
+    //alternatively returns a map for the visualisation with variable 'visual'
     @Produces("application/json")
     @RequestMapping(value = "stringmapjson/{type}", method = RequestMethod.GET)
     public String customMapStringJson(@PathVariable("type") String type)
@@ -80,6 +35,7 @@ public class MapController
         return mapControlService.buildCustomMapJson(type).toString(type);
     }
 
+    //creates a string of links for the MaaS backbone
     @Produces("application/json")
     @RequestMapping(value = "topmapjson/links", method = RequestMethod.GET)
     public String topLinksStringJson()
@@ -88,6 +44,7 @@ public class MapController
         return map.getTopMapLinksString();
     }
 
+    //creates a string of points for the MaaS backbone
     @Produces("application/json")
     @RequestMapping(value = "topmapjson/points", method = RequestMethod.GET)
     public String topPointsStringJson()
@@ -95,13 +52,5 @@ public class MapController
         CustomMap map = mapControlService.buildTopMapJson();
         return map.getTopMapPointsString();
     }
-
-    @RequestMapping(value = "random/{start}", method = RequestMethod.GET)
-    public Path randomPath(@PathVariable("start") int start)
-    {
-        List<Vertex> vertexes = pathPlanningService.nextRandomPath(null,start);
-        Path pathClass = new Path(vertexes);
-
-        return pathClass;
-    }
+    
 }

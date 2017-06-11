@@ -119,7 +119,7 @@ public class Point
                 " \"id\" : " + id +
                 ", \"x\" : " + xCoord +
                 ", \"y\" : " + yCoord +
-                ", \"type\" : \"" + access + //pointType referce to vehicle pointType in the Maas
+                ", \"type\" : \"" + access + //pointType refers to vehicle pointType in the Maas
                 "\"}";
     }
 }

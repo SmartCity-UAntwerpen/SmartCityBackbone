@@ -1,7 +1,5 @@
 package be.uantwerpen.sc.tools.pathplanning;
 
-import be.uantwerpen.sc.models.map.Map;
-import be.uantwerpen.sc.models.map.MapJson;
 import be.uantwerpen.sc.tools.Vertex;
 
 import java.util.List;

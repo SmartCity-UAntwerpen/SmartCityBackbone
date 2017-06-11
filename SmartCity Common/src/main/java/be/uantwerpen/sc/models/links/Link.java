@@ -124,6 +124,7 @@ public class Link
                 '}';
     }
 
+    //call method when avoiding toString method of the subclasses
     public String toStringTop() {
         return "{" +
                 "\"id\" : " + id +

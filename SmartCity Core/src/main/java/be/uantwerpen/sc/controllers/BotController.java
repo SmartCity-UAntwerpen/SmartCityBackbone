@@ -50,6 +50,7 @@ public class BotController
         botControlService.updateBot(bot);
     }
 
+    //not used in current design
     @RequestMapping(value = "updateBotTest/{id}",method = RequestMethod.GET)
     public void updateBotTest(@PathVariable("id") Long id)
     {
@@ -59,12 +60,14 @@ public class BotController
         botControlService.updateBot(botEntity);
     }
 
+    //not used in current design
     @RequestMapping(value = "test",method = RequestMethod.GET)
     public Bot testRestBot()
     {
         return new Bot();
     }
 
+    //not used in current design
     @RequestMapping(value = "savetest",method = RequestMethod.GET)
     public void saveBotTest()
     {
@@ -73,6 +76,7 @@ public class BotController
         botControlService.saveBot(bot);
     }
 
+    //not used in current design
     @RequestMapping(value = "goto/{id}/{rid}",method = RequestMethod.GET)
     public String goTo(@PathVariable("id") Long id, @PathVariable("rid") Long rid)
     {
@@ -95,8 +99,9 @@ public class BotController
         return "Something";
     }
 
+    //when new bot subscribes, it sends a request with its type and gets an ID in return
     @Produces("application/json")
-    @RequestMapping(value = "newBot/{type}", method = RequestMethod.GET)  //when new bot subscribes, it sends a request with its type and gets an ID in return
+    @RequestMapping(value = "newBot/{type}", method = RequestMethod.GET)
     public Long newRobot(@PathVariable("type") String type)
     {
         Bot bot = null;
@@ -125,6 +130,7 @@ public class BotController
         return bot.getId();
     }
 
+    //not used in current design
     @RequestMapping(value = "{id}/lid/{lid}", method = RequestMethod.GET)
     public void locationLink(@PathVariable("id") Long id, @PathVariable("lid") Long lid)
     {
@@ -151,6 +157,7 @@ public class BotController
         }
     }
 
+    //not used in current design
     public void updateLocation(Long id, int mm)
     {
         Bot bot = this.getBot(id);
@@ -190,6 +197,7 @@ public class BotController
         return botControlService.getPosOne(id);
     }
 
+    //duplicate method
     @RequestMapping(value = "/clearBots", method = RequestMethod.GET)
     public String deleteAll()
     {

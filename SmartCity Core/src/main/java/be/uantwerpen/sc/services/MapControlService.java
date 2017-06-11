@@ -26,63 +26,14 @@ public class MapControlService
     @Autowired
     private BotControlService botControlService;
 
-    @Autowired
-    private TrafficLightControlService trafficLightControlService;
 
     private CustomMap topMap;
     private boolean topMapCreated = false;
     private ArrayList<Link> referenceList;
 
-    public Map buildMap()
-    {
-        Map map = new Map();
 
-        List<Link> linkEntityList = linkControlService.getAllLinks();
 
-        for(Point point : pointControlService.getAllPoints())
-        {
-            Node node = new Node(point);
-            List<Link> targetLinks = linkEntityList.stream().filter(item -> Objects.equals(item.getStartPoint().getId(), node.getNodeId())).collect(Collectors.toList());
-
-            node.setNeighbours(targetLinks);
-            map.addNode(node);
-        }
-
-    //    map.setBotEntities(botControlService.getAllBots());
-        map.setTrafficlightEntity(trafficLightControlService.getAllTrafficLights());
-
-        return map;
-    }
-
-    public MapJson buildMapJson()
-    {
-        MapJson mapJson = new MapJson();
-
-        List<Link> linkEntityList = linkControlService.getAllLinks();
-
-        for(Point point : pointControlService.getAllPoints())
-        {
-            NodeJson nodeJson = new NodeJson(point);
-
-            List<Neighbour> neighbourList = new ArrayList<Neighbour>();
-
-            for(Link link: linkEntityList)
-            {
-                if((link.getStartPoint().getId()) == (nodeJson.getPointEntity().getId()))
-                {
-                    neighbourList.add(new Neighbour(link));
-                }
-            }
-
-            nodeJson.setNeighbours(neighbourList);
-            mapJson.addNodeJson(nodeJson);
-        }
-
-        mapJson.setSize(mapJson.getNodeJsons().size());
-
-        return mapJson;
-    }
-
+    //builds map of given type
     public CustomMap buildCustomMapJson(String type)
     {
         CustomMap map = new CustomMap();
@@ -108,6 +59,9 @@ public class MapControlService
     }
 
     //this function creates a top view of the hubs and links between individual hubs
+    //since the MaaS works with a simplified version of the map, 'virtual' links are generated and returned
+    //firstly links are drawn between points for different kind of vehicles within the same 'hub'
+    //secondly link are made between endpoint that have acces to each other
     public CustomMap buildTopMapJson(){
 
         if(topMapCreated){
@@ -176,6 +130,7 @@ public class MapControlService
         }
     }
 
+    //recursive algorithm for finding links between endpoints
     private CustomMap createTopLinks(Point originalPoint, Point pointStart, Long hub, List<Link> links, CustomMap map){
         Point otherPoint;
 

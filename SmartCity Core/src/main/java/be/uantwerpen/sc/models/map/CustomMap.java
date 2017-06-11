@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Created by quent on 5/16/2017.
  */
+
 public class CustomMap implements AbstractMap
 {
     private List<Link> linkList;
@@ -39,6 +40,7 @@ public class CustomMap implements AbstractMap
 
     public List<Point> getPointList(){return pointList;}
 
+    //returns jsonstring of links for the MaaS backbone
     public String getTopMapLinksString(){
         String str = "[ ";
         for(Link link : linkList){
@@ -50,6 +52,7 @@ public class CustomMap implements AbstractMap
         return str;
     }
 
+    //returns jsonstring of points for the MaaS backbone
     public String getTopMapPointsString(){
         String str = "[ ";
 
@@ -62,6 +65,7 @@ public class CustomMap implements AbstractMap
         return str;
     }
 
+    //returns jsonstring of points for the visualisation
     public String getVisualPointsString(){
         String str = "{\"pointList\" :[ ";
         for(Point point : pointList){
@@ -91,6 +95,7 @@ public class CustomMap implements AbstractMap
                 '}';
     }
 
+    //returns string for vehicles
     public String toString(String type) {
 
         if(type.equals("car")||type.equals("drone")) {

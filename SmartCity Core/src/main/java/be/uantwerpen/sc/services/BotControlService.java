@@ -72,6 +72,10 @@ public class BotControlService
         return true;
     }
 
+    //sets up a connection to retrieve the start and stop point of bots from the vehicle cores
+    //every received bot that is present in the database is updated with the given information
+    //if the start an stop point given do not match wit a legal link, idStart and idEnd is set to 0
+    //if the percentageCompleted of the vehicle is 100, the vehicle is set to a link that ends with the given idEnd
     public void setPosAll() {
 
         String received;
@@ -83,7 +87,7 @@ public class BotControlService
 
             URL urlDrone = new URL("http://143.129.39.151:8082/posAll");
             URL urlCar = new URL("http://143.129.39.151:8081/carmanager/posAll");
-            URL urlRobot = new URL("http://143.129.39.151:8083/posAll");
+            URL urlRobot = new URL("http://143.129.39.151:8083/bot/posAll");
 
             HttpURLConnection connDrone = (HttpURLConnection) urlDrone.openConnection();
             HttpURLConnection connCar = (HttpURLConnection) urlCar.openConnection();
@@ -103,7 +107,7 @@ public class BotControlService
                      stringDrone = received;
                 }
             }else {
-                System.out.println("Responsecode returned: " + connDrone.getResponseCode());
+                System.out.println("Responsecode Drone returned: " + connDrone.getResponseCode());
             }
 
             if (connCar.getResponseCode() == 200) {
@@ -113,7 +117,7 @@ public class BotControlService
                      stringCar = received;
                 }
             }else {
-                System.out.println("Responsecode returned: " + connCar.getResponseCode());
+                System.out.println("Responsecode Car returned: " + connCar.getResponseCode());
             }
 
             if (connRobot.getResponseCode() == 200) {
@@ -123,7 +127,7 @@ public class BotControlService
                       stringRobot = received;
                 }
             }else {
-                System.out.println("Responsecode returned: " + connRobot.getResponseCode());
+                System.out.println("Responsecode Robot returned: " + connRobot.getResponseCode());
             }
 
             connDrone.disconnect();
@@ -216,6 +220,7 @@ public class BotControlService
         }
     }
 
+    //returns jsonString with the location of every available vehicle
     public String getPosAll() {
 
         String str = "{\"vehicles\" : [ ";
@@ -225,6 +230,7 @@ public class BotControlService
         return str.substring(0, str.length()-1) + "]}";
     }
 
+    //returns jsonString with the location of a vehicle
     public String getPosOne(Long id) {
 
         return getBot(id).toString();
