@@ -44,6 +44,11 @@ public abstract class Terminal
         System.out.println(message);
     }
 
+    public static void printTerminalAppend(String message)
+    {
+        System.out.print(message);
+    }
+
     public static void printTerminalInfo(String message)
     {
         Calendar calendar = Calendar.getInstance();
@@ -86,7 +91,7 @@ public abstract class Terminal
         {
             BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
-            System.out.print("# ");
+            //System.out.print("# ");
 
             try
             {
