@@ -8,6 +8,8 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/SimCity Viewer/pom.xml" />
+        <option value="$PROJECT_DIR$/SmartCity Common/pom.xml" />
+        <option value="$PROJECT_DIR$/SmartCity Core/pom.xml" />
       </list>
     </option>
   </component>
