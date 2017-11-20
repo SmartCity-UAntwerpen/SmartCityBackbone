@@ -23,6 +23,10 @@ public class DevelopersList
 {
     private static String DEVELOPERSLIST = "DevelopersList.xml";
 
+    /**
+     * @return a List<String> of all supervisors, i.e. teachers
+     * @throws Exception
+     */
     public List<String> getSupervisorDevelopers() throws Exception
     {
         List<String> supervisors = new ArrayList<String>();
@@ -58,6 +62,10 @@ public class DevelopersList
         return supervisors;
     }
 
+    /**
+     * @return a List<String> of all students who worked on this project in their respective years
+     * @throws Exception
+     */
     public Map<String, List<String>> getStudentDevelopers() throws Exception
     {
         Map<String, List<String>> students = new TreeMap<String, List<String>>();

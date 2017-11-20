@@ -10,6 +10,11 @@ import javax.persistence.*;
 @DiscriminatorValue("robot")
 public class Robot extends Bot{
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return string of this vehicles' id, idStart, idEnd, percentageCompleted and its type (robot)
+     */
     @Override
     public String toString() {
 

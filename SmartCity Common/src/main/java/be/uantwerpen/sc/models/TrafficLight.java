@@ -8,6 +8,6 @@ import javax.persistence.*;
 
 @Entity
 @DiscriminatorValue("light")
-public class Light extends Bot{
+public class TrafficLight extends Bot{
 
 }

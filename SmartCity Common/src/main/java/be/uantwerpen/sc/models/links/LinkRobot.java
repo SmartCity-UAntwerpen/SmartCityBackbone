@@ -42,6 +42,11 @@ public class LinkRobot extends Link {
         this.stopDirection = stopDirection;
     }
 
+    /**
+     * Overrides the inherited toString() method
+     *
+     * @return string of this link's id, startPoint, stopPoint, access and weight
+     */
     @Override
     public String toString() {
 

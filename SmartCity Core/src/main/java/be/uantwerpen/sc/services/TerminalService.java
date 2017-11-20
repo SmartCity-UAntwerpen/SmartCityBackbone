@@ -22,6 +22,9 @@ public class TerminalService
     
     private Terminal terminal;
 
+    /**
+     *
+     */
     public TerminalService()
     {
         terminal = new Terminal()
@@ -36,12 +39,17 @@ public class TerminalService
 
     public void systemReady()
     {
-        terminal.printTerminal("\nSmartCity Core [Version " + getClass().getPackage().getImplementationVersion() + "]\n(c) 2015-2017 University of Antwerp. All rights reserved.");
+        terminal.printTerminal("\nSmartCity Core [Version " + getClass().getPackage().getImplementationVersion() + "]\n(c) 2015-2018 University of Antwerp. All rights reserved.");
         terminal.printTerminal("Type 'help' to display the possible commands.");
 
         terminal.activateTerminal();
     }
 
+    /**
+     *
+     *
+     * @param commandString The string entered in the console
+     */
     private void parseCommand(String commandString)
     {
         String command = commandString.split(" ", 2)[0].toLowerCase();

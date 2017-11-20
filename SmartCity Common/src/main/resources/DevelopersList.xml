@@ -74,5 +74,31 @@
                 <name>Kevin Van Tendeloo</name>
             </person>
         </group>
+        <group year="2017-2018">
+            <person>
+                <name>Floris Bosteels</name>
+            </person>
+            <person>
+                <name>Nick Castermans</name>
+            </person>
+            <person>
+                <name>Robrecht Daems</name>
+            </person>
+            <person>
+                <name>Jan De Laet</name>
+            </person>
+            <person>
+                <name>Jonas De Rynck</name>
+            </person>
+            <person>
+                <name>Reinout Eyckerman</name>
+            </person>
+            <person>
+                <name>Kjell Kleyn</name>
+            </person>
+            <person>
+                <name>Vincent Nys</name>
+            </person>
+        </group>
     </students>
 </developers>

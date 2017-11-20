@@ -29,6 +29,11 @@ public class Drone extends Bot{
     public float getZ(){return z;}
     public void setZ(float z){this.z = z;}
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return string of this vehicles' id, idStart, idEnd, percentageCompleted and its type (drone)
+     */
     @Override
     public String toString() {
 

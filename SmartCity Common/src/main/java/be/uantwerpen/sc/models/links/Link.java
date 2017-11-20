@@ -5,6 +5,12 @@ import be.uantwerpen.sc.models.points.Point;
 import javax.persistence.*;
 
 /**
+ * Defines the link object, a link is a connection between two tiles.
+ * <p>A link is defined by an id, a startPoint, a stopPoint, the length, the weight and a string defining access </p>
+ * <p>Start- and stopPoint are </p>
+ *
+ * @author Niels
+ * @author Floris
  * Created by Niels on 24/03/2016.
  */
 @Entity
@@ -33,7 +39,13 @@ public class Link
     }
 
 
-
+    /**
+     * Override of the inherited equals method. This method will compare if the given parameter is the same as this object itself.
+     * It compares the id attribute of the Link object.
+     *
+     * @param o The bot object against which is to be checked.
+     * @return true if the object is the same as this, false otherwise
+     */
     @Override
     public boolean equals(Object o)
     {
@@ -47,6 +59,11 @@ public class Link
         return true;
     }
 
+    /**
+     * Makes a hash for this object based on id
+     *
+     * @return The hash
+     */
     @Override
     public int hashCode()
     {
@@ -113,18 +130,23 @@ public class Link
         this.access = acces;
     }
 
+    /**
+     * Overrides the inherited toString() method
+     *
+     * @return string of this link's id, startPoint, stopPoint, access and weight
+     */
     @Override
     public String toString() {
         return "{" +
                 "\"id\" :" + id +
                 ", \"startPoint\" : " + startPoint.getId() +
                 ", \"stopPoint\" : " + stopPoint.getId() +
-                ", \"acces\" : \" : " + access +
+                ", \"access\" : \" : " + access +
                 "\", \"weight\" :" + weight +
                 '}';
     }
 
-    //call method when avoiding toString method of the subclasses
+/*    //call method when avoiding toString method of the subclasses
     public String toStringTop() {
         return "{" +
                 "\"id\" : " + id +
@@ -133,5 +155,5 @@ public class Link
                 ", \"vehicle\" : \"" + access +
                 "\", \"weight\" : " + weight +
                 "}";
-    }
+    }*/
 }

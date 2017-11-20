@@ -35,6 +35,11 @@ public class Car extends Bot{
     public float getW(){return w;}
     public void setW(float w){this.w = w;}
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return string of this vehicles' id, idStart, idEnd, percentageCompleted and its type (car)
+     */
     @Override
     public String toString() {
 

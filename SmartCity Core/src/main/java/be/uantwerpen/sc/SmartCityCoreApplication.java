@@ -11,11 +11,18 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @SpringBootApplication(exclude = {EmbeddedServletContainerAutoConfiguration.class})
 public class SmartCityCoreApplication extends SpringBootServletInitializer
 {
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args)
 	{
 		SpringApplication.run(SmartCityCoreApplication.class, args);
 	}
 
+	/**
+	 * @param applicationBuilder
+	 * @return this class
+	 */
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder applicationBuilder)
 	{

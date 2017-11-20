@@ -111,7 +111,7 @@ public class BotController
         }else if(type.equals("drone")){
             bot = new Drone();
         }else if(type.equals("light")) {
-            bot = new Light();
+            bot = new TrafficLight();
         }else if(type.equals("robot")) {
             bot = new Robot();
         }else{
