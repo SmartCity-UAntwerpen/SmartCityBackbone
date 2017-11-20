@@ -3,6 +3,8 @@ package be.uantwerpen.sc.models.points;
 import javax.persistence.*;
 
 /**
+ *
+ * @author Niels
  * Created by Niels on 24/03/2016.
  */
 @Entity
@@ -12,9 +14,9 @@ public class Point
 {
     private Long id;
 
-    private String pointType;
-    private String access;
-    private Long hub;
+    private String pointType; //TODO: figure out different types a point can be
+    private String access; //TODO: what types of access
+    private Long hub; //TODO: What is the hub
     private int xCoord;
     private int yCoord;
 
@@ -89,6 +91,13 @@ public class Point
     }
 
 
+    /**
+     * Overrides inherited equals method
+     * <p>Commpares class, id and pointType</p>
+     *
+     * @param o The object o be checked against
+     * @return
+     */
     @Override
     public boolean equals(Object o)
     {
@@ -103,6 +112,11 @@ public class Point
         return true;
     }
 
+    /**
+     * Makes a hash for this object based on id and pointType
+     *
+     * @return The hash
+     */
     @Override
     public int hashCode()
     {
@@ -113,6 +127,7 @@ public class Point
         return result;
     }
 
+    //TODO: Again toStringTop
     public String toStringTop()
     {
         return "{" +

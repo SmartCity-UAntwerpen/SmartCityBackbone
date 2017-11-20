@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
+ *  Inherits from Point
+ *
  * Created by quent on 5/17/2017.
  */
 @Entity
@@ -15,7 +17,7 @@ public class PointCar extends Point{
     private float x;
     private float y;
     private float z;
-    private float w;
+    private float w; //TODO: what is w?
 
     @Basic
     @Column(name = "x")

@@ -15,7 +15,7 @@ import javax.persistence.Table;
 public class PointRobot extends Point {
 
     private String rfid;
-    private int pointLock;
+    private int pointLock; //TODO: What is pointLock?
 
     @Basic
     @Column(name = "rfid")

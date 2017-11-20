@@ -146,6 +146,8 @@ public class Link
                 '}';
     }
 
+
+    //TODO: figure out if this piece of code is needed
 /*    //call method when avoiding toString method of the subclasses
     public String toStringTop() {
         return "{" +

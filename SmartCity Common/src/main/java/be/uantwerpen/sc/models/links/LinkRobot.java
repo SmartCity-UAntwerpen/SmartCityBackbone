@@ -8,6 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
+ * TODO: figure out why this class exists
+ *
+ * @author Quent
+ * @author Floris
  * Created by quent on 5/10/2017.
  */
 @Entity

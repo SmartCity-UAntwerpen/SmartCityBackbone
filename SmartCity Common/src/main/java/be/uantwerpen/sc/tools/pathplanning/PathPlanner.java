@@ -7,5 +7,6 @@ import java.util.List;
  */
 public interface PathPlanner
 {
+    //TODO: Where is calculatePath implemented?
     List<Object> calculatePath(AbstractMap map, int start, int stop);
 }
