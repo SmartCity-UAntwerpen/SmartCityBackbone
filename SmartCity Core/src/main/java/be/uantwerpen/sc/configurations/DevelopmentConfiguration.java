@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 /**
+ * Starts development console at "http://localhost:1994/h2console/"
+ *
  * Created by Thomas on 25/02/2016.
  */
 @Profile("dev")
@@ -20,7 +22,7 @@ public class DevelopmentConfiguration
     ServletRegistrationBean h2servletRegistration()
     {
         ServletRegistrationBean registrationBean = new ServletRegistrationBean(new WebServlet());
-        registrationBean.addUrlMappings("/h2console/*");
+        registrationBean.addUrlMappings("/h2console/*"); //to access console surf to: "http://localhost:1994/h2console/" when in dev mode
 
         return registrationBean;
     }

@@ -7,6 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
+ * Not a java interface
+ * TODO: Creates repo in mysql?
+ *
+ * Also used in RobotBackEnd
  * Created by Niels on 16/03/2016.
  */
 @Repository

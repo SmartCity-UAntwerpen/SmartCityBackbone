@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 /**
+ * TODO: fix descriptor
+ *
  * Created by Thomas on 25/02/2016.
  */
 @Configuration

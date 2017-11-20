@@ -17,11 +17,11 @@ import javax.persistence.*;
 @Table(name = "bot", schema = "", catalog = "core")
 public class Bot {
     private Long id;
-    private Long jobId;
+    private Long jobId; //deprecated, managed in MaaS
     private Long travelledDistance;
     private Integer percentageCompleted;
-    private String state;
-    private Link linkId;
+    private String state; //unused
+    private Link linkId; //TODO: In documentation it seems this the  link the bot is currently on, find out if this is indeed the case
 
     @Id
     @Column(name = "rid")

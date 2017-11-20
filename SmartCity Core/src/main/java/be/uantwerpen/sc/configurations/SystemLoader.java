@@ -8,11 +8,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
+ * Runs after other configurations, starts TerminalService
+ *
  * Created by Thomas on 25/02/2016.
  */
 @Configuration
 public class SystemLoader implements ApplicationRunner
 {
+    /**
+     * TerminalService allows the user to input arguments in the console
+     *
+     * @see TerminalService
+     */
     @Autowired
     private TerminalService terminalService;
 
@@ -33,6 +40,7 @@ public class SystemLoader implements ApplicationRunner
             }
             catch(InterruptedException ex)
             {
+                ex.printStackTrace();
                 //Thread interrupted
             }
 

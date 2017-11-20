@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 /**
+ * TODO: fix descriptor
+ *
  * Created by Thomas on 28/03/2016.
  */
 @Profile("standalone")
@@ -14,4 +16,5 @@ import org.springframework.context.annotation.Profile;
 public class StandAloneConfiguration
 {
     //Configurations for Stand-Alone mode
+    //TODO: configure this?
 }

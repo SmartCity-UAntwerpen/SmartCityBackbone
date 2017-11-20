@@ -147,8 +147,8 @@ public class Link
     }
 
 
-    //TODO: figure out if this piece of code is needed
-/*    //call method when avoiding toString method of the subclasses
+    //TODO: figure out if this piece of code is needed, it is needed in SmartCity Core -> models.map -> CustomMap. Why this instead of toString()?
+    //call method when avoiding toString method of the subclasses
     public String toStringTop() {
         return "{" +
                 "\"id\" : " + id +
@@ -157,5 +157,5 @@ public class Link
                 ", \"vehicle\" : \"" + access +
                 "\", \"weight\" : " + weight +
                 "}";
-    }*/
+    }
 }
