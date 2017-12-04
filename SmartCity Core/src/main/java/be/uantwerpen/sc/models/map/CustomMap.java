@@ -40,7 +40,11 @@ public class CustomMap implements AbstractMap
 
     public List<Point> getPointList(){return pointList;}
 
-    //returns jsonstring of links for the MaaS backbone
+    /**
+     * Iterates through all links and adds their strings
+     *
+     * @return JSON String of links for the MaaS backbone
+     */
     public String getTopMapLinksString(){
         String str = "[ ";
         for(Link link : linkList){
@@ -52,7 +56,11 @@ public class CustomMap implements AbstractMap
         return str;
     }
 
-    //returns jsonstring of points for the MaaS backbone
+    /**
+     * Iterates through all points and adds their strings
+     *
+     * @return JSON string of points for the MaaS backbone
+     */
     public String getTopMapPointsString(){
         String str = "[ ";
 
@@ -65,7 +73,11 @@ public class CustomMap implements AbstractMap
         return str;
     }
 
-    //returns jsonstring of points for the visualisation
+    /**
+     * Iterates through all points and adds their information to the string
+     *
+     * @return JSON string of points for the visualisation
+     */
     public String getVisualPointsString(){
         String str = "{\"pointList\" :[ ";
         for(Point point : pointList){
@@ -75,7 +87,7 @@ public class CustomMap implements AbstractMap
                     + ", \"access\" : \"" + point.getAccess()
                     + "\", \"type\" : \"" + point.getPointType()
                     + "\", \"neighbours\" : [ ";
-            for(Link link : linkList){
+            for(Link link : linkList){ //TODO: make more efficient by defining neighbours of a link instead of iterating through all
                 if(link.getStartPoint().equals(point)){
                     str = str + "{\"neighbour\" : " + link.getStopPoint().getId() + "},";
                 }
@@ -87,6 +99,9 @@ public class CustomMap implements AbstractMap
     }
 
 
+    /**
+     * @return String of all points and links
+     */
     @Override
     public String toString() {
         return "{" +
@@ -95,7 +110,11 @@ public class CustomMap implements AbstractMap
                 '}';
     }
 
-    //returns string for vehicles
+
+    /**
+     * @param type The type to be put to string, e.g. car
+     * @return If type is car or drone, a list of points. Else a list of points and links
+     */
     public String toString(String type) {
 
         if(type.equals("car")||type.equals("drone")) {

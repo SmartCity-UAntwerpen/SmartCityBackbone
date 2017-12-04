@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="SmartCity Common" />
-        <module name="SmartCity Core" />
+        <module name="SCCore" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
+      <module name="SCCore" target="1.8" />
       <module name="SmartCity Common" target="1.5" />
       <module name="SmartCity Core" target="1.8" />
     </bytecodeTargetLevel>

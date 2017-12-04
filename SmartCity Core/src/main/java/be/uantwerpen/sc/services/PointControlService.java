@@ -16,6 +16,9 @@ public class PointControlService
     @Autowired
     private PointRepository pointRepository;
 
+    /**
+     * @return List of all points in the db
+     */
     public List<Point> getAllPoints()
     {
         return pointRepository.findAll();

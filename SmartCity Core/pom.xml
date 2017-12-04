@@ -125,6 +125,12 @@
 			<version>3.4.1</version>
 		</dependency>
 
+		<!-- Smartcity Common -->
+		<dependency>
+			<groupId>be.uantwerpen.sc</groupId>
+			<artifactId>SmartCityCommon</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 	</dependencies>
 

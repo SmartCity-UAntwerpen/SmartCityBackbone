@@ -46,8 +46,6 @@ public class TerminalService
     }
 
     /**
-     *
-     *
      * @param commandString The string entered in the console
      */
     private void parseCommand(String commandString)

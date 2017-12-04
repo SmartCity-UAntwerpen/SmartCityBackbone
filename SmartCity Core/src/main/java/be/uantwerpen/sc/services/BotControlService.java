@@ -5,13 +5,13 @@ import be.uantwerpen.sc.models.links.Link;
 import be.uantwerpen.sc.repositories.BotRepository;
 import com.google.gson.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +38,18 @@ public class BotControlService {
     public List<Bot> getAllBots() {
         return botRepository.findAll();
     }
+
+    @Value("${bot.ip}")
+    String ip;
+
+    @Value("${drone.port}")
+    String dronePort;
+
+    @Value("${car.port}")
+    String carPort;
+
+    @Value("${robot.port}")
+    String robotPort;
 
     /**
      * Update a bot in the database
@@ -95,9 +107,9 @@ public class BotControlService {
         try {
 
             //TODO: set url string in config
-            URL urlDrone = new URL("http://143.129.39.151:8082/posAll");
-            URL urlCar = new URL("http://143.129.39.151:8081/carmanager/posAll");
-            URL urlRobot = new URL("http://143.129.39.151:8083/bot/posAll");
+            URL urlDrone = new URL("http://" + ip + ":"+dronePort+"/posAll");
+            URL urlCar = new URL("http://" + ip + ":"+carPort+"/carmanager/posAll");
+            URL urlRobot = new URL("http://" + ip + ":"+robotPort+"/bot/posAll");
 
             HttpURLConnection connDrone = (HttpURLConnection) urlDrone.openConnection();
             HttpURLConnection connCar = (HttpURLConnection) urlCar.openConnection();
@@ -144,8 +156,6 @@ public class BotControlService {
             connCar.disconnect();
             connRobot.disconnect();
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -229,9 +239,11 @@ public class BotControlService {
         }
     }
 
+    /**
+     * @return JSON string of all vehicles' id, idStart, idEnd and percentageCompleted
+     */
     //returns jsonString with the location of every available vehicle
     public String getPosAll() {
-
         String str = "{\"vehicles\" : [ ";
         for (Bot bot : getAllBots()) {
             str = str + bot.toString() + ",";
@@ -239,6 +251,10 @@ public class BotControlService {
         return str.substring(0, str.length() - 1) + "]}";
     }
 
+    /**
+     * @param id The Id to get the data from
+     * @return JSON string of specified vehicles' id, idStart, idEnd and percentageCompleted
+     */
     //returns jsonString with the location of a vehicle
     public String getPosOne(Long id) {
 

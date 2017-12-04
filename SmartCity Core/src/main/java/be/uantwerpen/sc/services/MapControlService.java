@@ -8,15 +8,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Created by Niels on 14/04/2016.
  */
 @Service
-public class MapControlService
-{
+public class MapControlService {
     @Autowired
     private PointControlService pointControlService;
 
@@ -32,41 +29,49 @@ public class MapControlService
     private ArrayList<Link> referenceList;
 
 
-
-    //builds map of given type
-    public CustomMap buildCustomMapJson(String type)
-    {
+    /**
+     * TODO: figure out more
+     * Builds map of given type
+     *
+     * @param type
+     * @return the created map of type CustomMap
+     */
+    public CustomMap
+    buildCustomMapJson(String type) {
         CustomMap map = new CustomMap();
 
-        for(Link link : linkControlService.getAllLinks()){
-            if(type.equals("visual") && !link.getAccess().contains("Top")){
+        for (Link link : linkControlService.getAllLinks()) {
+            if (type.equals("visual") && !link.getAccess().contains("Top")) {
                 map.addLink(link);
-            }else if(type.equals(link.getAccess())){
+            } else if (type.equals(link.getAccess())) {
                 map.addLink(link);
             }
         }
 
-        for(Point point : pointControlService.getAllPoints())
-        {
-            if(type.equals("visual")){
+        for (Point point : pointControlService.getAllPoints()) {
+            if (type.equals("visual")) {
                 map.addPoint(point);
-            }else if(type.equals(point.getAccess())){
-            map.addPoint(point);
+            } else if (type.equals(point.getAccess())) {
+                map.addPoint(point);
             }
         }
 
         return map;
     }
 
-    //this function creates a top view of the hubs and links between individual hubs
-    //since the MaaS works with a simplified version of the map, 'virtual' links are generated and returned
-    //firstly links are drawn between points for different kind of vehicles within the same 'hub'
-    //secondly link are made between endpoint that have acces to each other
-    public CustomMap buildTopMapJson(){
+    /**
+     * This function creates a top view of the hubs and links between individual hubs.
+     * The MaaS works with a simplified version of the map, therefore 'virtual' links are generated and returned.
+     * First links are drawn between points for different kind of vehicles within the same 'hub',
+     * secondly links are made between endpoint that have access to each other
+     *
+     * @return the topMap if it already exists, if it doesn't exist when calling this method, it will be created
+     */
+    public CustomMap buildTopMapJson() {
 
-        if(topMapCreated){
+        if (topMapCreated) {
             return topMap;
-        }else {
+        } else {
             CustomMap map = new CustomMap();
 
             for (Point point : pointControlService.getAllPoints()) {
@@ -99,17 +104,17 @@ public class MapControlService
                     if (idHub.equals(otherPoint.getHub()) && !point.equals(otherPoint)) {
 
                         boolean testDuplicate = false;
-                        for(Link refLink : linkControlService.getAllLinks()){
-                            if(otherPoint.equals(refLink.getStopPoint()) && point.equals(refLink.getStartPoint()) && refLink.getAccess().equals("wait")){
+                        for (Link refLink : linkControlService.getAllLinks()) {
+                            if (otherPoint.equals(refLink.getStopPoint()) && point.equals(refLink.getStartPoint()) && refLink.getAccess().equals("wait")) {
                                 testDuplicate = true;
-                                if(!map.getLinkList().contains(refLink)){
+                                if (!map.getLinkList().contains(refLink)) {
                                     map.addLink(refLink);
                                 }
                                 break;
                             }
                         }
 
-                        if(!testDuplicate) {
+                        if (!testDuplicate) {
                             Link topLink = new Link();
                             topLink.setLength(new Long(1));
                             topLink.setAccess("wait");
@@ -130,40 +135,51 @@ public class MapControlService
         }
     }
 
-    //recursive algorithm for finding links between endpoints
-    private CustomMap createTopLinks(Point originalPoint, Point pointStart, Long hub, List<Link> links, CustomMap map){
+    /**
+     * Recursive algorithm for finding links between endpoints
+     * TODO: fix descriptor
+     *
+     * @param originalPoint
+     * @param pointStart
+     * @param hub
+     * @param links
+     * @param map
+     * @return The map
+     */
+    private CustomMap createTopLinks(Point originalPoint, Point pointStart, Long hub, List<Link> links, CustomMap map) {
         Point otherPoint;
 
-        for(Link link : links){
+        for (Link link : links) {
             //get all links beginning from current point
 
-            //check referencelist if the the link has been handled already
-            if(!referenceList.contains(link)) {
+            //check referenceList if the the link has been handled already
+            if (!referenceList.contains(link)) {
 
                 if (link.getStartPoint().getId().equals(pointStart.getId())) {
-                    //check if the link ends in an endpoint, if it does, create toplink
 
+                    //check if the link ends in an endpoint, if it does, create toplink
                     if (link.getStopPoint().getPointType().equals("ENDPOINT")) {
+
                         //check if arrival point is same as start
                         if (link.getStopPoint().getHub().equals(hub)) {
                             //do nothing
                         } else {
 
                             boolean testDuplicate = false;
-                            for(Link refLink : linkControlService.getAllLinks()){
+                            for (Link refLink : linkControlService.getAllLinks()) {
 
                                 String refAccess = link.getAccess() + "Top";
 
-                                if(link.getStopPoint().equals(refLink.getStopPoint()) && originalPoint.equals(refLink.getStartPoint()) && refAccess.equals(refLink.getAccess())){
+                                if (link.getStopPoint().equals(refLink.getStopPoint()) && originalPoint.equals(refLink.getStartPoint()) && refAccess.equals(refLink.getAccess())) {
                                     testDuplicate = true;
-                                    if(!map.getLinkList().contains(refLink)){
+                                    if (!map.getLinkList().contains(refLink)) {
                                         map.addLink(refLink);
                                     }
                                     break;
                                 }
                             }
 
-                            if(!testDuplicate) {
+                            if (!testDuplicate) {
                                 for (Point point : pointControlService.getAllPoints()) {
                                     if (point.equals(link.getStopPoint())) {
                                         otherPoint = point;
@@ -180,7 +196,7 @@ public class MapControlService
                             }
                         }
                     } else {
-                        //add handled links to referencearray to prevent loops
+                        //add handled links to referenceList to prevent loops
                         referenceList.add(link);
 
                         createTopLinks(originalPoint, link.getStopPoint(), hub, links, map);

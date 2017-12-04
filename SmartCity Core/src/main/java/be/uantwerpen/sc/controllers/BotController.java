@@ -1,6 +1,6 @@
 package be.uantwerpen.sc.controllers;
 
-import be.uantwerpen.sc.models.*;
+import be.uantwerpen.sc.models.Robot;
 import be.uantwerpen.sc.models.links.Link;
 import be.uantwerpen.sc.services.BotControlService;
 import be.uantwerpen.sc.services.LinkControlService;
@@ -12,111 +12,135 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
+ * TODO: fix descriptor
  *
  * Created by Thomas on 25/02/2016.
  */
 @RestController
 @RequestMapping("/bot/")
-public class BotController
-{
+public class BotController {
     @Autowired
     private BotControlService botControlService;
 
     @Autowired
     private LinkControlService linkControlService;
 
+    /**
+     * Asks BotControlService to search the database for all bots and returns them as a List of type Bot
+     *
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET)
-    public List<Bot> allBots()
-    {
-        List<Bot> robotEntityList = botControlService.getAllBots();
+    public List<be.uantwerpen.sc.models.Bot> allBots() {
+        List<be.uantwerpen.sc.models.Bot> robotEntityList = botControlService.getAllBots();
 
         return robotEntityList;
     }
 
-    @RequestMapping(value = "{id}",method = RequestMethod.GET)
-    public Bot getBot(@PathVariable("id") Long id)
-    {
+    /**
+     * @param id The id of the bot that has to be returned
+     * @return The specified Bot
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public be.uantwerpen.sc.models.Bot getBot(@PathVariable("id") Long id) {
         return botControlService.getBot(id);
     }
 
-    @RequestMapping(value = "{id}",method = RequestMethod.POST)
-    public void saveBot(@PathVariable("id") Long id, @RequestBody Bot bot)
-    {
+    /**
+     * @param id The id of the bot that you want to save
+     * @param bot The Bot object to save
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.POST)
+    public void saveBot(@PathVariable("id") Long id, @RequestBody be.uantwerpen.sc.models.Bot bot) {
         botControlService.saveBot(bot);
     }
 
-    @RequestMapping(value = "{id}",method = RequestMethod.PUT)
-    public void updateBot(@PathVariable("id") Long id, @RequestBody Bot bot)
-    {
+    /**
+     * @param id The id of the bot that you want to update
+     * @param bot The Bot object you want to update
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    public void updateBot(@PathVariable("id") Long id, @RequestBody be.uantwerpen.sc.models.Bot bot) {
         botControlService.updateBot(bot);
     }
 
-    //not used in current design
-    @RequestMapping(value = "updateBotTest/{id}",method = RequestMethod.GET)
-    public void updateBotTest(@PathVariable("id") Long id)
-    {
-        Bot botEntity = new Bot();
+
+    /**
+     * Deprecated/unused
+     *
+     * @param id Id of the bot
+     */
+    @RequestMapping(value = "updateBotTest/{id}", method = RequestMethod.GET)
+    public void updateBotTest(@PathVariable("id") Long id) {
+        be.uantwerpen.sc.models.Bot botEntity = new be.uantwerpen.sc.models.Bot();
         botEntity.setId(id);
         botEntity.setState("Updated");
         botControlService.updateBot(botEntity);
     }
 
-    //not used in current design
-    @RequestMapping(value = "test",method = RequestMethod.GET)
-    public Bot testRestBot()
-    {
-        return new Bot();
+
+    /**
+     * Deprecated/Unused
+     *
+     * @return Bot object
+     */
+    @RequestMapping(value = "test", method = RequestMethod.GET)
+    public be.uantwerpen.sc.models.Bot testRestBot() {
+        return new be.uantwerpen.sc.models.Bot();
     }
 
-    //not used in current design
-    @RequestMapping(value = "savetest",method = RequestMethod.GET)
-    public void saveBotTest()
-    {
-        Bot bot = new Bot();
+
+    /**
+     * Deprecated/Unused
+     */
+    @RequestMapping(value = "savetest", method = RequestMethod.GET)
+    public void saveBotTest() {
+        be.uantwerpen.sc.models.Bot bot = new be.uantwerpen.sc.models.Bot();
         bot.setState("test");
         botControlService.saveBot(bot);
     }
 
-    //not used in current design
-    @RequestMapping(value = "goto/{id}/{rid}",method = RequestMethod.GET)
-    public String goTo(@PathVariable("id") Long id, @PathVariable("rid") Long rid)
-    {
-        Bot botEntity = botControlService.getBot(rid);
+    /**
+     * Deprecated/Unused
+     */
+    @RequestMapping(value = "goto/{id}/{rid}", method = RequestMethod.GET)
+    public String goTo(@PathVariable("id") Long id, @PathVariable("rid") Long rid) {
+        be.uantwerpen.sc.models.Bot botEntity = botControlService.getBot(rid);
         /*if (!pointEntities.contains(botEntity.getLinkId().getStopId())){
             pointEntities.add(botEntity.getLinkId().getStopId());
         }*/
-        if (botEntity != null)
-        {
-            if (botEntity.getPercentageCompleted() >= 50)
-            {
-               // stack.push(botEntity.getLinkId().getStopId());
+        if (botEntity != null) {
+            if (botEntity.getPercentageCompleted() >= 50) {
+                // stack.push(botEntity.getLinkId().getStopId());
             }
-        }
-        else
-        {
+        } else {
             System.out.println("Robot does not exist");
         }
 
         return "Something";
     }
 
+    /**
+     * When a new bot subscribes, it sends a request with its type and in return gets an ID
+     *
+     * @param type The type of the bot performing the request
+     * @return An ID for the bot
+     */
     //when new bot subscribes, it sends a request with its type and gets an ID in return
     @Produces("application/json")
     @RequestMapping(value = "newBot/{type}", method = RequestMethod.GET)
-    public Long newRobot(@PathVariable("type") String type)
-    {
-        Bot bot = null;
-           //check if requesting bot is car, drone, light or robot and return ID.
-        if(type.equals("car")){
-            bot = new Car();
-        }else if(type.equals("drone")){
-            bot = new Drone();
-        }else if(type.equals("light")) {
-            bot = new TrafficLight();
-        }else if(type.equals("robot")) {
+    public Long newRobot(@PathVariable("type") String type) {
+        be.uantwerpen.sc.models.Bot bot = null;
+        //check if requesting bot is car, drone, light or robot and return ID.
+        if (type.equals("car")) {
+            bot = new be.uantwerpen.sc.models.Car();
+        } else if (type.equals("drone")) {
+            bot = new be.uantwerpen.sc.models.Drone();
+        } else if (type.equals("light")) {
+            bot = new be.uantwerpen.sc.models.TrafficLight();
+        } else if (type.equals("robot")) {
             bot = new Robot();
-        }else{
+        } else {
             System.out.println(type + " is not a valid type");
             return Long.valueOf(-1);
         }
@@ -132,77 +156,85 @@ public class BotController
         return bot.getId();
     }
 
-    //not used in current design
+    /**
+     * Deprecated/Unused
+     */
     @RequestMapping(value = "{id}/lid/{lid}", method = RequestMethod.GET)
-    public void locationLink(@PathVariable("id") Long id, @PathVariable("lid") Long lid)
-    {
-        Bot bot = this.getBot(id);
+    public void locationLink(@PathVariable("id") Long id, @PathVariable("lid") Long lid) {
+        be.uantwerpen.sc.models.Bot bot = this.getBot(id);
         Link link;
 
-        if(bot != null)
-        {
+        if (bot != null) {
             link = linkControlService.getLink(lid);
 
-            if(link != null)
-            {
+            if (link != null) {
                 bot.setLinkId(link);
                 botControlService.updateBot(bot);
-            }
-            else
-            {
+            } else {
                 System.out.println("Link with id: " + lid + " not found!");
             }
-        }
-        else
-        {
+        } else {
             System.out.println("Bot with id:" + id + " not found!");
         }
     }
 
-    //not used in current design
-    public void updateLocation(Long id, int mm)
-    {
-        Bot bot = this.getBot(id);
+    /**
+     * Deprecated/Unused
+     */
+    public void updateLocation(Long id, int mm) {
+        be.uantwerpen.sc.models.Bot bot = this.getBot(id);
 
-        if(bot != null)
-        {
+        if (bot != null) {
             bot.setPercentageCompleted(mm);
             bot.setState("Updated");
             botControlService.saveBot(bot);
         }
     }
 
-    @RequestMapping(value = "/delete/{rid}",method = RequestMethod.GET)
-    public void deleteBot(@PathVariable("rid") Long rid)
-    {
+    /**
+     * @param rid Deletes bot with this rid
+     */
+    @RequestMapping(value = "/delete/{rid}", method = RequestMethod.GET)
+    public void deleteBot(@PathVariable("rid") Long rid) {
         botControlService.deleteBot(rid);
         System.out.println("Bot with id: " + rid + " deleted from DB");
     }
 
-    @RequestMapping(value = "/resetbots",method = RequestMethod.GET)
-    public void resetBots()
-    {
+    /**
+     * WARNING: Deletes all bots
+     * Identical to deleteAll()
+     */
+    @RequestMapping(value = "/resetbots", method = RequestMethod.GET)
+    public void resetBots() {
         botControlService.resetBots();
     }
 
+    /**
+     * @return JSON string with the location, id, idStart, idEnd and percentage completed of every available bot
+     */
     @RequestMapping(value = "/getAllVehicles", method = RequestMethod.GET)
-    public String posAll()
-    {
+    public String posAll() {
         botControlService.setPosAll();
         return botControlService.getPosAll();
     }
 
+    /**
+     * @param id Id of the bot you want data from
+     * @return JSON string with the location, id, idStart, idEnd and percentage completed of one bot
+     */
     @RequestMapping(value = "/getOneVehicle/{id}", method = RequestMethod.GET)
-    public String posOne(@PathVariable("id") Long id)
-    {
+    public String posOne(@PathVariable("id") Long id) {
         botControlService.setPosAll();
         return botControlService.getPosOne(id);
     }
 
-    //duplicate method
+    /**
+     * WARNING: Deletes all bots
+     * Identical to resetBots()
+     * @return String "Bots Destroyed..."
+     */
     @RequestMapping(value = "/clearBots", method = RequestMethod.GET)
-    public String deleteAll()
-    {
+    public String deleteAll() {
         botControlService.resetBots();
         System.out.println("Bots Destroyed...");
         return "Bots Destroyed...";

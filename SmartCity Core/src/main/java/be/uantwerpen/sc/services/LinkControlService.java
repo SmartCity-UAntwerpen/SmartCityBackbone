@@ -11,23 +11,19 @@ import java.util.List;
  * Created by Niels on 30/03/2016.
  */
 @Service
-public class LinkControlService
-{
+public class LinkControlService {
     @Autowired
     private LinkRepository linkRepository;
 
-    public List<Link> getAllLinks()
-    {
+    public List<Link> getAllLinks() {
         return linkRepository.findAll();
     }
 
-    public Link saveLink(Link link)
-    {
+    public Link saveLink(Link link) {
         return linkRepository.save(link);
     }
 
-    public Link getLink(Long id)
-    {
+    public Link getLink(Long id) {
         return linkRepository.findOne(id);
     }
 }
