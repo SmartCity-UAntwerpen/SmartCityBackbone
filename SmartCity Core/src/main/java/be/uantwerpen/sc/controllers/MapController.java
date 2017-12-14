@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.ws.rs.Produces;
 
 /**
- * TODO: fix descriptor
+ * Defines functions that can be called to control different kinds of maps,
+ * delegates mostly to MapControlService.
  *
- * Created by Niels on 3/04/2016.
+ * @see MapControlService
  */
 @RestController
 @RequestMapping(value = "/map/")
@@ -38,7 +39,11 @@ public class MapController {
         return mapControlService.buildCustomMapJson(type).toString(type);
     }
 
-    //creates a string of links for the MaaS backbone
+    /**
+     * Creates a JSON String of links for the MaaS backbone
+     *
+     * @return JSON String of links for the MaaS backbone
+     */
     @Produces("application/json")
     @RequestMapping(value = "topmapjson/links", method = RequestMethod.GET)
     public String topLinksStringJson() {

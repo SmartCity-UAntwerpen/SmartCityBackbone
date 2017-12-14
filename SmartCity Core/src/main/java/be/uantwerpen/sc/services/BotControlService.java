@@ -105,8 +105,6 @@ public class BotControlService {
         String stringRobot = "";
 
         try {
-
-            //TODO: set url string in config
             URL urlDrone = new URL("http://" + ip + ":"+dronePort+"/posAll");
             URL urlCar = new URL("http://" + ip + ":"+carPort+"/carmanager/posAll");
             URL urlRobot = new URL("http://" + ip + ":"+robotPort+"/bot/posAll");

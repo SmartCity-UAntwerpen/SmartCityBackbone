@@ -87,7 +87,7 @@ public class CustomMap implements AbstractMap
                     + ", \"access\" : \"" + point.getAccess()
                     + "\", \"type\" : \"" + point.getPointType()
                     + "\", \"neighbours\" : [ ";
-            for(Link link : linkList){ //TODO: make more efficient by defining neighbours of a link instead of iterating through all
+            for(Link link : linkList){ //TODO: Possibly make more efficient by defining neighbours of a link instead of iterating through all
                 if(link.getStartPoint().equals(point)){
                     str = str + "{\"neighbour\" : " + link.getStopPoint().getId() + "},";
                 }
