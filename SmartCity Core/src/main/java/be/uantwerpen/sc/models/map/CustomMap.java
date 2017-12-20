@@ -7,10 +7,6 @@ import be.uantwerpen.sc.tools.pathplanning.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by quent on 5/16/2017.
- */
-
 public class CustomMap implements AbstractMap
 {
     private List<Link> linkList;
@@ -112,12 +108,15 @@ public class CustomMap implements AbstractMap
 
 
     /**
-     * @param type The type to be put to string, e.g. car
+     * @param type The type to be put to string, e.g. carV
      * @return If type is car or drone, a list of points. Else a list of points and links
      */
     public String toString(String type) {
-
-        if(type.equals("car")||type.equals("drone")) {
+        System.out.println("got here: "+type);
+        if(type.equals("drone")) {
+            return "" + pointList + "";
+        }else if(type.equals("car")) {
+            System.out.println(pointList);
             return "" + pointList + "";
         }else{
             return "{" +

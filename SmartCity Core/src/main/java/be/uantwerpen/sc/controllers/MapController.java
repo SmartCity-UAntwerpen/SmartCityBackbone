@@ -36,6 +36,7 @@ public class MapController {
             mapControlService.buildTopMapJson();
             return mapControlService.buildCustomMapJson("visual").getVisualPointsString();
         }
+        //further handling in customMpa when type is a car, bot, drone, ...
         return mapControlService.buildCustomMapJson(type).toString(type);
     }
 
