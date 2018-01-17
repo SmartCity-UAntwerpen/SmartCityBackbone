@@ -10,17 +10,13 @@ import org.springframework.context.annotation.Profile;
 
 /**
  * Starts development console at "http://localhost:1994/h2console/"
- *
- * Created by Thomas on 25/02/2016.
  */
 @Profile("dev")
 @Configuration
 @Import(EmbeddedServletContainerAutoConfiguration.class)
-public class DevelopmentConfiguration
-{
+public class DevelopmentConfiguration {
     @Bean
-    ServletRegistrationBean h2servletRegistration()
-    {
+    ServletRegistrationBean h2servletRegistration() {
         ServletRegistrationBean registrationBean = new ServletRegistrationBean(new WebServlet());
         registrationBean.addUrlMappings("/h2console/*"); //to access console surf to: "http://localhost:1994/h2console/" when in dev mode
 

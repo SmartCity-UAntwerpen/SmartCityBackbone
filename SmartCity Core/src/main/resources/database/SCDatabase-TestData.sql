@@ -25,7 +25,7 @@ USE `core`;
 
 --
 -- Table structure for table `bot`
--- should be dynamically made, so ignore
+-- structure is already  created in SCDatabase-Schema, values should be created
 --
 
 DROP TABLE IF EXISTS `bot`;
@@ -47,7 +47,6 @@ CREATE TABLE `bot` (
   CONSTRAINT `FK_g2k7qbjgq85d7hmmov6r4benu` FOREIGN KEY (`link_id`) REFERENCES `link` (`lid`)
 )
   ENGINE = InnoDB
-  AUTO_INCREMENT = 621
   DEFAULT CHARSET = utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -319,6 +318,7 @@ CREATE TABLE `link_robot` (
 
 --
 -- Dumping data for table `link_robot`
+-- Some numbers are missing, these are from deleted links
 --
 
 LOCK TABLES `link_robot` WRITE;
@@ -372,55 +372,60 @@ LOCK TABLES `point` WRITE;
 /*!40000 ALTER TABLE `point`
   DISABLE KEYS */;
 INSERT INTO `point` VALUES
-  (1, 'INTERSECTION', 	'robot', 5, 20, 0),
-  (2, 'INTERSECTION', 	'robot', 10, 20, 0),
-  (3, 'INTERSECTION', 	'robot', 10, 15, 0),
-  (4, 'ENDPOINT', 		'robot', 10, 10, 6),
-  (5, 'INTERSECTION', 	'robot', 10, 35, 0),
-  (6, 'ENDPOINT', 		'robot', 10, 40, 1),
-  (7, 'LIGHT', 			'robot', 15, 15, 0),
-  (8, 'INTERSECTION', 	'robot', 20, 20, 0),
-  (9, 'INTERSECTION', 	'robot', 20, 25, 0),
-  (10, 'ENDPOINT', 		'robot', 20, 35, 2),
-  (11, 'ENDPOINT', 		'robot', 30, 35, 3),
-  (12, 'LIGHT', 		'robot', 25, 30, 0),
-  (13, 'INTERSECTION', 	'robot', 30, 30, 0),
-  (14, 'INTERSECTION', 	'robot', 30, 25, 0),
-  (15, 'INTERSECTION', 	'robot', 35, 25, 0),
-  (16, 'INTERSECTION', 	'robot', 30, 20, 0),
-  (17, 'INTERSECTION', 	'robot', 35, 20, 0),
-  (18, 'ENDPOINT', 		'robot', 20, 10, 5),
-  (19, 'INTERSECTION', 	'robot', 30, 10, 0),
-  (20, 'ENDPOINT', 		'robot', 30, 5, 4),
-  (21, 'ENDPOINT', 		'robot', 90, 40, 9),
-  (22, 'INTERSECTION', 	'robot', 95, 40, 0),
-  (23, 'ENDPOINT', 		'robot', 95, 50, 8),
-  (24, 'INTERSECTION', 	'robot', 105, 40, 0),
-  (25, 'INTERSECTION', 	'robot', 105, 45, 0),
-  (26, 'INTERSECTION', 	'robot', 110, 40, 0),
-  (27, 'INTERSECTION', 	'robot', 110, 45, 0),
-  (28, 'INTERSECTION', 	'robot', 115, 45, 0),
-  (29, 'ENDPOINT', 		'robot', 125, 45, 10),
-  (30, 'INTERSECTION', 	'robot', 110, 55, 0),
-  (31, 'INTERSECTION', 	'robot', 105, 55, 0),
-  (32, 'ENDPOINT', 		'robot', 95, 65, 7),
-  (33, 'INTERSECTION', 	'robot', 100, 65, 0),
-  (34, 'INTERSECTION', 	'robot', 105, 70, 0),
-  (35, 'INTERSECTION', 	'robot', 105, 65, 0),
-  (36, 'INTERSECTION', 	'robot', 125, 65, 0),
-  (37, 'ENDPOINT', 		'robot', 125, 55, 11),
-  (38, 'ENDPOINT', 		'robot', 130, 65, 12),
-  (39, 'LIGHT', 		'robot', 100, 60, 0),
-  (40, 'LIGHT', 		'robot', 115, 50, 0),
-  (41, 'ENDPOINT', 		'drone', 8, 42, 1),
-  (42, 'ENDPOINT', 		'drone', 18, 37, 2),
-  (43, 'ENDPOINT', 		'drone', 33, 37, 3),
-  (44, 'ENDPOINT', 		'drone', 93, 67, 7),
-  (45, 'ENDPOINT', 		'drone', 88, 47, 9),
-  (46, 'ENDPOINT', 		'car', 93, 63, 7),
-  (47, 'ENDPOINT', 		'car', 33, 42, 3),
-  (48, 'ENDPOINT', 		'car', 28, 3, 4),
-  (49, 'ENDPOINT',		'car', 127, 43, 10);
+  -- Points for robots
+  (1, 'INTERSECTION', 'robot', 5, 20, 0),
+  (2, 'INTERSECTION', 'robot', 10, 20, 0),
+  (3, 'INTERSECTION', 'robot', 10, 15, 0),
+  (4, 'ENDPOINT', 'robot', 10, 10, 6),
+  (5, 'INTERSECTION','robot', 10, 35, 0),
+  (6, 'ENDPOINT', 'robot', 10, 40, 1),
+  (7, 'LIGHT','robot', 15, 15, 0),
+  (8, 'INTERSECTION', 'robot', 20, 20, 0),
+  (9, 'INTERSECTION', 'robot', 20, 25, 0),
+  (10, 'ENDPOINT', 'robot', 20, 35, 2),
+  (11, 'ENDPOINT', 'robot', 30, 35, 3),
+  (12, 'LIGHT', 'robot', 25, 30, 0),
+  (13, 'INTERSECTION', 'robot', 30, 30, 0),
+  (14, 'INTERSECTION', 'robot', 30, 25, 0),
+  (15, 'INTERSECTION', 'robot', 35, 25, 0),
+  (16, 'INTERSECTION', 'robot', 30, 20, 0),
+  (17, 'INTERSECTION', 'robot', 35, 20, 0),
+  (18, 'ENDPOINT', 'robot', 20, 10, 5),
+  (19, 'INTERSECTION', 'robot', 30, 10, 0),
+  (20, 'ENDPOINT', 'robot', 30, 5, 4),
+  (21, 'ENDPOINT', 'robot', 90, 40, 9),
+  (22, 'INTERSECTION', 'robot', 95, 40, 0),
+  (23, 'ENDPOINT', 'robot', 95, 50, 8),
+  (24, 'INTERSECTION','robot', 105, 40, 0),
+  (25, 'INTERSECTION', 'robot', 105, 45, 0),
+  (26, 'INTERSECTION', 'robot', 110, 40, 0),
+  (27, 'INTERSECTION', 'robot', 110, 45, 0),
+  (28, 'INTERSECTION', 'robot', 115, 45, 0),
+  (29, 'ENDPOINT', 'robot', 125, 45, 10),
+  (30, 'INTERSECTION', 'robot', 110, 55, 0),
+  (31, 'INTERSECTION','robot', 105, 55, 0),
+  (32, 'ENDPOINT', 'robot', 95, 65, 7),
+  (33, 'INTERSECTION','robot', 100, 65, 0),
+  (34, 'INTERSECTION', 'robot', 105, 70, 0),
+  (35, 'INTERSECTION', 'robot', 105, 65, 0),
+  (36, 'INTERSECTION', 'robot', 125, 65, 0),
+  (37, 'ENDPOINT', 'robot', 125, 55, 11),
+  (38, 'ENDPOINT', 'robot', 130, 65, 12),
+  (39, 'LIGHT', 'robot', 100, 60, 0),
+  (40, 'LIGHT', 'robot', 115, 50, 0),
+
+  -- Points for drone
+  (41, 'ENDPOINT', 'drone', 8, 42, 1),
+  (42, 'ENDPOINT', 'drone', 18, 37, 2),
+  (43, 'ENDPOINT', 'drone', 33, 37, 3),
+  (44, 'ENDPOINT', 'drone', 93, 67, 7),
+  (45, 'ENDPOINT', 'drone', 88, 47, 9),
+
+  -- Points for car
+  (46, 'ENDPOINT', 'car', 93, 63, 7),
+  (47, 'ENDPOINT', 'car', 33, 42, 3),
+  (48, 'ENDPOINT', 'car', 28, 3, 4),
+  (49, 'ENDPOINT','car', 127, 43, 10);
 /*!40000 ALTER TABLE `point`
   ENABLE KEYS */;
 UNLOCK TABLES;

@@ -8,11 +8,10 @@ import java.util.List;
 
 /**
  * Not a java interface
- *
+ * <p>
  * Also used in RobotBackEnd
  */
 @Repository
-public interface BotRepository extends CrudRepository<Bot, Long>
-{
+public interface BotRepository extends CrudRepository<Bot, Long> {
     List<Bot> findAll();
 }

@@ -7,14 +7,12 @@ import org.springframework.context.annotation.Profile;
 
 /**
  * TODO: fix descriptor
- *
+ * <p>
  * Created by Thomas on 28/03/2016.
  */
 @Profile("standalone")
 @Configuration
 @Import(EmbeddedServletContainerAutoConfiguration.class)
-public class StandAloneConfiguration
-{
+public class StandAloneConfiguration {
     //Configurations for Stand-Alone mode
-    //TODO: configure this?
 }

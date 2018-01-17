@@ -1,7 +1,7 @@
 package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.map.CustomMap;
-import be.uantwerpen.sc.services.*;
+import be.uantwerpen.sc.services.MapControlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

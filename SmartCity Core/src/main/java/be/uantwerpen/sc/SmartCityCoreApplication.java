@@ -9,23 +9,20 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @SpringBootApplication(exclude = {EmbeddedServletContainerAutoConfiguration.class})
-public class SmartCityCoreApplication extends SpringBootServletInitializer
-{
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args)
-	{
-		SpringApplication.run(SmartCityCoreApplication.class, args);
-	}
+public class SmartCityCoreApplication extends SpringBootServletInitializer {
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        SpringApplication.run(SmartCityCoreApplication.class, args);
+    }
 
-	/**
-	 * @param applicationBuilder
-	 * @return this class
-	 */
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder applicationBuilder)
-	{
-		return applicationBuilder.sources(SmartCityCoreApplication.class);
-	}
+    /**
+     * @param applicationBuilder
+     * @return this class
+     */
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder applicationBuilder) {
+        return applicationBuilder.sources(SmartCityCoreApplication.class);
+    }
 }

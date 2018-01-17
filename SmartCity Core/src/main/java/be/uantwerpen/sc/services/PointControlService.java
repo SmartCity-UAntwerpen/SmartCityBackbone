@@ -11,26 +11,22 @@ import java.util.List;
  * Created by Niels on 3/04/2016.
  */
 @Service
-public class PointControlService
-{
+public class PointControlService {
     @Autowired
     private PointRepository pointRepository;
 
     /**
      * @return List of all points in the db
      */
-    public List<Point> getAllPoints()
-    {
+    public List<Point> getAllPoints() {
         return pointRepository.findAll();
     }
 
-    public Point getPoint(Long id)
-    {
+    public Point getPoint(Long id) {
         return pointRepository.findOne(id);
     }
 
-    public Point save(Point point)
-    {
+    public Point save(Point point) {
         return pointRepository.save(point);
     }
 

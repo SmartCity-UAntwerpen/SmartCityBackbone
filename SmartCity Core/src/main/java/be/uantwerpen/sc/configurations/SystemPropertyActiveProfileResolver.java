@@ -4,11 +4,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfilesResolver;
 import org.springframework.test.context.support.DefaultActiveProfilesResolver;
 
-/**
- * TODO: figure out
- *
- * Created by Thomas on 25/02/2016.
- */
 @Configuration
 public class SystemPropertyActiveProfileResolver implements ActiveProfilesResolver {
     private final DefaultActiveProfilesResolver defaultActiveProfilesResolver = new DefaultActiveProfilesResolver();

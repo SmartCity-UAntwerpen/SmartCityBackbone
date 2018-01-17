@@ -1,7 +1,7 @@
 package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.links.Link;
-import be.uantwerpen.sc.models.map.*;
+import be.uantwerpen.sc.models.map.CustomMap;
 import be.uantwerpen.sc.models.points.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

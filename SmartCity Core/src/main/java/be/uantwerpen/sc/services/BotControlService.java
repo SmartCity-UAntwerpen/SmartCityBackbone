@@ -105,9 +105,9 @@ public class BotControlService {
         String stringRobot = "";
 
         try {
-            URL urlDrone = new URL("http://" + ip + ":"+dronePort+"/posAll");
-            URL urlCar = new URL("http://" + ip + ":"+carPort+"/carmanager/posAll");
-            URL urlRobot = new URL("http://" + ip + ":"+robotPort+"/bot/posAll");
+            URL urlDrone = new URL("http://" + ip + ":" + dronePort + "/posAll");
+            URL urlCar = new URL("http://" + ip + ":" + carPort + "/carmanager/posAll");
+            URL urlRobot = new URL("http://" + ip + ":" + robotPort + "/bot/posAll");
 
             HttpURLConnection connDrone = (HttpURLConnection) urlDrone.openConnection();
             HttpURLConnection connCar = (HttpURLConnection) urlCar.openConnection();

@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * TODO: fix descriptor
- *
+ * <p>
  * Created by Thomas on 25/02/2016.
  */
 @RestController
@@ -47,7 +47,7 @@ public class BotController {
     }
 
     /**
-     * @param id The id of the bot that you want to save
+     * @param id  The id of the bot that you want to save
      * @param bot The Bot object to save
      */
     @RequestMapping(value = "{id}", method = RequestMethod.POST)
@@ -56,7 +56,7 @@ public class BotController {
     }
 
     /**
-     * @param id The id of the bot that you want to update
+     * @param id  The id of the bot that you want to update
      * @param bot The Bot object you want to update
      */
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
@@ -231,6 +231,7 @@ public class BotController {
     /**
      * WARNING: Deletes all bots
      * Identical to resetBots()
+     *
      * @return String "Bots Destroyed..."
      */
     @RequestMapping(value = "/clearBots", method = RequestMethod.GET)

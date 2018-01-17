@@ -14,14 +14,12 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/point/")
-public class PointController
-{
+public class PointController {
     @Autowired
     private PointControlService pointService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Point> allPoints()
-    {
+    public List<Point> allPoints() {
         List<Point> points = pointService.getAllPoints();
 
         return points;

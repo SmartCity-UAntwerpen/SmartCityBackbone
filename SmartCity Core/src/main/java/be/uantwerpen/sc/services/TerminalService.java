@@ -12,33 +12,28 @@ import java.util.List;
  * Created by Thomas on 25/02/2016.
  */
 @Service
-public class TerminalService
-{
+public class TerminalService {
     @Autowired
     private BotControlService botControlService;
 
     @Autowired
     private PointControlService pointControlService;
-    
+
     private Terminal terminal;
 
     /**
      *
      */
-    public TerminalService()
-    {
-        terminal = new Terminal()
-        {
+    public TerminalService() {
+        terminal = new Terminal() {
             @Override
-            public void executeCommand(String commandString)
-            {
+            public void executeCommand(String commandString) {
                 parseCommand(commandString);
             }
         };
     }
 
-    public void systemReady()
-    {
+    public void systemReady() {
         terminal.printTerminal("\nSmartCity Core [Version " + getClass().getPackage().getImplementationVersion() + "]\n(c) 2015-2018 University of Antwerp. All rights reserved.");
         terminal.printTerminal("Type 'help' to display the possible commands.");
 
@@ -48,12 +43,10 @@ public class TerminalService
     /**
      * @param commandString The string entered in the console
      */
-    private void parseCommand(String commandString)
-    {
+    private void parseCommand(String commandString) {
         String command = commandString.split(" ", 2)[0].toLowerCase();
 
-        switch(command)
-        {
+        switch (command) {
            /* case "job":
                 if(commandString.split(" ", 3).length <= 2)
                 {
@@ -76,43 +69,31 @@ public class TerminalService
                 }
                 break;*/
             case "show":
-                if(commandString.split(" ", 2).length <= 1)
-                {
+                if (commandString.split(" ", 2).length <= 1) {
                     terminal.printTerminalInfo("Missing arguments! 'show {bots}'");
+                } else {
+                    if (commandString.split(" ", 2)[1].equals("bots")) {
+                        this.printAllBots();
+                    } else {
+                        terminal.printTerminalInfo("Unknown arguments! 'show {bots}'");
+                    }
                 }
-                else
-                {
-                if(commandString.split(" ", 2)[1].equals("bots"))
-                {
-                    this.printAllBots();
-                }
-                else
-                {
-                    terminal.printTerminalInfo("Unknown arguments! 'show {bots}'");
-                }
-            }
                 break;
             case "reset":
                 this.resetBots();
                 //this.clearPointLocks();
                 break;
             case "delete":
-                if(commandString.split(" ", 2).length <= 1)
-                {
+                if (commandString.split(" ", 2).length <= 1) {
                     terminal.printTerminalInfo("Missing arguments! 'delete {botId}'");
-                }
-                else
-                {
+                } else {
                     int parsedInt;
 
-                    try
-                    {
+                    try {
                         parsedInt = this.parseInteger(commandString.split(" ", 2)[1]);
 
                         this.deleteBot(parsedInt);
-                    }
-                    catch(Exception e)
-                    {
+                    } catch (Exception e) {
                         terminal.printTerminalError(e.getMessage());
                     }
                 }
@@ -130,15 +111,12 @@ public class TerminalService
         }
     }
 
-    private void exitSystem()
-    {
+    private void exitSystem() {
         System.exit(0);
     }
 
-    private void printHelp(String command)
-    {
-        switch(command)
-        {
+    private void printHelp(String command) {
+        switch (command) {
             default:
                 terminal.printTerminal("Available commands:");
                 terminal.printTerminal("-------------------");
@@ -152,25 +130,19 @@ public class TerminalService
         }
     }
 
-    private void printAllBots()
-    {
+    private void printAllBots() {
         List<Bot> bots = botControlService.getAllBots();
-        if(bots.isEmpty())
-        {
+        if (bots.isEmpty()) {
             terminal.printTerminalInfo("There are no bots available to list.");
-        }
-        else
-        {
+        } else {
             terminal.printTerminal("Bot-id\t\tLink-id\t\tStatus");
             terminal.printTerminal("------------------------------");
 
-            for(Bot bot : bots)
-            {
+            for (Bot bot : bots) {
                 Long linkId = -1L;
                 Link link = bot.getLinkId();
 
-                if(link != null)
-                {
+                if (link != null) {
                     linkId = link.getId();
                 }
 
@@ -179,26 +151,18 @@ public class TerminalService
         }
     }
 
-    private void deleteBot(int botID)
-    {
-        if(botControlService.deleteBot(botID))
-        {
+    private void deleteBot(int botID) {
+        if (botControlService.deleteBot(botID)) {
             terminal.printTerminalInfo("Bot deleted with id: " + botID + ".");
-        }
-        else
-        {
+        } else {
             terminal.printTerminalError("Could not delete bot with id: " + botID + "!");
         }
     }
 
-    private void resetBots()
-    {
-        if(botControlService.resetBots())
-        {
+    private void resetBots() {
+        if (botControlService.resetBots()) {
             terminal.printTerminalInfo("All bot entries cleared from database.");
-        }
-        else
-        {
+        } else {
             terminal.printTerminalError("Could not clear all robots from the database.");
         }
     }
@@ -234,32 +198,24 @@ public class TerminalService
         }
     }*/
 
-    private int parseInteger(String value) throws Exception
-    {
+    private int parseInteger(String value) throws Exception {
         int parsedInt;
 
-        try
-        {
+        try {
             parsedInt = Integer.parseInt(value);
-        }
-        catch(NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             throw new Exception("'" + value + "' is not an integer value!");
         }
 
         return parsedInt;
     }
 
-    private long parseLong(String value) throws Exception
-    {
+    private long parseLong(String value) throws Exception {
         Long parsedLong;
 
-        try
-        {
+        try {
             parsedLong = Long.parseLong(value);
-        }
-        catch(NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             throw new Exception("'" + value + "' is not a numeric value!");
         }
 

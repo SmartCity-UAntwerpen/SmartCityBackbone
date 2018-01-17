@@ -6,29 +6,19 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-/**
- * TODO: fix descriptor
- *
- * Created by Thomas on 25/02/2016.
- */
 @Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter
-{
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private Environment environment;
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception
-    {
+    protected void configure(HttpSecurity http) throws Exception {
         devConfiguration(http);
     }
 
-    protected void devConfiguration(HttpSecurity http) throws Exception
-    {
-        for(String profile : environment.getActiveProfiles())
-        {
-            if(profile.equals("dev"))
-            {
+    protected void devConfiguration(HttpSecurity http) throws Exception {
+        for (String profile : environment.getActiveProfiles()) {
+            if (profile.equals("dev")) {
                 //Permit access to H2 console --Development only
                 http.authorizeRequests().antMatchers("/h2console/**")
                         .permitAll();

@@ -8,6 +8,7 @@ CREATE TABLE core.point_car (
   `y` float DEFAULT NULL,
   `z` float DEFAULT NULL,
   `w` float DEFAULT NULL,
+  `map` VARCHAR(255) DEFAULT NULL,
   KEY `pid` (`pid`),
   FOREIGN KEY (`pid`) REFERENCES core.point (`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

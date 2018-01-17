@@ -11,13 +11,12 @@ import java.util.List;
 
 /**
  * TODO: Fix descriptor
- *
+ * <p>
  * Created by Niels on 30/03/2016.
  */
 @RestController
 @RequestMapping("/link/")
-public class LinkController
-{
+public class LinkController {
     @Autowired
     private LinkControlService linkControlService;
 
@@ -25,8 +24,7 @@ public class LinkController
      * @return A List of Link objects, acquired from LinkControlService
      */
     @RequestMapping(method = RequestMethod.GET)
-    public List<Link> allLinks()
-    {
+    public List<Link> allLinks() {
         List<Link> linkEntityList = linkControlService.getAllLinks();
         return linkEntityList;
     }
