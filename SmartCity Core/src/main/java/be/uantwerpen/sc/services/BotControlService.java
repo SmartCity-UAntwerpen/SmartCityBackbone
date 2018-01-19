@@ -16,9 +16,6 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by Thomas on 25/02/2016.
- */
 @Service
 public class BotControlService {
     @Autowired

@@ -11,11 +11,6 @@ import javax.ws.rs.Produces;
 import java.util.Date;
 import java.util.List;
 
-/**
- * TODO: fix descriptor
- * <p>
- * Created by Thomas on 25/02/2016.
- */
 @RestController
 @RequestMapping("/bot/")
 public class BotController {

@@ -7,9 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Created by Niels on 30/03/2016.
- */
 @Service
 public class LinkControlService {
     @Autowired

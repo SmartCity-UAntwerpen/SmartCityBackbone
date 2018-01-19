@@ -27,7 +27,6 @@ public class MapControlService {
 
 
     /**
-     * TODO: figure out more
      * Builds map of given type
      *
      * @param type

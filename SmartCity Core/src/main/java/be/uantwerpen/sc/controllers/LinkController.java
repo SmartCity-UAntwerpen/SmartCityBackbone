@@ -9,11 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * TODO: Fix descriptor
- * <p>
- * Created by Niels on 30/03/2016.
- */
 @RestController
 @RequestMapping("/link/")
 public class LinkController {
