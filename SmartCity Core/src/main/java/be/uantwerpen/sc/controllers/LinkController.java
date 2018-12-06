@@ -2,12 +2,20 @@ package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.links.Link;
 import be.uantwerpen.sc.services.LinkControlService;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 @RestController
@@ -16,6 +24,23 @@ public class LinkController {
     @Autowired
     private LinkControlService linkControlService;
 
+    @Autowired
+    private ResourceLoader resourceLoader;
+
+    @Value("${bot.ip}")
+    String ip;
+
+    @Value("${drone.port}")
+    String dronePort;
+
+    @Value("${car.port}")
+    String carPort;
+
+    @Value("${robot.port}")
+    String robotPort;
+
+//    @Value("classpath:json/resource-data.txt")
+//    Resource resourceFile;
     /**
      * @return A List of Link objects, acquired from LinkControlService
      */
@@ -26,8 +51,77 @@ public class LinkController {
         return linkEntityList;
     }
 
-    @RequestMapping(value = "updateBotTest/{id}", method = RequestMethod.GET)
-    public void updateBotTest(@PathVariable("id") Long id) {
+
+/* getPathLinks
+*  endpoint to get the entire transitmap, MaaS will call this
+*  @param pidstart(int): startpoint id
+*  @param pidened(int): endpoint id "destination point"
+*  @return : an array of transit link objects
+*
+*/
+    @RequestMapping(value = "pathlinks", method = RequestMethod.GET)
+    public JSONArray getPathLinks(@RequestParam int pidstart, @RequestParam int pidend ) {
+        JSONArray linkArray = new JSONArray();
+        boolean TEST = true;
+
+        JSONObject header = new JSONObject();
+        header.put("pidstart", pidstart);
+        header.put("pidend", pidend);
+        linkArray.add(header);
+
+
+        if(TEST){
+            JSONParser parser = new JSONParser();
+            String fileName = "graphtest.json";
+
+//            Resource resource = applicationContext.getResource("classpath:"+ fileName);
+//            InputStream is = resource.getInputStream();
+            try {
+//                JSONArray jsonArray = (JSONArray) parser.parse(new FileReader(fileName));
+                // get the json file from the resource folder
+
+                Resource resource = resourceLoader.getResource("classpath:json/" + fileName);
+                String absolutePath = resource.getURI().toString();
+                absolutePath = absolutePath.substring(6,absolutePath.length());
+                absolutePath = absolutePath.replace('/', '\\');    //
+                absolutePath = absolutePath.replace("%20", " " ); // catch any spaces in filenames (get converted to %20 in getURI)
+                System.out.println("path to json:" + absolutePath);
+
+                JSONArray jsonArray = (JSONArray) parser.parse(new FileReader(absolutePath));
+
+                for(Object l : jsonArray){
+                    JSONObject link = (JSONObject) l;
+                    linkArray.add(link);
+                }
+            }
+            catch(Exception e){
+                System.out.println("Reading " + fileName + " failed" + e.getStackTrace());
+            }
+        }else{
+            // TODO get linkArrays from the backends
+                // TODO build call
+
+        }
+        return linkArray ;
+
+    }
+
+    /* TEST METHOD: getDroneLinks calling this endpooint triggers a call to get the drone links
+     *  endpoint to get the entire transitmap, MaaS will call this
+     *  @return an array of links of the drone transit map
+     */
+    @RequestMapping(value = "droneLinks", method = RequestMethod.GET)
+    public JSONArray getPathLinks( ) {
+        JSONArray linkArray = new JSONArray();
+        try {
+            URL urlDrone = new URL("http://" + ip + ":" + dronePort + "/posAll");
+            HttpURLConnection connDrone = (HttpURLConnection) urlDrone.openConnection();
+            // TODO
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+        return linkArray ;
 
     }
 }

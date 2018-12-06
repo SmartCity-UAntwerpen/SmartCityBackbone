@@ -10,7 +10,7 @@
   <groupId>be.uantwerpen.sc</groupId>
   <artifactId>SCCore</artifactId>
   <name>SmartCity Core</name>
-  <version>0.0.4-SNAPSHOT</version>
+  <version>0.0.5-SNAPSHOT</version>
   <description>Core control system of the SmartCity project</description>
   <build>
     <plugins>
@@ -176,6 +176,12 @@
       <groupId>org.mongodb</groupId>
       <artifactId>mongodb-driver</artifactId>
       <version>3.4.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.json-simple</groupId>
+      <artifactId>json-simple</artifactId>
+      <version>1.1.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
