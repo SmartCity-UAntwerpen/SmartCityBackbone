@@ -19,7 +19,7 @@
 -- Current Database: `core`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS */ `core` /*!40100 DEFAULT CHARACTER SET latin1 */;
+-- CREATE DATABASE /*!32312 IF NOT EXISTS */ `core` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
 USE `core`;
 

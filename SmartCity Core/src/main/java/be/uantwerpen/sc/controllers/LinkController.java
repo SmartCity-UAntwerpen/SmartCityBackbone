@@ -18,6 +18,7 @@ public class LinkController {
     /**
      * @return A List of Link objects, acquired from LinkControlService
      */
+
     @RequestMapping(method = RequestMethod.GET)
     public List<Link> allLinks() {
         List<Link> linkEntityList = linkControlService.getAllLinks();

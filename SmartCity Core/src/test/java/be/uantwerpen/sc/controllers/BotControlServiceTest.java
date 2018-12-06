@@ -55,16 +55,16 @@ public class BotControlServiceTest {
         mockBotService.resetBots();
     }
 
-    @Test
-    public void posAll() throws Exception {
-        System.out.println(mockBotService.getPosAll());
-        assertEquals(" ",mockBotService.getPosAll());
-    }
-
-    @Test
-    public void posOne() throws Exception {
-        System.out.println(mockBotService.getPosOne(idBot1));
-        assertEquals(" ",mockBotService.getPosOne(idBot1));
-    }
+//    @Test
+//    public void posAll() throws Exception {
+//        System.out.println(mockBotService.getPosAll());
+//        assertEquals(" ",mockBotService.getPosAll());
+//    }
+//
+//    @Test
+//    public void posOne() throws Exception {
+//        System.out.println(mockBotService.getPosOne(idBot1));
+//        assertEquals(" ",mockBotService.getPosOne(idBot1));
+//    }
 
 }

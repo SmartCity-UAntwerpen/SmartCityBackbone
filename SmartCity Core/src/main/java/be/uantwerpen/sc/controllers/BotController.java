@@ -132,7 +132,7 @@ public class BotController {
         } else if (type.equals("drone")) {
             bot = new be.uantwerpen.sc.models.Drone();
         } else if (type.equals("light")) {
-            bot = new be.uantwerpen.sc.models.TrafficLight();
+//            bot = new be.uantwerpen.sc.models.TrafficLight();
         } else if (type.equals("robot")) {
             bot = new Robot();
         } else {

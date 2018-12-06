@@ -4,7 +4,7 @@
 -- ----------------------------------------------------
 -- Server version   5.6.29
 
-CREATE DATABASE  IF NOT EXISTS `core` /*!40100 DEFAULT CHARACTER SET latin1 */;
+-- CREATE DATABASE  IF NOT EXISTS `core` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `core`;
 
 DROP TABLE IF EXISTS core.point;
@@ -92,7 +92,7 @@ DROP TABLE IF EXISTS core.point_robot;
 CREATE TABLE core.point_robot (
   `pid` bigint(20) NOT NULL,
   `rfid` varchar(255) DEFAULT NULL,
-  `pointlock` int(11) DEFAULT NULL,
+  `pointlock` integer(11) DEFAULT NULL,
   FOREIGN KEY (`pid`) REFERENCES core.point (`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
