@@ -27,8 +27,9 @@ public class LinkController {
     private ResourceLoader resourceLoader;
 
     // TODO get the values from application.properties
-//    @Value("${bot.ip}")
-    @Value("${ip}")
+    @Value("${dummy.json.path}")
+    String dummyJsonFilePath;
+
     String ip;
 
     @Value("${drone.ip}")
@@ -90,7 +91,9 @@ public class LinkController {
 
         if(LOCALDATA){
             JSONParser parser = new JSONParser();
-            String fileName = "graphtest.json";
+
+
+            String filePath = dummyJsonFilePath;
 
 //            Resource resource = applicationContext.getResource("classpath:"+ fileName);
 //            InputStream is = resource.getInputStream();
@@ -98,7 +101,7 @@ public class LinkController {
 //                JSONArray jsonArray = (JSONArray) parser.parse(new FileReader(fileName));
                 // get the json file from the resource folder
 
-                Resource resource = resourceLoader.getResource("classpath:json/" + fileName);
+                Resource resource = resourceLoader.getResource(filePath);
                 String absolutePath = resource.getURI().toString();
                 absolutePath = absolutePath.substring(6,absolutePath.length());
                 absolutePath = absolutePath.replace('/', '\\');    //
@@ -113,7 +116,7 @@ public class LinkController {
                 }
             }
             catch(Exception e){
-                System.out.println("Reading " + fileName + " failed" + e.getStackTrace());
+                System.out.println("Reading " + filePath + " failed" + e.getStackTrace());
             }
         }else{
             // TODO get linkArrays from the backends localhost)
