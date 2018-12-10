@@ -28,8 +28,17 @@ public class LinkController {
 
     // TODO get the values from application.properties
 //    @Value("${bot.ip}")
-    @Value("localhost")
+    @Value("${ip}")
     String ip;
+
+    @Value("${drone.ip}")
+    String droneip;
+
+    @Value("${car.ip}")
+    String carip;
+
+    @Value("${robot.ip}")
+    String robotip;
 
     @Value("${drone.port}")
     String dronePort;
@@ -39,6 +48,9 @@ public class LinkController {
 
     @Value("${robot.port}")
     String robotPort;
+
+    @Value("${local.files}")
+    boolean localfiles;
 
 
 
@@ -68,7 +80,7 @@ public class LinkController {
     public JSONArray getPathLinks(@RequestParam int pidstart, @RequestParam int pidend ) {
         JSONArray linkArray = new JSONArray();
         // activate when testing without database (reads data from jsonfiles)
-        boolean TEST = true;
+        boolean LOCALDATA = localfiles;
         // header for testing purposes
         JSONObject header = new JSONObject();
         header.put("pidstart", pidstart);
@@ -76,7 +88,7 @@ public class LinkController {
         linkArray.add(header);
 
 
-        if(TEST){
+        if(LOCALDATA){
             JSONParser parser = new JSONParser();
             String fileName = "graphtest.json";
 
@@ -104,8 +116,25 @@ public class LinkController {
                 System.out.println("Reading " + fileName + " failed" + e.getStackTrace());
             }
         }else{
-            // TODO get linkArrays from the backends
-                // TODO build calls and parsing
+            // TODO get linkArrays from the backends localhost)
+            JSONArray transitLinkArray = new JSONArray();
+            JSONArray responseArray = new JSONArray();
+            // specifying port to spoof different backends on one single localhost server ( responds json accordingly
+            // request carlinks
+            responseArray = requestFromBackend(carip, carPort,"/link/transitmap", "port=8081" );
+            transitLinkArray.addAll(responseArray);
+
+            // request robotlinks
+            responseArray = requestFromBackend(droneip, dronePort,"/link/transitmap", "port=8082" );
+            transitLinkArray.addAll(responseArray);
+
+            // request dronelinks
+            responseArray = requestFromBackend(robotip, robotPort,"/link/transitmap", "port=8083" );
+            transitLinkArray.addAll(responseArray);
+
+
+            return transitLinkArray;
+            // TODO build calls and parsing
 
         }
         return linkArray ;
@@ -121,13 +150,31 @@ public class LinkController {
         return requestFromBackend("http://localhost", "8081","/link/transitmap" );
     }
 
-    /* a generic method do do a request to a server and parse the response to a JSONArray
+    // TODO: Move methods bellow to appropriate service or COMMON
+
+    /* offset Backend Ids
+    *
+    *
+    */
+
+
+
+    /* a wrapper method to call requestFromBackend wo/ parameters (see method below)
+    *
+    *
+     */
+    private JSONArray requestFromBackend(String ip, String port, String endpoint) {
+        return requestFromBackend(ip, port, endpoint, "");
+    }
+        /* a generic method do do a request to a server and parse the response to a JSONArray
      *
-     * @param int :
-     *
+     * @param String ip: server ip
+     * @param String port: server port
+     * @param endpoint : REST endpoint
+     * @param parameters : optional parameters "val1=foo&val2=bar"
      * @return JSONArray : backend response
      */
-    private JSONArray requestFromBackend(String ip, String port, String endpoint){
+    private JSONArray requestFromBackend(String ip, String port, String endpoint, String parameters){
         String responseLine;
         String response = "";
 
@@ -135,7 +182,7 @@ public class LinkController {
         JSONParser parser = new JSONParser();
         JSONArray linkArray = new JSONArray();
         try {
-            URL urlCar = new URL(ip + ":" + port + endpoint);
+            URL urlCar = new URL(ip + ":" + port + endpoint + "?" + parameters);
             HttpURLConnection conn = (HttpURLConnection) urlCar.openConnection();
 
             conn.setRequestMethod("GET");
