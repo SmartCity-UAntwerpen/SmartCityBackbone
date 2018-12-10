@@ -70,13 +70,6 @@ public class BotControllerTests {
 
         json = gson.toJson(bot);
         System.out.println(json);
-
-        //BAD TEST!!
-        //mockMvc
-        //    .perform(
-        //            post("/api/researcher/").content(json)
-        //                    .contentType(APPLICATION_JSON_UTF8))
-        //    .andExpect(status().isCreated());
     }
 
 }

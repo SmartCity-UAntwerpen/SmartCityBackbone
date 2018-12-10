@@ -5,7 +5,7 @@
 
     <groupId>be.uantwerpen.sc</groupId>
     <artifactId>SCCore</artifactId>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>0.0.7-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>SmartCity Core</name>
@@ -24,11 +24,6 @@
     </properties>
 
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>be.uantwerpen.sc</groupId>-->
-            <!--<artifactId>SCCommon</artifactId>-->
-            <!--<version>0.0.1-SNAPSHOT</version>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -97,18 +92,6 @@
             <version>4.3.4</version>
         </dependency>
 
-        <!-- Paho MQTT -->
-        <dependency>
-            <groupId>org.eclipse.paho</groupId>
-            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.paho</groupId>
-            <artifactId>org.eclipse.paho.mqtt.utility</artifactId>
-            <version>1.0.2</version>
-        </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -124,12 +107,17 @@
             <artifactId>mongodb-driver</artifactId>
             <version>3.4.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
 
         <!-- Smartcity Common -->
         <dependency>
             <groupId>be.uantwerpen.sc</groupId>
             <artifactId>SmartCityCommon</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
@@ -194,4 +182,16 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>SmartCityCommon-mvn-repo</id>
+            <url>https://raw.github.com/SmartCity-UAntwerpen/SmartCityCommon/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
 </project>
