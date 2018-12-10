@@ -19,9 +19,9 @@ public class Job extends MyAbstractPersistable<Long> {
     private long idVehicle;
     private String typeVehicle;
     private String Status;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="ID_ORDER")
-    private JobList joblist;
+    //@ManyToOne(fetch = FetchType.LAZY)
+    //@JoinColumn(name="ID_ORDER")
+    //private JobList joblist;
 
 
     public Job() {
@@ -34,6 +34,7 @@ public class Job extends MyAbstractPersistable<Long> {
         this.idVehicle = idVehicle;
     }
 
+    /**
     public JobList getJoblist() {
         return joblist;
     }
@@ -42,7 +43,7 @@ public class Job extends MyAbstractPersistable<Long> {
         this.joblist = joblist;
     }
     //TODO nog nakijken voor duplicate ID's!
-
+**/
     public long getIdStart() {
         return idStart;
     }
