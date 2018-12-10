@@ -36,9 +36,11 @@ public class JobDispatchController {
      * Dispatching (This request comes from MaaS
      */
     @RequestMapping(value = "/job/dispatch", method = RequestMethod.POST)
-    public void dispatch() {
+    @ResponseBody
+    public String dispatch() {
         logger.info("Test Dispatching");
         //jobListService.dispatchToCore();
+        return "Done dispatching";
     }
 
     @RequestMapping(value = "/completeJob/{idJob}", method = RequestMethod.GET)
