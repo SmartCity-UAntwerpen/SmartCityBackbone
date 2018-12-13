@@ -39,24 +39,4 @@ public class JobService {
 
     public void deleteAll() { this.jobRepository.deleteAll(); }
 
-    /**
-     * Function to save all relevant information concernting the Job class. This is a standard function for service usage
-     * @param job   (Job) class of which all information needs to be saved
-     */
-    /**
-    public void saveSomeAttributes(Job job) {
-        Job tempJob = (((Long)job.getId() == null) ? null : getJob(job.getId()));
-        if (tempJob != null){
-            tempJob.setIdStart(job.getIdStart());
-            tempJob.setIdEnd(job.getIdEnd());
-            tempJob.setIdVehicle(job.getIdVehicle());
-            tempJob.setTypeVehicle(job.getTypeVehicle());
-            tempJob.setStatus(job.getStatus());
-            jobRepository.save(tempJob);
-        }
-        else{
-            jobRepository.save(job);
-        }
-    }
-     **/
 }
