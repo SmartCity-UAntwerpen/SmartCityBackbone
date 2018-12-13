@@ -6,8 +6,9 @@ import be.uantwerpen.sc.services.JobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -24,23 +25,41 @@ public class JobDispatchController {
     /**
      * @param jobList The jobList object to save (received from MaaS)
      */
-    @RequestMapping(value = "/job/saveorder", method = RequestMethod.POST)
+    @RequestMapping(value = "/jobs/saveOrder", method = RequestMethod.POST)
     public void saveOrder(@RequestBody JobList jobList) {
         logger.info("Test: Saving jobList");
-        System.out.println(jobList.toString());
-        System.out.println("Vehicle type in controller: " + jobList.getJobs().get(0).getTypeVehicle());
+        //System.out.println(jobList.toString());
+        //System.out.println("Vehicle type in controller: " + jobList.getJobs().get(0).getTypeVehicle());
         //jobListService.saveOrder(jobList);
     }
 
     /**
-     * Dispatching (This request comes from MaaS
+     * Dispatching (This request comes from MaaS)
      */
-    @RequestMapping(value = "/job/dispatch", method = RequestMethod.POST)
+    @RequestMapping(value = "/jobs/dispatch", method = RequestMethod.POST)
     @ResponseBody
     public String dispatch() {
         logger.info("Test Dispatching");
         //jobListService.dispatchToCore();
         return "Done dispatching";
+    }
+
+    @RequestMapping(value = "/jobs/findAllJobLists",method = RequestMethod.GET)
+    public List<JobList> findAllJobLists()
+    {
+        return jobListService.findAll();
+    }
+
+    @RequestMapping(value = "/jobs/deleteOrder/{id}", method = RequestMethod.POST)
+    public void delete(@PathVariable("id") Long id) {
+        jobListService.deleteOrder(id);
+    }
+
+    @RequestMapping(value = "/jobs/deleteAllLists",method = RequestMethod.GET)
+    public void deleteAllJobs()
+    {
+        jobService.deleteAll();
+        jobListService.deleteAll();
     }
 
     @RequestMapping(value = "/completeJob/{idJob}", method = RequestMethod.GET)
@@ -67,7 +86,6 @@ public class JobDispatchController {
                 logger.info("Dispatch next job");
             }
         }
-
         return "ok";
     }
 }

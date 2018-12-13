@@ -1,6 +1,5 @@
 package be.uantwerpen.sc.services;
 
-//import be.uantwerpen.sc.localization.astar.Astar;
 import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.sc.repositories.JobListRepository;
@@ -9,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -47,9 +47,6 @@ public class JobListService {
     @Autowired
     private JobService jobService;
 
-    //@Autowired
-    //private Astar astar;
-
     public List<JobList> findAll() {
         return this.jobListRepository.findAll();
     }
@@ -59,7 +56,7 @@ public class JobListService {
     }
 
     /**
-     * a print function, mainly written for debug purposes in the console to make certain that the objects are correctly
+     * A print function, mainly written for debug purposes in the console to make certain that the objects are correctly
      * being saved & that the correct information is written into each object
      */
     public void printJobList() {
@@ -98,8 +95,8 @@ public class JobListService {
                     }
                 }
             } else {
-                // an error has occurred. Rerun the calculations for paths.
-                // TODO send request to MaaS to recalculate
+                // An error has occurred. Rerun the calculations for paths on the MaaS
+                // TODO Test this out
                 //recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery());
 
                 // for debug purposes
@@ -213,17 +210,12 @@ public class JobListService {
      * @param idJob      (long) id from the job in which an error occured
      * @param idDelivery (string) id from delivery which needs to be saved when making a new order with correct input
      */
-    public void recalculatePathAfterError(long idJob, String idDelivery) {
-        for (JobList jl : this.jobListRepository.findAll()) {
-            // iterate over all orders untill the correct one is found
-            if (jl.getJobs().get(0).getId().equals(idJob)) {
-                String sPos = Long.toString(jl.getJobs().get(0).getIdStart());
-                String ePos = Long.toString(jl.getEndPoint());
-                deleteOrder(jl.getId());
-                //astar.determinePath2(sPos, ePos, idDelivery);
-            }
-        }
+    // TODO Implement?
+    public void recalculatePathAfterError(long idJob, String idDelivery)
+    {
+
     }
+
 
     /**
      * function to find a delivery
