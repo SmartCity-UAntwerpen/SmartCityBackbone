@@ -1,6 +1,6 @@
 package be.uantwerpen.sc.controllers;
 
-import be.uantwerpen.sc.model.Job;
+import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.sc.services.JobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
