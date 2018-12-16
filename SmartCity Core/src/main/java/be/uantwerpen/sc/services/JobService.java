@@ -2,6 +2,7 @@ package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.sc.models.JobList;
+import be.uantwerpen.sc.models.JobState;
 import be.uantwerpen.sc.repositories.JobRepository;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -65,7 +66,7 @@ public class JobService {
     public void endJobAndDispatchNext(long jobId) {
         //Change state on previous
         Job current = getJob(jobId);
-        current.setStatus("DONE");;
+        current.setStatus(JobState.DONE);;
         save(current);
 
         Job next = findNextJob(jobId);

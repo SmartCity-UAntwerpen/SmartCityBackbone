@@ -40,6 +40,7 @@ public class DatabaseLoaderDevelopment {
 
         job = new Job(7L,10L,11);
         list.addJob(job);
+        jobListService.saveOrder(list);
 
         //delivery 2
         list = new JobList();
