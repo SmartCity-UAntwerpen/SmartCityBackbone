@@ -61,4 +61,21 @@ public class JobService {
             return null;
         }
     }
+
+    public void endJobAndDispatchNext(long jobId) {
+        //Change state on previous
+        Job current = getJob(jobId);
+        current.setStatus("DONE");;
+        save(current);
+
+        Job next = findNextJob(jobId);
+        if(next != null) {
+            //dispatch
+        }
+        else {
+            //remove delivery?
+            //Notify MaaS?
+        }
+    }
+
 }

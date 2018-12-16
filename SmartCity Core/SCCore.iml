@@ -116,7 +116,7 @@
     <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-core:3.4.1" level="project" />
     <orderEntry type="library" name="Maven: org.mongodb:bson:3.4.1" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
-    <orderEntry type="library" name="Maven: be.uantwerpen.sc:SmartCityCommon:0.0.2-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: be.uantwerpen.sc:SmartCityCommon:0.0.4-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:ST4:4.0.3" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr-runtime:3.3" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:stringtemplate:3.2.1" level="project" />
