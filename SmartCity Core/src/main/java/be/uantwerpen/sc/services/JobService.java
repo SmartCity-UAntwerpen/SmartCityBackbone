@@ -1,6 +1,7 @@
 package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.Job;
+import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.sc.repositories.JobRepository;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -39,4 +40,11 @@ public class JobService {
 
     public void deleteAll() { this.jobRepository.deleteAll(); }
 
+    /**
+     *  finds next job based on id of the current job
+     */
+    public Job findNextJob(long jobId) {
+        long nextId = jobId + 1;
+        return getJob(nextId);
+    }
 }
