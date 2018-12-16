@@ -11,10 +11,10 @@ DROP TABLE IF EXISTS backbone.backend_info;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE backbone.backend_info (
-  `mapId` int NOT NULL AUTO_INCREMENT,
+  `map_id` int NOT NULL AUTO_INCREMENT,
   `hostname` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `port` int DEFAULT NULL,
-  PRIMARY KEY (`mapId`)
+  PRIMARY KEY (`map_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
