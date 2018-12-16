@@ -1,13 +1,12 @@
 package be.uantwerpen.sc.models;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 public class BackendInfo extends MyAbstractPersistable<Long> {
     private String hostname;
     private int port;
+    //TODO maybe allow multiple maps
     private int mapId;
     private String name;
 
@@ -51,6 +50,10 @@ public class BackendInfo extends MyAbstractPersistable<Long> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String toString() {
+        return "Backend "+name+" at "+hostname+":"+port+" for map "+mapId;
     }
 
 }

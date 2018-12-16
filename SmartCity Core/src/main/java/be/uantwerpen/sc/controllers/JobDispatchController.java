@@ -28,7 +28,7 @@ public class JobDispatchController {
     public void saveOrder(@RequestBody JobList jobList) {
         logger.info("Test: Saving jobList");
         System.out.println(jobList.toString());
-        System.out.println("Vehicle type in controller: " + jobList.getJobs().get(0).getTypeVehicle());
+       // System.out.println("Vehicle type in controller: " + jobList.getJobs().get(0).getTypeVehicle());
         //jobListService.saveOrder(jobList);
     }
 
@@ -60,10 +60,10 @@ public class JobDispatchController {
             }
 
             if (jl.getJobs().isEmpty()) {
-                jobListService.deleteOrder(jl.getId());
+                //jobListService.deleteOrder(jl.getId());
                 logger.info("Delete order");
             } else {
-                jobListService.dispatchToCore();
+                //jobListService.dispatchToCore();
                 logger.info("Dispatch next job");
             }
         }
