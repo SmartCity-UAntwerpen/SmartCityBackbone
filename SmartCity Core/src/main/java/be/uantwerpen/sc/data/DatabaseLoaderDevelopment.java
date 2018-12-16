@@ -41,6 +41,16 @@ public class DatabaseLoaderDevelopment {
         job = new Job(7L,10L,11);
         list.addJob(job);
 
+        //delivery 2
+        list = new JobList();
+        list.setIdDelivery("MaaSId2");
+
+        job = new Job(7L,5L,10);
+        list.addJob(job);
+
+        job = new Job(9L,10L,11);
+        list.addJob(job);
+
         jobListService.saveOrder(list);
     }
 

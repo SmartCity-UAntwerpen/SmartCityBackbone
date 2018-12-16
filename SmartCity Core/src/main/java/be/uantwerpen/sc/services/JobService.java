@@ -45,6 +45,20 @@ public class JobService {
      */
     public Job findNextJob(long jobId) {
         long nextId = jobId + 1;
-        return getJob(nextId);
+
+        Job current = getJob(jobId);
+        if(current == null) return null;
+
+        Job nextJob = getJob(nextId);
+        if(nextJob == null) return null;
+
+        if(current.getJobList().equals(nextJob.getJobList())) {
+            // from the same delivery
+            return nextJob;
+        }
+        else {
+            //from another delivery so was the last one
+            return null;
+        }
     }
 }

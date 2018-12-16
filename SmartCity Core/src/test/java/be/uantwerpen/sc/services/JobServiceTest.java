@@ -27,5 +27,9 @@ public class JobServiceTest {
         assert(nextJob.equals(jobService.getJob(nextId)));
 
         assert(jobService.findNextJob(120) == null);
+
+        //check if no overflow to next order
+        nextJob =  jobService.findNextJob(2L);
+        assert(nextJob == null);
 }
 }
