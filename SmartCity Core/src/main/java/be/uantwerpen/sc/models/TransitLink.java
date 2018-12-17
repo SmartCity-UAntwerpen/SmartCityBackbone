@@ -1,18 +1,22 @@
 package be.uantwerpen.sc.models;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-public class Link {
+@Table(name = "link")
+public class TransitLink {
+    @Id
     int id;
     int weight;
     int stopid;
     int startid;
 
-    public Link(int id,  int startid, int stopid, int weight) {
+    public TransitLink(int id,  int startid, int stopid, int weight) {
         this.id = id;
-        this.startid = stopid;
-        this.startid = stopid;
+        this.startid = startid;
+        this.stopid = stopid;
         this.weight = weight;
     }
 
