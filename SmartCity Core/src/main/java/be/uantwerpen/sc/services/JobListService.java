@@ -144,7 +144,6 @@ public class JobListService {
 
     public void moveNextVehicleToPickUpPoint(Long jobId)
     {
-
         Job previousVehicle = jobService.getJob(jobId);
         Job nextJob = null;
 
@@ -161,12 +160,12 @@ public class JobListService {
 
         }
 
-        // Check if nextJob is zero which can be when there is no TODO go to completejob when it ws the final job
+        // Check if nextJob is null which can be when there is no job left to do
         if(nextJob == null)
         {
+            // Just return when there is no rendez-vous
             return;
         }
-
 
         // Get the backendInfo object from the info service for the given Job
         BackendInfo backendInfo = backendInfoService.getInfoById(nextJob.getIdMap());
