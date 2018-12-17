@@ -18,4 +18,5 @@ import java.util.List;
 public interface JobListRepository extends CrudRepository<JobList, Long>
 {
     List<JobList> findAll();
+    void deleteAll();
 }

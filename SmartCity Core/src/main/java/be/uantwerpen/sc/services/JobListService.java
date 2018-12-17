@@ -31,6 +31,10 @@ public class JobListService {
         this.jobListRepository.save(joblist);
     }
 
+    public void deleteAll() {
+        this.jobListRepository.deleteAll();
+    }
+
 }
 
 

@@ -1,5 +1,6 @@
 package be.uantwerpen.sc.services;
 
+import be.uantwerpen.sc.models.BackendInfo;
 import be.uantwerpen.sc.models.Bot;
 import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.sc.models.JobList;
@@ -14,6 +15,9 @@ import java.util.List;
 public class TerminalService {
     @Autowired
     JobListService jobListService;
+
+    @Autowired
+    BackendInfoService backendInfoService;
 
     private Terminal terminal;
 
@@ -45,18 +49,20 @@ public class TerminalService {
         switch (command) {
             case "show":
                 if (commandString.split(" ", 2).length <= 1) {
-                    terminal.printTerminalInfo("Missing arguments! 'show {deliveries,jobs}'");
+                    terminal.printTerminalInfo("Missing arguments! 'show {deliveries,backends}'");
                 } else {
                     if (commandString.split(" ", 2)[1].equals("deliveries")) {
                         this.printAllDeliveries();
+                    } else if (commandString.split(" ", 2)[1].equals("backends")) {
+                        this.printAllBackends();
                     } else {
-                        terminal.printTerminalInfo("Unknown arguments! 'show {bots}'");
+                        terminal.printTerminalInfo("Unknown arguments! 'show {deliveries,backends}'");
                     }
                 }
                 break;
-//            case "reset":
-//                this.resetBots();
-//                break;
+            case "reset":
+                this.resetAll();
+                break;
 //            case "delete":
 //                if (commandString.split(" ", 2).length <= 1) {
 //                    terminal.printTerminalInfo("Missing arguments! 'delete {botId}'");
@@ -85,6 +91,25 @@ public class TerminalService {
         }
     }
 
+    private void resetAll() {
+        jobListService.deleteAll();
+        terminal.printTerminal("Reset done");
+    }
+
+    private void printAllBackends() {
+        List<BackendInfo> infoList = backendInfoService.findAll();
+
+        if(infoList.isEmpty()) {
+            terminal.printTerminal("No backends configured");
+            return;
+        }
+
+        terminal.printTerminal("**Backends");
+        for(BackendInfo info : infoList) {
+            terminal.printTerminal("\t"+info.toString());
+        }
+    }
+
     private void exitSystem() {
         System.exit(0);
     }
@@ -94,9 +119,9 @@ public class TerminalService {
             default:
                 terminal.printTerminal("Available commands:");
                 terminal.printTerminal("-------------------");
-                //terminal.printTerminal("'job {botId} {command}' : send a job to the bot with the given id.");
-                terminal.printTerminal("'show {deliveries,jobs}' : show all bots in the database.");
-                //terminal.printTerminal("'reset' : remove all bots from the database and release all point locks.");
+                terminal.printTerminal("'add backend {name}' : add a new backend interactively");
+                terminal.printTerminal("'show {deliveries,backends}' : show all data in the database.");
+                terminal.printTerminal("'reset' : remove all deliveries from the database.");
                 //terminal.printTerminal("'delete {botId}' : remove the bot with the given id from the database.");
                 terminal.printTerminal("'exit' : shutdown the server.");
                 terminal.printTerminal("'help' / '?' : show all available commands.\n");
@@ -106,9 +131,15 @@ public class TerminalService {
 
     private void printAllDeliveries() {
         List<JobList> jobLists = jobListService.findAll();
-        for(JobList list : jobLists) {
 
+        if(jobLists.isEmpty()) {
+            terminal.printTerminal("No deliveries present");
+            return;
+        }
+
+        for(JobList list : jobLists) {
             terminal.printTerminal("** Delivery "+list.getIdDelivery());
+
             for(Job job : list.getJobs()) {
                 terminal.printTerminal("\t Job"+job.toString());
             }
