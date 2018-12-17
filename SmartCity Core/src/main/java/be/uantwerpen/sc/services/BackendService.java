@@ -1,6 +1,7 @@
 package be.uantwerpen.sc.services;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,45 @@ import java.net.URL;
 @Service
 public class BackendService {
 
+
+    public JSONObject requestJsonObject(String url){
+
+        String responseLine;
+        String response = "";
+
+        // used to parse strings to json
+        JSONParser parser = new JSONParser();
+        JSONObject jsonResponse = new JSONObject();
+        try {
+            URL urlCar = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) urlCar.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+
+            if (conn.getResponseCode() == 200) {
+                BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+                while ((responseLine = br.readLine()) != null) {
+                    response += responseLine;
+                }
+                System.out.println("got: " + response + "\nfrom:" +  url);
+                try {
+                    JSONObject responseObject = (JSONObject) parser.parse(response);
+                    return responseObject;
+                }
+                catch(ParseException e){
+                    System.out.println("could not parse folowing string: " + response);
+                    System.out.println(e.getStackTrace());
+                }
+            } else {
+                System.out.println("Request Failed, Responsecode returned: " + conn.getResponseCode());
+            }
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return jsonResponse;
+    }
     /* a wrapper method to call requestFromBackend wo/ parameters (see method below)
      *
      *

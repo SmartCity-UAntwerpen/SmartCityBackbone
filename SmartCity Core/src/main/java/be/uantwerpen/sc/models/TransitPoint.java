@@ -11,13 +11,15 @@ public class TransitPoint {
     @Id
     private int id;
     private int mapid;
+    private int pid;
 
     public TransitPoint(){
 
     }
-    public TransitPoint(int id, int mapid) {
+    public TransitPoint(int id, int mapid, int pid) {
         this.id = id;
         this.mapid = mapid;
+        this.pid = pid;
     }
 
     public int getId() {
@@ -34,5 +36,13 @@ public class TransitPoint {
 
     public void setMapid(int mapId) {
         this.mapid = mapId;
+    }
+
+    public int getPid() {
+        return pid;
+    }
+
+    public void setPid(int pid) {
+        this.pid = pid;
     }
 }

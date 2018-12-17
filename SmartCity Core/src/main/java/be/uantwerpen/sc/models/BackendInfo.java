@@ -1,13 +1,15 @@
 package be.uantwerpen.sc.models;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
-public class BackendInfo extends MyAbstractPersistable<Long> {
+public class BackendInfo {
+    @Id
+    private int mapId;
     private String hostname;
     private int port;
     //TODO maybe allow multiple maps
-    private int mapId;
     private String name;
 
     public BackendInfo() {

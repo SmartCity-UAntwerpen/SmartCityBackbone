@@ -115,7 +115,7 @@ public class JobListService {
         logger.info("Dispatch " + job.getId() + " - vehicle ");
 
         // Get the backendInfo object from the info service
-        BackendInfo backendInfo = backendInfoService.getInfoById(job.getIdMap());
+        BackendInfo backendInfo = backendInfoService.getInfoByMapId(job.getIdMap());
 
         String stringUrl = "http://";
         stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/execute/";
@@ -147,7 +147,7 @@ public class JobListService {
         Job previousVehicle = jobService.getJob(jobId);
 
         // Get the backendInfo object from the info service for the given Job
-        BackendInfo backendInfo = backendInfoService.getInfoById(previousVehicle.getIdMap());
+        BackendInfo backendInfo = backendInfoService.getInfoByMapId(previousVehicle.getIdMap());
 
         String stringUrl = "http://";
         stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/gotopoint/{pid}";

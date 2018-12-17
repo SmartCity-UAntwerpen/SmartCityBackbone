@@ -13,8 +13,8 @@ public class BackendInfoService {
     @Autowired
     private BackendInfoRepository backendInfoRepository;
 
-    public BackendInfo getInfoById(int mapid) {
-        return backendInfoRepository.findBymapId(mapid);
+    public BackendInfo getInfoByMapId(int mapid) {
+        return backendInfoRepository.findByMapId(mapid);
     }
 
     public List<BackendInfo> findAll() {

@@ -1,13 +1,15 @@
 package be.uantwerpen.sc.controllers;
 
-import be.uantwerpen.sc.models.BackendInfo;
-import be.uantwerpen.sc.models.TransitLink;
-import be.uantwerpen.sc.models.TransitPoint;
+import be.uantwerpen.sc.models.*;
 import be.uantwerpen.sc.models.map.CustomMap;
 import be.uantwerpen.sc.repositories.BackendInfoRepository;
 import be.uantwerpen.sc.repositories.PointRepository;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
+import be.uantwerpen.sc.services.BackendInfoService;
+import be.uantwerpen.sc.services.BackendService;
+import be.uantwerpen.sc.services.JobListService;
 import be.uantwerpen.sc.services.MapControlService;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +33,16 @@ public class MapController {
     private BackendInfoRepository backendInfoRepository;
 
     @Autowired
+    private BackendInfoService backendInfoService;
+
+    @Autowired
+    private BackendService backendService;
+
+    @Autowired
     private TransitPointRepository pointRepository;
+
+    @Autowired
+    private JobListService jobListService;
     /**
      * Returns a map for the given type of vehicle
      * alternatively returns a map for the visualisation with variable 'visual'
@@ -75,18 +86,17 @@ public class MapController {
      */
     @RequestMapping(value = "planpath", method = RequestMethod.GET)
     public JSONObject planPath(@RequestParam int startpid, @RequestParam int startmapid, @RequestParam int stoppid, @RequestParam int stopmapid){
-        JSONObject response = new JSONObject();
         ArrayList<TransitLink> TransitMapRoute = new ArrayList<TransitLink>();
-        ArrayList<TransitLink> fullRoute = new ArrayList<TransitLink>();
+        JobList jobList = new JobList();
+        JSONObject response = new JSONObject();
 
+        int[] weights = {};
 
         // TODO determin n routes ( A* ?)
-
-        // DUMMY ROUTE
+        // TODO DUMMY ROUTE
         TransitMapRoute.add(new TransitLink(1,2,3,2));
         TransitMapRoute.add(new TransitLink(2,4,5,4));
 
-        // TODO
         // -2 to stop on the last route and handle the last destination separtate
         int length = TransitMapRoute.size() - 1;
         for(int i = 0; i < length; i++){
@@ -96,18 +106,38 @@ public class MapController {
             // TODO get Points from database
             TransitPoint stopPoint = pointRepository.findById(stopid);
             TransitPoint startPoint = pointRepository.findById(startid);
-
-            System.out.println("stoppoint " + stopPoint.getId());
+            System.out.println("stoppoint " + stopPoint.getMapid());
             System.out.println("startpoint " + startPoint.getMapid());
 
             // TODO check if points belong to the same map
 
-            // TODO
-            BackendInfo mapinfo = backendInfoRepository.findBackendInfoBymapId(stopPoint.getMapid());
+            // TODO link map id to backendinfo
+            BackendInfo mapinfo = backendInfoService.getInfoByMapId(stopPoint.getMapid());
             System.out.println(mapinfo.getHostname());
-        }
-        // get cost to endpoint
 
+            // TODO request weight from backend
+//            String url = mapinfo.getHostname() + ":" + mapinfo.getPort() + "/";
+            response = backendService.requestJsonObject("http://localhost:9000/link/testweight");
+            System.out.println("response:" + response.get("weight"));
+
+
+            // TODO add link to jobList
+            // TODO move this to after top hasmap sort
+            jobList.addJob(new Job((long)startPoint.getPid(), (long)stopPoint.getPid() , mapinfo.getMapId()));
+
+        }
+
+        // TODO use hashmap to <totalweigth, joblist>
+
+        // TODO } end for each route
+
+
+        // TODO sort hashmap to get best route
+
+        // TODO construct joblist out of ch
+
+        // TODO save the chosen joblist
+        jobListService.saveOrder(jobList);
 
         return response;
     }

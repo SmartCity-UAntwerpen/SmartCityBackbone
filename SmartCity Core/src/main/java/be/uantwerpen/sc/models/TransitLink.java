@@ -15,8 +15,8 @@ public class TransitLink {
 
     public TransitLink(int id,  int startid, int stopid, int weight) {
         this.id = id;
-        this.startid = startid;
-        this.stopid = stopid;
+        this.startid = stopid;
+        this.startid = stopid;
         this.weight = weight;
     }
 
