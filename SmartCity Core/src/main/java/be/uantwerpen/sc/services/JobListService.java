@@ -79,15 +79,15 @@ public class JobListService {
                 jobService.save(job);
 
                 //if (jl.getJobs().size() > 1 && !jl.getJobs().get(1).getTypeVehicle().equals(jl.getJobs().get(0).getTypeVehicle())) {
-                if (jl.getJobs().size() > 1) {
-                    Job nextJob = jl.getJobs().get(1);
-
-                    if (dispatch(nextJob)) {
-                        nextJob.setStatus(JobState.BUSY);
-                        //nextJob.setJoblist(jl);
-                        jobService.save(nextJob);
-                    }
-                }
+//                if (jl.getJobs().size() > 1) {
+//                    Job nextJob = jl.getJobs().get(1);
+//
+//                    if (dispatch(nextJob)) {
+//                        nextJob.setStatus(JobState.BUSY);
+//                        //nextJob.setJoblist(jl);
+//                        jobService.save(nextJob);
+//                    }
+//                }
             } else {
                 // An error has occurred. Rerun the calculations for paths on the MaaS
                 // TODO Test this out
