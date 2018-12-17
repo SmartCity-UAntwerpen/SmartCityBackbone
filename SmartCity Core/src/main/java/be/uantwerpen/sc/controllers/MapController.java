@@ -1,14 +1,18 @@
 package be.uantwerpen.sc.controllers;
 
+import be.uantwerpen.sc.models.BackendInfo;
+import be.uantwerpen.sc.models.Link;
+import be.uantwerpen.sc.models.Point;
 import be.uantwerpen.sc.models.map.CustomMap;
+import be.uantwerpen.sc.repositories.BackendInfoRepository;
+import be.uantwerpen.sc.repositories.PointRepository;
 import be.uantwerpen.sc.services.MapControlService;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.Produces;
+import java.util.ArrayList;
 
 /**
  * Defines functions that can be called to control different kinds of maps,
@@ -22,6 +26,11 @@ public class MapController {
     @Autowired
     private MapControlService mapControlService;
 
+    @Autowired
+    private BackendInfoRepository backendInfoRepository;
+
+    @Autowired
+    private PointRepository pointRepository;
     /**
      * Returns a map for the given type of vehicle
      * alternatively returns a map for the visualisation with variable 'visual'
@@ -58,6 +67,44 @@ public class MapController {
     public String topPointsStringJson() {
         CustomMap map = mapControlService.buildTopMapJson();
         return map.getTopMapPointsString();
+    }
+
+    /**
+     * Endpoint for a pathplanning from {startpoint:{pid, mapid}} to {stoppoint:{pid, mapid}}
+     */
+    @RequestMapping(value = "planpath", method = RequestMethod.GET)
+    public JSONObject planPath(@RequestParam int startpid, @RequestParam int startmapid, @RequestParam int stoppid, @RequestParam int stopmapid){
+        JSONObject response = new JSONObject();
+        ArrayList<Link> TransitMapRoute = new ArrayList<Link>();
+        ArrayList<Link> fullRoute = new ArrayList<Link>();
+
+
+        // TODO determin n routes ( A* ?)
+
+        // DUMMY ROUTE
+        TransitMapRoute.add(new Link(1,2,3,2));
+        TransitMapRoute.add(new Link(2,4,54,4));
+
+        // TODO
+        // -2 to stop on the last route and handle the last destination separtate
+        int length = TransitMapRoute.size() - 2;
+        for(int i = 0; i < length; i++){
+            int stopid = TransitMapRoute.get(i).getStopId();
+            int startid = TransitMapRoute.get(i+1).getStartId();
+
+            // TODO get Points from database
+            Point stopPoint = pointRepository.findById(stopid);
+            Point startPoint = pointRepository.findById(startid);
+
+
+            // TODO check if points belong to the same map
+
+            // TODO
+        }
+        // get cost to endpoint
+
+
+        return response;
     }
 
 }
