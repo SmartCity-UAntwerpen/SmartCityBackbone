@@ -63,21 +63,18 @@ public class TerminalService {
             case "reset":
                 this.resetAll();
                 break;
-//            case "delete":
-//                if (commandString.split(" ", 2).length <= 1) {
-//                    terminal.printTerminalInfo("Missing arguments! 'delete {botId}'");
-//                } else {
-//                    int parsedInt;
-//
-//                    try {
-//                        parsedInt = this.parseInteger(commandString.split(" ", 2)[1]);
-//
-//                        this.deleteBot(parsedInt);
-//                    } catch (Exception e) {
-//                        terminal.printTerminalError(e.getMessage());
-//                    }
-//                }
-//                break;
+            case "delete":
+                if (commandString.split(" ", 2).length <= 1) {
+                    terminal.printTerminalInfo("Missing arguments! 'delete {id_delivery}'");
+                } else {
+
+                    try {
+                        this.deleteDelivery(commandString.split(" ", 2)[1]);
+                    } catch (Exception e) {
+                        terminal.printTerminalError(e.getMessage());
+                    }
+                }
+                break;
             case "exit":
                 exitSystem();
                 break;
@@ -88,6 +85,16 @@ public class TerminalService {
             default:
                 terminal.printTerminalInfo("Command: '" + command + "' is not recognized.");
                 break;
+        }
+    }
+
+    private void deleteDelivery(String id) {
+        Long count = jobListService.deleteByIdDelivery(id);
+        if(count > 0) {
+            terminal.printTerminal("Deleted "+count+" items.");
+        }
+        else {
+            terminal.printTerminal("ID not found. Nothing was deleted.");
         }
     }
 
@@ -122,7 +129,7 @@ public class TerminalService {
                 terminal.printTerminal("'add backend {name}' : add a new backend interactively");
                 terminal.printTerminal("'show {deliveries,backends}' : show all data in the database.");
                 terminal.printTerminal("'reset' : remove all deliveries from the database.");
-                //terminal.printTerminal("'delete {botId}' : remove the bot with the given id from the database.");
+                terminal.printTerminal("'delete {id_delivery}' : remove the delivery with the given id from the database.");
                 terminal.printTerminal("'exit' : shutdown the server.");
                 terminal.printTerminal("'help' / '?' : show all available commands.\n");
                 break;

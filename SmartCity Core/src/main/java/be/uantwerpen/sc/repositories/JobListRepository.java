@@ -4,6 +4,7 @@ import be.uantwerpen.sc.models.JobList;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 
@@ -19,4 +20,7 @@ public interface JobListRepository extends CrudRepository<JobList, Long>
 {
     List<JobList> findAll();
     void deleteAll();
+
+    @Transactional
+    Long deleteByIdDelivery(String idDelivery);
 }

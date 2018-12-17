@@ -229,6 +229,10 @@ public class JobListService {
         }
     }
 
+    public Long deleteByIdDelivery(String id) {
+        return jobListRepository.deleteByIdDelivery(id);
+    }
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
