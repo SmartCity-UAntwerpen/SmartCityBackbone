@@ -1,6 +1,7 @@
 package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.links.Link;
+import be.uantwerpen.sc.services.BackendService;
 import be.uantwerpen.sc.services.LinkControlService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -22,6 +23,9 @@ import java.util.List;
 public class LinkController {
     @Autowired
     private LinkControlService linkControlService;
+
+    @Autowired
+    private BackendService backendService;
 
     @Autowired
     private ResourceLoader resourceLoader;
@@ -124,15 +128,15 @@ public class LinkController {
             JSONArray responseArray = new JSONArray();
             // specifying port to spoof different backends on one single localhost server ( responds json accordingly
             // request carlinks
-            responseArray = requestFromBackend(carip, carPort,"/link/transitmap", "port=8081" );
+            responseArray = backendService.requestFromBackend(carip, carPort,"/link/transitmap", "port=8081" );
             transitLinkArray.addAll(responseArray);
 
             // request robotlinks
-            responseArray = requestFromBackend(droneip, dronePort,"/link/transitmap", "port=8082" );
+            responseArray = backendService.requestFromBackend(droneip, dronePort,"/link/transitmap", "port=8082" );
             transitLinkArray.addAll(responseArray);
 
             // request dronelinks
-            responseArray = requestFromBackend(robotip, robotPort,"/link/transitmap", "port=8083" );
+            responseArray = backendService.requestFromBackend(robotip, robotPort,"/link/transitmap", "port=8083" );
             transitLinkArray.addAll(responseArray);
 
 
@@ -144,76 +148,10 @@ public class LinkController {
 
     }
 
-    /* TEST METHOD: getDroneLinks calling this endpooint triggers a call to get a backennds transitlinks
-     *  endpoint to get the entire transitmap, MaaS will call this
-     *  @return an array of links of the drone transit map
-     */
-    @RequestMapping(value = "testLinks", method = RequestMethod.GET)
-    public JSONArray gettestLinks( ) {
-        return requestFromBackend("http://localhost", "8081","/link/transitmap" );
-    }
-
-    // TODO: Move methods bellow to appropriate service or COMMON
-
-    /* offset Backend Ids
-    *
-    *
-    */
 
 
 
-    /* a wrapper method to call requestFromBackend wo/ parameters (see method below)
-    *
-    *
-     */
-    private JSONArray requestFromBackend(String ip, String port, String endpoint) {
-        return requestFromBackend(ip, port, endpoint, "");
-    }
-        /* a generic method do do a request to a server and parse the response to a JSONArray
-     *
-     * @param String ip: server ip
-     * @param String port: server port
-     * @param endpoint : REST endpoint
-     * @param parameters : optional parameters "val1=foo&val2=bar"
-     * @return JSONArray : backend response
-     */
-    private JSONArray requestFromBackend(String ip, String port, String endpoint, String parameters){
-        String responseLine;
-        String response = "";
 
-        // used to parse strings to json
-        JSONParser parser = new JSONParser();
-        JSONArray linkArray = new JSONArray();
-        try {
-            URL urlCar = new URL(ip + ":" + port + endpoint + "?" + parameters);
-            HttpURLConnection conn = (HttpURLConnection) urlCar.openConnection();
 
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
-
-            if (conn.getResponseCode() == 200) {
-                BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-                while ((responseLine = br.readLine()) != null) {
-                    response += responseLine;
-                }
-                System.out.println("got: " + response + "\nfrom:" + ip + ":" + port + endpoint);
-                try {
-                    JSONArray jsonArray = (JSONArray) parser.parse(response);
-                    return jsonArray;
-                }
-                catch(ParseException e){
-                    System.out.println("could not parse folowwing string: " + response);
-                    System.out.println(e.getStackTrace());
-                }
-            } else {
-                System.out.println("Request Failed, Responsecode returned: " + conn.getResponseCode());
-            }
-
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-
-        return linkArray ;
-    }
 }
 
