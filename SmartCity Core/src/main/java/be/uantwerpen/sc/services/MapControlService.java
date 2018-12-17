@@ -17,10 +17,6 @@ public class MapControlService {
     @Autowired
     private LinkControlService linkControlService;
 
-    @Autowired
-    private BotControlService botControlService;
-
-
     private CustomMap topMap;
     private boolean topMapCreated = false;
     private ArrayList<Link> referenceList;
