@@ -7,7 +7,11 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 
 import java.util.List;
@@ -46,6 +50,9 @@ public class JobListService {
 
     @Autowired
     private JobService jobService;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     public List<JobList> findAll() {
         return this.jobListRepository.findAll();
@@ -119,66 +126,99 @@ public class JobListService {
      */
     private Boolean dispatch(Job job) {
         logger.info("Dispatch " + job.getId() + " - vehicle " + job.getTypeVehicle());
-        return true;
-//        String stringUrl = "http://";
-//        String typeVehicle = job.getTypeVehicle().toUpperCase();
-//        switch (typeVehicle) {
-//            case "DRONETOP":
-//                stringUrl += droneCoreIP + ":" + droneCorePort + "/executeJob/";
-//                logger.info("DroneDispatch: " + stringUrl);
-//                break;
-//            case "CARTOP":
-//                stringUrl += carCoreIP + ":" + carCorePort + "/carmanager/executeJob/";
-//                logger.info("CarDispatch: " + stringUrl);
-//                break;
-//            case "ROBOTTOP":
-//                stringUrl += robotCoreIP + ":" + robotCorePort + "/job/executeJob/";
-//                logger.info("RobotDispatch: " + stringUrl);
-//                break;
-//            default:
-//                logger.warn("No correct type dispatchToCore function");
-//        }
-//
-//        boolean status = true;
-//        stringUrl += (String.valueOf(job.getId()) + "/" + String.valueOf(job.getIdVehicle()) + "/" + String.valueOf(job.getIdStart()) + "/" + String.valueOf(job.getIdEnd()));
-//        logger.info("the url is: " + stringUrl);
-//        try {
-//            URL url = new URL(stringUrl);
-//            HttpURLConnection conn;
-//            conn = (HttpURLConnection) url.openConnection();
-//            conn.setDoOutput(true);
-//            conn.setRequestMethod("GET");
-//            // for debugging purposes
-//            /*logger.info("responsecode " + conn.getResponseCode());
-//            logger.info("responsmsg " + conn.getResponseMessage());*/
-//            //succesfull transmission
-//            if (conn.getResponseCode() == 200) {
-//                logger.info(conn.getResponseCode());
-//                /*String msgresponse = conn.getResponseMessage();
-//                /*if (msgresponse.equals("ACK")) {
-//                    //TODO: doet iets met de ACK code
-//                    logger.info(msgresponse);
-//                }*/
-//                conn.disconnect();
-//            }
-//            // an error has occured
-//            else {
-//                /*String msgresponse = conn.getResponseMessage();
-//                logger.info(msgresponse);
-//                switch (msgresponse) {
-//                    case "idVehicleError":
-//                        logger.info(msgresponse);
-//                        break;
-//                    default: logger.info(msgresponse);
-//                }*/
-//                logger.error("ERROR WHILE DISPATCHING JOB, job ID: " + job.getId() + " for vehicle " + job.getIdVehicle());
-//                conn.disconnect();
-//                status = false;
-//            }
-//        } catch (IOException e) {
-//            logger.error("Can't get file", e);
-//        }
-//        return status;
+        String stringUrl = "http://";
+        String typeVehicle = job.getTypeVehicle().toUpperCase();
+        switch (typeVehicle) {
+            case "DRONETOP":
+                stringUrl += droneCoreIP + ":" + droneCorePort + "/job/executeJob/";
+                logger.info("DroneDispatch: " + stringUrl);
+                break;
+            case "CARTOP":
+                stringUrl += carCoreIP + ":" + carCorePort + "/job/executeJob/";
+                logger.info("CarDispatch: " + stringUrl);
+                break;
+            case "ROBOTTOP":
+                stringUrl += robotCoreIP + ":" + robotCorePort + "/job/executeJob/";
+                logger.info("RobotDispatch: " + stringUrl);
+                break;
+            default:
+                logger.warn("No correct type dispatchToCore function");
+        }
+
+        boolean status = true;
+        stringUrl += (String.valueOf(job.getId()) + "/" + String.valueOf(job.getIdVehicle()) + "/" + String.valueOf(job.getIdStart()) + "/" + String.valueOf(job.getIdEnd()));
+        logger.info("the url is: " + stringUrl);
+        try {
+            URL url = new URL(stringUrl);
+            HttpURLConnection conn;
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("GET");
+            // for debugging purposes
+            /*logger.info("responsecode " + conn.getResponseCode());
+            logger.info("responsmsg " + conn.getResponseMessage());*/
+            //succesfull transmission
+            if (conn.getResponseCode() == 200) {
+                logger.info(conn.getResponseCode());
+                /*String msgresponse = conn.getResponseMessage();
+                /*if (msgresponse.equals("ACK")) {
+                    //TODO: doet iets met de ACK code
+                    logger.info(msgresponse);
+                }*/
+                conn.disconnect();
+            }
+            // an error has occured
+            else {
+                /*String msgresponse = conn.getResponseMessage();
+                logger.info(msgresponse);
+                switch (msgresponse) {
+                    case "idVehicleError":
+                        logger.info(msgresponse);
+                        break;
+                    default: logger.info(msgresponse);
+                }*/
+                logger.error("ERROR WHILE DISPATCHING JOB, job ID: " + job.getId() + " for vehicle " + job.getIdVehicle());
+                conn.disconnect();
+                status = false;
+            }
+        } catch (IOException e) {
+            logger.error("Can't get file", e);
+        }
+        return status;
+    }
+
+    public void moveNextVehicleToPickUpPoint(Long jobId)
+    {
+        Job previousVehicle = jobService.getJob(jobId);
+
+        String stringUrl = "";
+        // Type vehicle krijgen van map info
+        //String typeVehicle = job.getTypeVehicle().toUpperCase();
+        switch ("d") {
+            case "DRONETOP":
+                stringUrl += droneCoreIP + ":" + droneCorePort;
+                logger.info("DroneDispatch: " + stringUrl);
+                break;
+            case "CARTOP":
+                stringUrl += carCoreIP + ":" + carCorePort;
+                logger.info("CarDispatch: " + stringUrl);
+                break;
+            case "ROBOTTOP":
+                stringUrl += robotCoreIP + ":" + robotCorePort;
+                logger.info("RobotDispatch: " + stringUrl);
+                break;
+            default:
+                logger.warn("No correct type dispatchToCore function");
+        }
+
+        stringUrl = stringUrl + "/job/gotopoint/{pid}";
+
+        ResponseEntity<String> response = restTemplate.exchange(stringUrl,
+                HttpMethod.POST,
+                null,
+                String.class,
+                previousVehicle.getIdEnd()
+        );
     }
 
     /**
@@ -239,6 +279,10 @@ public class JobListService {
         }
     }
 
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 }
 
 

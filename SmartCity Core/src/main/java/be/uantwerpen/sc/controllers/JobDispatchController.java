@@ -22,6 +22,7 @@ public class JobDispatchController {
 
     private static final Logger logger = LoggerFactory.getLogger(JobDispatchController.class);
 
+    //TODO  Nog nodig?
     /**
      * @param jobList The jobList object to save (received from MaaS)
      */
@@ -29,7 +30,6 @@ public class JobDispatchController {
     public void saveOrder(@RequestBody JobList jobList) {
         logger.info("Test: Saving jobList");
         //System.out.println(jobList.toString());
-        //System.out.println("Vehicle type in controller: " + jobList.getJobs().get(0).getTypeVehicle());
         //jobListService.saveOrder(jobList);
     }
 
@@ -62,7 +62,14 @@ public class JobDispatchController {
         jobListService.deleteAll();
     }
 
-    @RequestMapping(value = "/completeJob/{idJob}", method = RequestMethod.GET)
+    @RequestMapping(value = "/jobs/vehiclecloseby/{idjob}", method = RequestMethod.POST)
+    public void vehicleCloseByToEnd(@PathVariable("idjob") Long idJob)
+    {
+        // When the first vehicle is near it's transit/endpoint, move the next vehicle to that transit/endpoint
+        jobListService.moveNextVehicleToPickUpPoint(idJob);
+    }
+
+    @RequestMapping(value = "/complete/{idjob}", method = RequestMethod.GET)
     @ResponseBody
     public String completeJob(@PathVariable Long idJob) {
         logger.info("Job " + idJob + " is complete");
