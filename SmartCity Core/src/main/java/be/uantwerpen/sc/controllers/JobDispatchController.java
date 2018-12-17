@@ -6,11 +6,9 @@ import be.uantwerpen.sc.services.JobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 
 @RestController
 public class JobDispatchController {
@@ -30,7 +28,7 @@ public class JobDispatchController {
     public void saveOrder(@RequestBody JobList jobList) {
         logger.info("Test: Saving jobList");
         //System.out.println(jobList.toString());
-        //jobListService.saveOrder(jobList);
+        jobListService.saveOrder(jobList);
     }
 
     /**
@@ -40,7 +38,7 @@ public class JobDispatchController {
     @ResponseBody
     public String dispatch() {
         logger.info("Test Dispatching");
-        //jobListService.dispatchToCore();
+        jobListService.dispatchToCore();
         return "Done dispatching";
     }
 
@@ -69,9 +67,10 @@ public class JobDispatchController {
         jobListService.moveNextVehicleToPickUpPoint(idJob);
     }
 
-    @RequestMapping(value = "/complete/{idjob}", method = RequestMethod.GET)
+    @RequestMapping(value = "/jobs/complete/{idjob}", method = RequestMethod.GET)
     @ResponseBody
-    public String completeJob(@PathVariable Long idJob) {
+    public String completeJob(@PathVariable Long idJob)
+    {
         logger.info("Job " + idJob + " is complete");
         for (JobList jl : jobListService.findAll()) {
             if (jl.getJobs().get(0).getId().equals(idJob)) {
@@ -79,21 +78,20 @@ public class JobDispatchController {
                 jobService.delete(idJob);
                 logger.info("Rendezvous job with id " + idJob + " is deleted because it was complete");
             } else if (jl.getJobs().size() > 1 && jl.getJobs().get(1).getId().equals(idJob)) {
-                // rendezvous
+                // Rendezvous
                 jl.getJobs().remove(1);
                 jobService.delete(idJob);
                 logger.info("Job " + idJob + " is deleted because it was complete");
             }
 
             if (jl.getJobs().isEmpty()) {
-                //jobListService.deleteOrder(jl.getId());
-                logger.info("Delete order");
+                jobListService.deleteOrder(jl.getId()); // TODO Mag dit wel? Verwijderen terwijl we erover iteraten
+                logger.info("Delete order: " + jl.getId());
             } else {
-                //jobListService.dispatchToCore();
+                jobListService.dispatchToCore();
                 logger.info("Dispatch next job");
             }
         }
-
-        return "ok";
+        return "Ok";
     }
 }

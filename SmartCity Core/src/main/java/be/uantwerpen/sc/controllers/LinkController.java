@@ -87,10 +87,6 @@ public class LinkController {
         // activate when testing without database (reads data from jsonfiles)
         boolean LOCALDATA = localfiles;
         // header for testing purposes
-        JSONObject header = new JSONObject();
-        header.put("pidstart", pidstart);
-        header.put("pidend", pidend);
-        linkArray.add(header);
 
 
         if(LOCALDATA){
@@ -112,7 +108,7 @@ public class LinkController {
                 absolutePath = absolutePath.replace("%20", " " ); // catch any spaces in filenames (get converted to %20 in getURI)
                 System.out.println("path to json:" + absolutePath);
 
-                JSONArray jsonArray = (JSONArray) parser.parse(new FileReader(absolutePath));
+                JSONArray jsonArray = (JSONArray) parser.parse(new FileReader(filePath));
 
                 for(Object l : jsonArray){
                     JSONObject link = (JSONObject) l;

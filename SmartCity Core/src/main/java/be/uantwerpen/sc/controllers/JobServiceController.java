@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/job/service/")
 public class JobServiceController {
 
-    private static final Logger logger = LoggerFactory.getLogger(JobDispatchController.class);
+    //private static final Logger logger = LoggerFactory.getLogger(JobDispatchController.class);
 
     @Autowired
     private JobService jobService;
@@ -47,5 +47,8 @@ public class JobServiceController {
     }
 
     @RequestMapping(value = "deletealljobs", method = RequestMethod.POST)
-    public void deleteAll() { jobService.deleteAll(); }
+    public void deleteAll()
+    {
+        jobService.deleteAll();
+    }
 }

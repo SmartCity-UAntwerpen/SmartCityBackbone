@@ -1,8 +1,6 @@
 package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.Job;
-import be.uantwerpen.sc.models.JobList;
-import be.uantwerpen.sc.models.JobState;
 import be.uantwerpen.sc.repositories.JobRepository;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -39,7 +37,9 @@ public class JobService {
         this.jobRepository.delete(id);
     }
 
-    public void deleteAll() { this.jobRepository.deleteAll(); }
-
-
+    public void deleteAll()
+    {
+        logger.info("Deleting all jobs!");
+        this.jobRepository.deleteAll();
+    }
 }

@@ -28,12 +28,6 @@ import java.util.List;
 public class JobListService {
     private static final Logger logger = LogManager.getLogger(JobListService.class);
 
-    @Value("${sc.core.ip:localhost}")
-    private String serverCoreIP;
-
-    @Value("#{new Integer(${core.port}) ?: 1994}")
-    private int serverCorePort;
-
     @Autowired
     private JobListRepository jobListRepository;
 
@@ -112,10 +106,10 @@ public class JobListService {
     }
 
     /**
-     * communication to the cores
+     * Communication to the Backends of the different vehicles
      *
      * @param job The job to dispatch
-     * @return (boolean) true if successfully sent. False if error occurred
+     * @return (boolean) True if successfully sent. False if error occurred
      */
     private Boolean dispatch(Job job) {
         logger.info("Dispatch " + job.getId() + " - vehicle ");
@@ -126,11 +120,9 @@ public class JobListService {
         String stringUrl = "http://";
         stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/execute/";
 
-        logger.info("Dispatch to backend: " + stringUrl);
-
         boolean status;
         stringUrl += String.valueOf(job.getIdStart()) + "/" + String.valueOf(job.getIdEnd()) + "/" + String.valueOf(job.getId());
-        logger.info("The full dispatch url is: " + stringUrl);
+        logger.info("The full dispatch url of the Job is: " + stringUrl);
 
         ResponseEntity<String> response = restTemplate.exchange(stringUrl,
                 HttpMethod.POST,
@@ -154,8 +146,7 @@ public class JobListService {
     {
         Job previousVehicle = jobService.getJob(jobId);
 
-        // Type vehicle krijgen van map info
-        // Get the backendInfo object from the info service
+        // Get the backendInfo object from the info service for the given Job
         BackendInfo backendInfo = backendInfoService.getInfoById(previousVehicle.getIdMap());
 
         String stringUrl = "http://";
@@ -171,6 +162,7 @@ public class JobListService {
         );
     }
 
+    // TODO Nodig?
     /**
      * function to check if order is empty or not
      *
@@ -182,7 +174,7 @@ public class JobListService {
     }
 
     /**
-     * delete an order
+     * Delete an order
      *
      * @param id (long) id from the order that needs to be deleted
      */
@@ -194,24 +186,24 @@ public class JobListService {
         this.jobListRepository.deleteAll();
     }
 
+    // TODO Implement?
     /**
      * recalculate the order for which an error occured during the dispatch2core
      *
      * @param idJob      (long) id from the job in which an error occured
      * @param idDelivery (string) id from delivery which needs to be saved when making a new order with correct input
      */
-    // TODO Implement?
     public void recalculatePathAfterError(long idJob, String idDelivery)
     {
 
     }
 
-
+    // TODO Nodig?
     /**
-     * function to find a delivery
+     * Function to find a delivery when a job is given
      *
      * @param idDelivery (String) Id from the delivery
-     * @return Job              (Job) first job from the order that is found mathcing the delivery ID
+     * @return Job       (Job) first job from the order that is found mathcing the delivery ID
      */
     public Job findDelivery(String idDelivery) {
         Job found = new Job();
