@@ -41,42 +41,5 @@ public class JobService {
 
     public void deleteAll() { this.jobRepository.deleteAll(); }
 
-    /**
-     *  finds next job based on id of the current job
-     */
-    public Job findNextJob(long jobId) {
-        long nextId = jobId + 1;
-
-        Job current = getJob(jobId);
-        if(current == null) return null;
-
-        Job nextJob = getJob(nextId);
-        if(nextJob == null) return null;
-
-        if(current.getJobList().equals(nextJob.getJobList())) {
-            // from the same delivery
-            return nextJob;
-        }
-        else {
-            //from another delivery so was the last one
-            return null;
-        }
-    }
-
-    public void endJobAndDispatchNext(long jobId) {
-        //Change state on previous
-        Job current = getJob(jobId);
-        current.setStatus(JobState.DONE);;
-        save(current);
-
-        Job next = findNextJob(jobId);
-        if(next != null) {
-            //dispatch
-        }
-        else {
-            //remove delivery?
-            //Notify MaaS?
-        }
-    }
 
 }

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 public class JobDispatchController {
@@ -24,18 +26,17 @@ public class JobDispatchController {
     /**
      * @param jobList The jobList object to save (received from MaaS)
      */
-    @RequestMapping(value = "/job/saveorder", method = RequestMethod.POST)
+    @RequestMapping(value = "/jobs/saveOrder", method = RequestMethod.POST)
     public void saveOrder(@RequestBody JobList jobList) {
         logger.info("Test: Saving jobList");
-        System.out.println(jobList.toString());
-       // System.out.println("Vehicle type in controller: " + jobList.getJobs().get(0).getTypeVehicle());
+        //System.out.println(jobList.toString());
         //jobListService.saveOrder(jobList);
     }
 
     /**
-     * Dispatching (This request comes from MaaS
+     * Dispatching (This request comes from MaaS)
      */
-    @RequestMapping(value = "/job/dispatch", method = RequestMethod.POST)
+    @RequestMapping(value = "/jobs/dispatch", method = RequestMethod.POST)
     @ResponseBody
     public String dispatch() {
         logger.info("Test Dispatching");
@@ -43,7 +44,32 @@ public class JobDispatchController {
         return "Done dispatching";
     }
 
-    @RequestMapping(value = "/completeJob/{idJob}", method = RequestMethod.GET)
+    @RequestMapping(value = "/jobs/findAllJobLists",method = RequestMethod.GET)
+    public List<JobList> findAllJobLists()
+    {
+        return jobListService.findAll();
+    }
+
+    @RequestMapping(value = "/jobs/deleteOrder/{id}", method = RequestMethod.POST)
+    public void delete(@PathVariable("id") Long id) {
+        jobListService.deleteOrder(id);
+    }
+
+    @RequestMapping(value = "/jobs/deleteAllLists",method = RequestMethod.POST)
+    public void deleteAllJobs()
+    {
+        jobService.deleteAll();
+        jobListService.deleteAll();
+    }
+
+    @RequestMapping(value = "/jobs/vehiclecloseby/{idjob}", method = RequestMethod.POST)
+    public void vehicleCloseByToEnd(@PathVariable("idjob") Long idJob)
+    {
+        // When the first vehicle is near it's transit/endpoint, move the next vehicle to that transit/endpoint
+        jobListService.moveNextVehicleToPickUpPoint(idJob);
+    }
+
+    @RequestMapping(value = "/complete/{idjob}", method = RequestMethod.GET)
     @ResponseBody
     public String completeJob(@PathVariable Long idJob) {
         logger.info("Job " + idJob + " is complete");
