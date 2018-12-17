@@ -35,28 +35,19 @@ public class DatabaseLoaderDevelopment {
         JobList list = new JobList();
         list.setIdDelivery("MaaSId1");
 
-        Job job = new Job(1L,5L,10);
+        Job job = new Job(1L,5L,11);
         list.addJob(job);
 
-        job = new Job(7L,10L,11);
+        job = new Job(7L,10L,10);
         list.addJob(job);
-        jobListService.saveOrder(list);
-
-        //delivery 2
-        list = new JobList();
-        list.setIdDelivery("MaaSId2");
-
-        job = new Job(7L,5L,10);
-        list.addJob(job);
-
-        job = new Job(9L,10L,11);
-        list.addJob(job);
-
         jobListService.saveOrder(list);
     }
 
     private void initBackends() {
         BackendInfo backend = new BackendInfo("localhost",7777,11,"BotTest");
+        backendInfoRepository.save(backend);
+
+        backend = new BackendInfo("localhost",8888,10,"BotTest");
         backendInfoRepository.save(backend);
     }
 

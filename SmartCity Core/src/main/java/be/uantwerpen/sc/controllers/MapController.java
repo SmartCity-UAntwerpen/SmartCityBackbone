@@ -113,6 +113,7 @@ public class MapController {
 
             // TODO link map id to backendinfo
             BackendInfo mapinfo = backendInfoService.getInfoByMapId(stopPoint.getMapid());
+
             System.out.println(mapinfo.getHostname());
 
             // TODO request weight from backend
