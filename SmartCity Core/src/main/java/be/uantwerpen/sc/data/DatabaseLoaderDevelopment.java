@@ -15,7 +15,7 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Service
-@Profile("dev")
+@Profile("devdata")
 public class DatabaseLoaderDevelopment {
 
     @Autowired
