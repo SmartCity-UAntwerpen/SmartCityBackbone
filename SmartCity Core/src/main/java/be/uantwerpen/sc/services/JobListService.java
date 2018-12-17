@@ -1,8 +1,10 @@
 package be.uantwerpen.sc.services;
 
 //import be.uantwerpen.sc.localization.astar.Astar;
+import be.uantwerpen.sc.models.BackendInfo;
 import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.sc.models.JobList;
+import be.uantwerpen.sc.models.JobState;
 import be.uantwerpen.sc.repositories.JobListRepository;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -32,25 +34,14 @@ public class JobListService {
     @Value("#{new Integer(${core.port}) ?: 1994}")
     private int serverCorePort;
 
-    @Value("${drone.ip:localhost}")
-    private String droneCoreIP;
-    @Value("${car.ip:localhost}")
-    private String carCoreIP;
-    @Value("${robot.ip:localhost}")
-    private String robotCoreIP;
-
-    @Value("#{new Integer(${drone.port}) ?: 1994}")
-    private String droneCorePort;
-    @Value("#{new Integer(${car.port}) ?: 1994}")
-    private String carCorePort;
-    @Value("#{new Integer(${robot.port}) ?: 1994}")
-    private String robotCorePort;
-
     @Autowired
     private JobListRepository jobListRepository;
 
     @Autowired
     private JobService jobService;
+
+    @Autowired
+    private BackendInfoService backendInfoService;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -72,7 +63,7 @@ public class JobListService {
         for (JobList jl : this.jobListRepository.findAll()) {
             logger.info(" Order #" + jl.getId());
             for (int x = 0; x < jl.getJobs().size(); x++) {
-                logger.info("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl.getJobs().get(x).getIdVehicle() + ";   VehicleType :" + jl.getJobs().get(x).getTypeVehicle() + ";   Status :" + jl.getJobs().get(x).getStatus());
+                logger.info("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   Status :" + jl.getJobs().get(x).getStatus());
             }
         }
     }
@@ -83,21 +74,22 @@ public class JobListService {
             Job job = jl.getJobs().get(0);
 
             // if successfully dispatched, update status of the job
-            if (job.getStatus().equals("busy")) {
+            if (job.getStatus().equals(JobState.BUSY)) {
                 // probably not reached rendezvous point yet: wait
                 return;
             }
 
             if (dispatch(job)) {
-                job.setStatus("busy");
+                job.setStatus(JobState.BUSY);
                 //job.setJoblist(jl);
                 jobService.save(job);
 
-                if (jl.getJobs().size() > 1 && !jl.getJobs().get(1).getTypeVehicle().equals(jl.getJobs().get(0).getTypeVehicle())) {
+                //if (jl.getJobs().size() > 1 && !jl.getJobs().get(1).getTypeVehicle().equals(jl.getJobs().get(0).getTypeVehicle())) {
+                if (jl.getJobs().size() > 1) {
                     Job nextJob = jl.getJobs().get(1);
 
                     if (dispatch(nextJob)) {
-                        nextJob.setStatus("busy");
+                        nextJob.setStatus(JobState.BUSY);
                         //nextJob.setJoblist(jl);
                         jobService.save(nextJob);
                     }
@@ -126,64 +118,34 @@ public class JobListService {
      * @return (boolean) true if successfully sent. False if error occurred
      */
     private Boolean dispatch(Job job) {
-        logger.info("Dispatch " + job.getId() + " - vehicle " + job.getTypeVehicle());
-        String stringUrl = "http://";
-        String typeVehicle = job.getTypeVehicle().toUpperCase();
-        switch (typeVehicle) {
-            case "DRONETOP":
-                stringUrl += droneCoreIP + ":" + droneCorePort + "/job/executeJob/";
-                logger.info("DroneDispatch: " + stringUrl);
-                break;
-            case "CARTOP":
-                stringUrl += carCoreIP + ":" + carCorePort + "/job/executeJob/";
-                logger.info("CarDispatch: " + stringUrl);
-                break;
-            case "ROBOTTOP":
-                stringUrl += robotCoreIP + ":" + robotCorePort + "/job/executeJob/";
-                logger.info("RobotDispatch: " + stringUrl);
-                break;
-            default:
-                logger.warn("No correct type dispatchToCore function");
-        }
+        logger.info("Dispatch " + job.getId() + " - vehicle ");
 
-        boolean status = true;
-        stringUrl += (String.valueOf(job.getId()) + "/" + String.valueOf(job.getIdVehicle()) + "/" + String.valueOf(job.getIdStart()) + "/" + String.valueOf(job.getIdEnd()));
-        logger.info("the url is: " + stringUrl);
-        try {
-            URL url = new URL(stringUrl);
-            HttpURLConnection conn;
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("GET");
-            // for debugging purposes
-            /*logger.info("responsecode " + conn.getResponseCode());
-            logger.info("responsmsg " + conn.getResponseMessage());*/
-            //succesfull transmission
-            if (conn.getResponseCode() == 200) {
-                logger.info(conn.getResponseCode());
-                /*String msgresponse = conn.getResponseMessage();
-                /*if (msgresponse.equals("ACK")) {
-                    //TODO: doet iets met de ACK code
-                    logger.info(msgresponse);
-                }*/
-                conn.disconnect();
-            }
-            // an error has occured
-            else {
-                /*String msgresponse = conn.getResponseMessage();
-                logger.info(msgresponse);
-                switch (msgresponse) {
-                    case "idVehicleError":
-                        logger.info(msgresponse);
-                        break;
-                    default: logger.info(msgresponse);
-                }*/
-                logger.error("ERROR WHILE DISPATCHING JOB, job ID: " + job.getId() + " for vehicle " + job.getIdVehicle());
-                conn.disconnect();
-                status = false;
-            }
-        } catch (IOException e) {
-            logger.error("Can't get file", e);
+        // Get the backendInfo object from the info service
+        BackendInfo backendInfo = backendInfoService.getInfoById(job.getIdMap());
+
+        String stringUrl = "http://";
+        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/execute/";
+
+        logger.info("Dispatch to backend: " + stringUrl);
+
+        boolean status;
+        stringUrl += String.valueOf(job.getIdStart()) + "/" + String.valueOf(job.getIdEnd()) + "/" + String.valueOf(job.getId());
+        logger.info("The full dispatch url is: " + stringUrl);
+
+        ResponseEntity<String> response = restTemplate.exchange(stringUrl,
+                HttpMethod.POST,
+                null,
+                String.class
+        );
+
+        if(!response.getStatusCode().is2xxSuccessful() && response.getBody().equalsIgnoreCase("false")) {
+            logger.warn("Error while dispatching Job: " + job.getId());
+            logger.warn("Response body: " + response.getBody());
+            status = false;
+        }
+        else
+        {
+            status = true;
         }
         return status;
     }
@@ -192,27 +154,14 @@ public class JobListService {
     {
         Job previousVehicle = jobService.getJob(jobId);
 
-        String stringUrl = "";
         // Type vehicle krijgen van map info
-        //String typeVehicle = job.getTypeVehicle().toUpperCase();
-        switch ("d") {
-            case "DRONETOP":
-                stringUrl += droneCoreIP + ":" + droneCorePort;
-                logger.info("DroneDispatch: " + stringUrl);
-                break;
-            case "CARTOP":
-                stringUrl += carCoreIP + ":" + carCorePort;
-                logger.info("CarDispatch: " + stringUrl);
-                break;
-            case "ROBOTTOP":
-                stringUrl += robotCoreIP + ":" + robotCorePort;
-                logger.info("RobotDispatch: " + stringUrl);
-                break;
-            default:
-                logger.warn("No correct type dispatchToCore function");
-        }
+        // Get the backendInfo object from the info service
+        BackendInfo backendInfo = backendInfoService.getInfoById(previousVehicle.getIdMap());
 
-        stringUrl = stringUrl + "/job/gotopoint/{pid}";
+        String stringUrl = "http://";
+        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/gotopoint/{pid}";
+
+        logger.info("Dispatch gotopoint to backend: " + stringUrl);
 
         ResponseEntity<String> response = restTemplate.exchange(stringUrl,
                 HttpMethod.POST,

@@ -23,7 +23,6 @@ public class JobDispatchController {
 
     private static final Logger logger = LoggerFactory.getLogger(JobDispatchController.class);
 
-    //TODO  Nog nodig?
     /**
      * @param jobList The jobList object to save (received from MaaS)
      */
@@ -56,7 +55,7 @@ public class JobDispatchController {
         jobListService.deleteOrder(id);
     }
 
-    @RequestMapping(value = "/jobs/deleteAllLists",method = RequestMethod.GET)
+    @RequestMapping(value = "/jobs/deleteAllLists",method = RequestMethod.POST)
     public void deleteAllJobs()
     {
         jobService.deleteAll();

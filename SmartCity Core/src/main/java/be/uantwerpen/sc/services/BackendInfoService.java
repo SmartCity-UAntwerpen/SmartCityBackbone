@@ -14,7 +14,7 @@ public class BackendInfoService {
     private BackendInfoRepository backendInfoRepository;
 
     public BackendInfo getInfoById(int mapid) {
-        return backendInfoRepository.findBackendInfoRepositoryBymapId(mapid);
+        return backendInfoRepository.findBackendInfoBymapId(mapid);
     }
 
     public List<BackendInfo> findAll() {
