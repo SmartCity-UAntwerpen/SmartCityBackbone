@@ -9,7 +9,6 @@ import be.uantwerpen.sc.repositories.JobListRepository;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -73,7 +72,8 @@ public class JobListService {
                 return;
             }
 
-            if (dispatch(job)) {
+            if (dispatch(job) && job.getStatus().equals(JobState.TODO))
+            {
                 job.setStatus(JobState.BUSY);
                 //job.setJoblist(jl);
                 jobService.save(job);
@@ -144,10 +144,32 @@ public class JobListService {
 
     public void moveNextVehicleToPickUpPoint(Long jobId)
     {
+
         Job previousVehicle = jobService.getJob(jobId);
+        Job nextJob = null;
+
+        for (JobList jl : this.jobListRepository.findAll())
+        {
+            if (jl.getJobs().size() > 1)
+            {
+                if (previousVehicle.getId() == jl.getJobs().get(0).getId())
+                {
+                    nextJob = jl.getJobs().get(1);
+                    break;
+                }
+            }
+
+        }
+
+        // Check if nextJob is zero which can be when there is no TODO go to completejob when it ws the final job
+        if(nextJob == null)
+        {
+            return;
+        }
+
 
         // Get the backendInfo object from the info service for the given Job
-        BackendInfo backendInfo = backendInfoService.getInfoById(previousVehicle.getIdMap());
+        BackendInfo backendInfo = backendInfoService.getInfoById(nextJob.getIdMap());
 
         String stringUrl = "http://";
         stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/gotopoint/{pid}";
@@ -158,7 +180,7 @@ public class JobListService {
                 HttpMethod.POST,
                 null,
                 String.class,
-                previousVehicle.getIdEnd()
+                nextJob.getIdStart()
         );
     }
 

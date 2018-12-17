@@ -103,7 +103,7 @@ public class MapController {
             // TODO check if points belong to the same map
 
             // TODO
-            BackendInfo mapinfo = backendInfoRepository.findBackendInfoBymapId(stopPoint.getMapid());
+            BackendInfo mapinfo = backendInfoRepository.findByMapId(stopPoint.getMapid());
             System.out.println(mapinfo.getHostname());
         }
         // get cost to endpoint
