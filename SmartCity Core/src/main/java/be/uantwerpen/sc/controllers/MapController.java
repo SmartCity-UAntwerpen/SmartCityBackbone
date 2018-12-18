@@ -59,7 +59,8 @@ public class MapController {
             return mapControlService.buildCustomMapJson("visual").getVisualPointsString();
         }
         //further handling in customMap when type is a car, bot, drone, ...
-        return mapControlService.buildCustomMapJson(type).toString(type);
+        return "U014";
+//        return mapControlService.buildCustomMapJson(type).toString(type);
     }
 
     /**
@@ -122,7 +123,7 @@ public class MapController {
             System.out.println(mapinfo.getHostname());
 
             // Request weight between points from backend
-            String url = mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
+            String url = "http://192.168.0.50" + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
             System.out.println(url);
 
             response = backendService.requestJsonObject(url);

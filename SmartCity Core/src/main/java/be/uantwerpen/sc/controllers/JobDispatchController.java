@@ -68,9 +68,9 @@ public class JobDispatchController {
         jobListService.moveNextVehicleToPickUpPoint(idJob);
     }
 
-    @RequestMapping(value = "/jobs/complete/{idjob}", method = RequestMethod.GET)
+    @RequestMapping(value = "/jobs/complete/{idjob}", method = RequestMethod.POST)
     @ResponseBody
-    public String completeJob(@PathVariable Long idJob)
+    public String completeJob(@PathVariable("idjob") Long idJob)
     {
         logger.info("Job " + idJob + " is complete");
         for (JobList jl : jobListService.findAll()) {
