@@ -42,6 +42,10 @@ public class JobListService {
         return this.jobListRepository.findAll();
     }
 
+    public JobList findOneByDelivery(String delivery) {
+        return this.jobListRepository.findByIdDelivery(delivery);
+    }
+
     public void saveOrder(final JobList joblist) {
         this.jobListRepository.save(joblist);
     }
@@ -68,6 +72,7 @@ public class JobListService {
             // if successfully dispatched, update status of the job
             if (job.getStatus().equals(JobState.BUSY)) {
                 // probably not reached rendezvous point yet: wait
+                logger.info("The first job (" + job.getId() + ") of the jobList (" + jl.getId() + ") is still busy!");
                 return;
             }
 
@@ -111,7 +116,7 @@ public class JobListService {
      * @return (boolean) True if successfully sent. False if error occurred
      */
     private Boolean dispatch(Job job) {
-        logger.info("Dispatch " + job.getId() + " - vehicle ");
+        logger.info("Dispatching Job with ID: " + job.getId());
 
         // Get the backendInfo object from the info service
         BackendInfo backendInfo = backendInfoService.getInfoByMapId(job.getIdMap());
