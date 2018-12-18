@@ -65,12 +65,13 @@ public class JobDispatchController {
     public void vehicleCloseByToEnd(@PathVariable("idjob") Long idJob)
     {
         // When the first vehicle is near it's transit/endpoint, move the next vehicle to that transit/endpoint
+        logger.info("Vehicle with Job ID - " + idJob + " is close to it's endpoint.");
         jobListService.moveNextVehicleToPickUpPoint(idJob);
     }
 
     @RequestMapping(value = "/jobs/complete/{idjob}", method = RequestMethod.GET)
     @ResponseBody
-    public String completeJob(@PathVariable Long idJob)
+    public String completeJob(@PathVariable("idjob") Long idJob)
     {
         logger.info("Job " + idJob + " is complete");
         for (JobList jl : jobListService.findAll()) {
@@ -87,10 +88,10 @@ public class JobDispatchController {
 
             if (jl.getJobs().isEmpty()) {
                 jobListService.deleteOrder(jl.getId()); // TODO Mag dit wel? Verwijderen terwijl we erover iteraten
-                logger.info("Delete order: " + jl.getId());
+                logger.info("Deleted order: " + jl.getId());
             } else {
+                logger.info("Dispatching next job");
                 jobListService.dispatchToCore();
-                logger.info("Dispatch next job");
             }
         }
         return "Ok";
