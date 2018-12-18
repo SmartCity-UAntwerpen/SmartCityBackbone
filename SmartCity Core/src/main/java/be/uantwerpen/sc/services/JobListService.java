@@ -1,6 +1,5 @@
 package be.uantwerpen.sc.services;
 
-//import be.uantwerpen.sc.localization.astar.Astar;
 import be.uantwerpen.sc.models.BackendInfo;
 import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.sc.models.JobList;
