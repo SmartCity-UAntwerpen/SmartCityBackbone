@@ -101,12 +101,12 @@ public class LinkController {
 //                JSONArray jsonArray = (JSONArray) parser.parse(new FileReader(fileName));
                 // get the json file from the resource folder
 
-                Resource resource = resourceLoader.getResource(filePath);
-                String absolutePath = resource.getURI().toString();
-                absolutePath = absolutePath.substring(6,absolutePath.length());
-                absolutePath = absolutePath.replace('/', '\\');    //
-                absolutePath = absolutePath.replace("%20", " " ); // catch any spaces in filenames (get converted to %20 in getURI)
-                System.out.println("path to json:" + absolutePath);
+//                Resource resource = resourceLoader.getResource(filePath);
+//                String absolutePath = resource.getURI().toString();
+//                absolutePath = absolutePath.substring(6,absolutePath.length());
+//                absolutePath = absolutePath.replace('/', '\\');    //
+//                absolutePath = absolutePath.replace("%20", " " ); // catch any spaces in filenames (get converted to %20 in getURI)
+//                System.out.println("path to json:" + absolutePath);
 
                 JSONArray jsonArray = (JSONArray) parser.parse(new FileReader(filePath));
 
