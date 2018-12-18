@@ -21,6 +21,8 @@ public interface JobListRepository extends CrudRepository<JobList, Long>
     List<JobList> findAll();
     void deleteAll();
 
+    JobList findByIdDelivery(String delivery);
+
     @Transactional
     Long deleteByIdDelivery(String idDelivery);
 }

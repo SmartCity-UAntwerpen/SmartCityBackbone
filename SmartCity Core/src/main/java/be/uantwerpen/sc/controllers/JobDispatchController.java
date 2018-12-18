@@ -49,6 +49,12 @@ public class JobDispatchController {
         return jobListService.findAll();
     }
 
+    @RequestMapping(value = "/jobs/findOneByDelivery/{delivery}",method = RequestMethod.GET)
+    public JobList findOneByDelivery(@PathVariable("delivery") String delivery)
+    {
+        return jobListService.findOneByDelivery(delivery);
+    }
+
     @RequestMapping(value = "/jobs/deleteOrder/{id}", method = RequestMethod.POST)
     public void delete(@PathVariable("id") Long id) {
         jobListService.deleteOrder(id);

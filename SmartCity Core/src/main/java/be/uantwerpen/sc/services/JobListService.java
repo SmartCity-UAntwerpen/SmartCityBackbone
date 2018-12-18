@@ -42,6 +42,10 @@ public class JobListService {
         return this.jobListRepository.findAll();
     }
 
+    public JobList findOneByDelivery(String delivery) {
+        return this.jobListRepository.findByIdDelivery(delivery);
+    }
+
     public void saveOrder(final JobList joblist) {
         this.jobListRepository.save(joblist);
     }
