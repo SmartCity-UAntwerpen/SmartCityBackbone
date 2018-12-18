@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.Produces;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Defines functions that can be called to control different kinds of maps,
@@ -89,44 +90,55 @@ public class MapController {
         ArrayList<TransitLink> TransitMapRoute = new ArrayList<TransitLink>();
         JobList jobList = new JobList();
         JSONObject response = new JSONObject();
+        JSONObject fullResponse = new JSONObject();
+        HashMap<Integer, ArrayList<TransitLink> > routesHashMap;
 
         int[] weights = {};
 
         // TODO determin n routes ( A* ?)
         // TODO DUMMY ROUTE
-        TransitMapRoute.add(new TransitLink(1,2,3,2));
-        TransitMapRoute.add(new TransitLink(2,4,5,4));
+        TransitMapRoute.add(new TransitLink(1,1,2,2));
+        TransitMapRoute.add(new TransitLink(2,3,1,4));
+        TransitMapRoute.add(new TransitLink(3,2,3,4));
+
 
         // -2 to stop on the last route and handle the last destination separtate
+
         int length = TransitMapRoute.size() - 1;
         for(int i = 0; i < length; i++){
             int stopid = TransitMapRoute.get(i).getStopId();
             int startid = TransitMapRoute.get(i+1).getStartId();
 
-            // TODO get Points from database
+            // get local points from database
             TransitPoint stopPoint = pointRepository.findById(stopid);
             TransitPoint startPoint = pointRepository.findById(startid);
-            System.out.println("stoppoint " + stopPoint.getMapid());
-            System.out.println("startpoint " + startPoint.getMapid());
+            System.out.println("stoppoint Transitmap Id " + stopPoint.getMapid());
+            System.out.println("startpoint Transitmap Id " + startPoint.getMapid());
 
             // TODO check if points belong to the same map
 
-            // TODO link map id to backendinfo
+            // Get the connection info of the map where the points belong to
             BackendInfo mapinfo = backendInfoService.getInfoByMapId(stopPoint.getMapid());
-
             System.out.println(mapinfo.getHostname());
 
-            // TODO request weight from backend
-//            String url = mapinfo.getHostname() + ":" + mapinfo.getPort() + "/";
-            response = backendService.requestJsonObject("http://localhost:9000/link/testweight");
-            System.out.println("response:" + response.get("weight"));
+            // Request weight between points from backend
+            String url = mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
+            System.out.println(url);
 
+            response = backendService.requestJsonObject(url);
+//            response = backendService.requestJsonObject("http://localhost:9000/link/testweight");
+
+            System.out.println("Weight: " + i + ": " + response.get("weight"));
 
             // TODO add link to jobList
             // TODO move this to after top hasmap sort
-            jobList.addJob(new Job((long)startPoint.getPid(), (long)stopPoint.getPid() , mapinfo.getMapId()));
-
+            Job job = new Job((long)startPoint.getPid(), (long)stopPoint.getPid() , mapinfo.getMapId());
+            jobList.addJob(job);
+            System.out.println(job.toString());
         }
+
+        response.put("jobist", jobList.toString() );
+        System.out.println(jobList.getJobs().get(0).toString());
 
         // TODO use hashmap to <totalweigth, joblist>
 
@@ -135,12 +147,13 @@ public class MapController {
 
         // TODO sort hashmap to get best route
 
-        // TODO construct joblist out of ch
+        // TODO construct joblist out of chosen route ( best route)
 
-        // TODO save the chosen joblist
+        // save the chosen job list.
         jobListService.saveOrder(jobList);
+        jobListService.dispatchToCore();
 
-        return response;
+        return fullResponse;
     }
 
 }
