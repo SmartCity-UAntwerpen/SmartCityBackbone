@@ -5,6 +5,7 @@ import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.sc.models.JobState;
 import be.uantwerpen.sc.services.BackendInfoService;
 import be.uantwerpen.sc.services.JobService;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,15 +66,20 @@ public class JobServiceController {
     }
 
     @RequestMapping(value = "getJobProgress/{id}", method = RequestMethod.GET)
-    public int getJobProgress(@PathVariable("id") Long id)
+    public JSONObject getJobProgress(@PathVariable("id") Long id)
     {
+        JSONObject response = new JSONObject();
+
         Job job = jobService.getJob(id);
         int progress = 0;
 
         // If job is not found return 100 because this means that the job was completed and deleted from the database.
         if(job == null)
         {
-            return 100;
+            response.put("JobId", id);
+            response.put("Progress", progress);
+            response.put("JobState", JobState.DONE);
+            return response;
         }
 
         switch(job.getStatus())
@@ -82,7 +88,7 @@ public class JobServiceController {
                 progress = 100;
                 break;
             case TODO:
-                // Do nothing -> returns 0
+                // Do nothing -> returns 0 progress
                 break;
             case BUSY:
                 // Get the actual progress from the backend of the vehicle
@@ -93,19 +99,35 @@ public class JobServiceController {
                 String stringUrl = "http://";
                 stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/getprogress/" + job.getId();
 
-                ResponseEntity<Integer> response = restTemplate.exchange(stringUrl,
+                ResponseEntity<Integer> responseBackEnd = restTemplate.exchange(stringUrl,
                         HttpMethod.GET,
                         null,
                         Integer.class
                 );
-                logger.info("Job progress from job with id " + job.getId() + " is " + response.getBody());
-                // TODO check what we receive here
-                progress = Integer.parseInt(response.getBody().toString());
+                logger.warn("Job progress from job with id " + job.getId() + " is " + responseBackEnd.getBody());
+                // TODO Check what we receive here
+                progress = Integer.parseInt(responseBackEnd.getBody().toString());
                 break;
             default:
                 progress = 0;
                 break;
         }
-        return progress;
+
+        response.put("JobId", id);
+        response.put("Progress", progress);
+        response.put("JobState", job.getStatus());
+        return response;
     }
+
+//    @RequestMapping(value = "testEndPoint/{id}", method = RequestMethod.GET)
+//    public JSONObject testEndPoint(@PathVariable("id") Long id) {
+//        JSONObject response = new JSONObject();
+//
+//        int progress = 50;
+//        response.put("JobId", id);
+//        response.put("Progress", progress);
+//        response.put("JobState", JobState.DONE);
+//        return response;
+//
+//    }
 }

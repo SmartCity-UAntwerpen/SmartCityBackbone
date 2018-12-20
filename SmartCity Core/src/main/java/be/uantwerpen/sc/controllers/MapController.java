@@ -2,13 +2,13 @@ package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.*;
 import be.uantwerpen.sc.models.map.CustomMap;
-import be.uantwerpen.sc.pathplanning.AStarService;
+
 import be.uantwerpen.sc.repositories.BackendInfoRepository;
-import be.uantwerpen.sc.repositories.PointRepository;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
 import be.uantwerpen.sc.services.*;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +26,9 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/map/")
 public class MapController {
+
+    private static final Logger logger = LoggerFactory.getLogger(MapController.class);
+
     @Autowired
     private MapControlService mapControlService;
 
@@ -110,7 +113,7 @@ public class MapController {
         for(Integer[] links : possiblePaths) {
             Path path = new Path();
             ArrayList<TransitLink> transitPath = new ArrayList<TransitLink>();
-            // Get a the full TranistLink Objects 
+            // Get a the full TranistLink Objects
             for (int i = 0; i < links.length; i++) {
                 int linkId = links[i];
                 TransitLink transitLink = transitLinkService.getLinkWithId(linkId);
@@ -123,7 +126,7 @@ public class MapController {
             // -1 to stop on the last route and handle the last destination separtate
             int length = transitPath.size() - 1;
             for (int i = 0; i < length; i++) {
-                
+
                 // endpoint of one link and startpoint of second link should be on the same map
                 int stopid = transitPath.get(i).getStopId();
                 int startid = transitPath.get(i + 1).getStartId();
@@ -192,4 +195,19 @@ public class MapController {
         return fullResponse;
     }
 
+    //TODO Check if we receive a JSONobject from the robot backend
+
+    @RequestMapping(value = "getTrafficLightStats", method = RequestMethod.GET)
+    public JSONObject getTrafficLightStats()
+    {
+        // Get the list of traffic lights and their status from the Robot backend end send it back to the MaaS
+
+        // Get the backendInfo object from the backendinfo service of the robot backend
+        BackendInfo backendInfo = backendInfoService.getByName("Robot");
+
+        String stringUrl = "http://";
+        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + ""; // TODO Check with the Robot team which endpoint they have made
+
+        return backendService.requestJsonObject(stringUrl);
+    }
 }
