@@ -3,6 +3,7 @@ package be.uantwerpen.sc.pathplanning;
 import be.uantwerpen.sc.models.TransitLink;
 import be.uantwerpen.sc.models.TransitPoint;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
+import be.uantwerpen.sc.services.AStarService;
 import be.uantwerpen.sc.services.GraphBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,8 +66,6 @@ public class AStarServiceTest {
             int mapId = invocationOnMock.getArgumentAt(1, int.class);
             return transitPoints.stream().filter(transitPoint -> transitPoint.getPid() == pid && transitPoint.getMapid() == mapId).findFirst().orElse(null);
         });
-
-        aStarService.init();
     }
 
     @Test

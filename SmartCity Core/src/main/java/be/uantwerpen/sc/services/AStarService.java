@@ -1,9 +1,8 @@
-package be.uantwerpen.sc.pathplanning;
+package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.TransitLink;
 import be.uantwerpen.sc.models.TransitPoint;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
-import be.uantwerpen.sc.services.GraphBuilder;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.graphstream.algorithm.AStar;
@@ -38,27 +37,15 @@ public class AStarService {
     @Autowired
     private TransitPointRepository transitPointRepository;
 
-    /**
-     * Initialise function. this make sure all the information is passed on and all functions are correctly initilised.
-     * this function should only be once (when first referring to the Astar service)
-     */
-    public void init() {
+    public AStarService() {
         this.graph = new MultiGraph("SmartCityGraph");
-    }
-
-    public void setGraph(Graph graph) {
-        this.graph = graph;
-    }
-
-    public Graph getGraph() {
-        return graph;
     }
 
     /**
      * MakeNode function
      * will make all the necessairy nodes in the Graph, using information provided by the Graphbuilder service.
      */
-    public void makeNode() {
+    private void makeNode() {
         List<TransitPoint> transitPoints = this.graphBuilder.getPointList();
         // provide all the nodes
         transitPoints.stream().map(TransitPoint::getMapid).distinct().forEach(mapId -> graph.addNode(String.valueOf(mapId)));
@@ -78,7 +65,7 @@ public class AStarService {
      * Make Edge function
      * will make all the necessary edges in the Graph, using the information provided by the GraphBuilder
      */
-    public void makeEdge() {
+    private void makeEdge() {
         List<TransitLink> transitLinks = this.graphBuilder.getLinkList();
         for (TransitLink edge : transitLinks) {
             this.graph.addEdge(Integer.toString(edge.getId()),
@@ -103,7 +90,7 @@ public class AStarService {
      * this function will first destroy all the nodes and edges in a graph, request an update from the Graphbuilder service,
      * before rebuilding the Graph, hence updating the Graph
      */
-    public void updateNodesAndEdges() {
+    private void updateNodesAndEdges() {
         destroyNodes();
         destroyEdges();
         makeNode();
