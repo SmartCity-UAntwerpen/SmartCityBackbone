@@ -69,7 +69,7 @@ public class AStarServiceTest {
     }
 
     @Test
-    public void determinePath() {
+    public void testMocks() {
         assertEquals(9, graphBuilder.getPointList().size());
         assertEquals(7, graphBuilder.getLinkList().size());
 
@@ -78,7 +78,18 @@ public class AStarServiceTest {
 
         TransitPoint transitPointB = transitPointRepository.findByPidAndMapid(46, 3);
         assertEquals(7, transitPointB.getId());
+    }
 
+    @Test
+    public void determinePathSameMap() {
+        List<Integer[]> routes = aStarService.determinePath(46, 3, 47, 3);
+        assertEquals(1, routes.size());
+        assertEquals(1, routes.get(0).length);
+        assertEquals(-1, (int) routes.get(0)[0]);
+    }
+
+    @Test
+    public void determinePathMapAToMapB() {
         List<Integer[]> routes = aStarService.determinePath(46, 3, 47, 1);
         assertEquals(5, routes.size());
 
