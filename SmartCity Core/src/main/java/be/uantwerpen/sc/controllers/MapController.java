@@ -2,6 +2,7 @@ package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.*;
 import be.uantwerpen.sc.models.map.CustomMap;
+import be.uantwerpen.sc.pathplanning.AStarService;
 import be.uantwerpen.sc.repositories.BackendInfoRepository;
 import be.uantwerpen.sc.repositories.PointRepository;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.ws.rs.Produces;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Defines functions that can be called to control different kinds of maps,
@@ -44,6 +46,9 @@ public class MapController {
 
     @Autowired
     private TransitLinkService transitLinkService;
+
+    @Autowired
+    private AStarService aStarService;
     /**
      * Returns a map for the given type of vehicle
      * alternatively returns a map for the visualisation with variable 'visual'
@@ -95,9 +100,10 @@ public class MapController {
         ArrayList<Path> pathRank = new ArrayList<Path>();
 
         // get this from A*
-        ArrayList<Integer[]> possiblePaths = new ArrayList<Integer[]>();
-        Integer[] path1 = {10,13,16}; // dummy route
-        possiblePaths.add(path1);
+        List<Integer[]> possiblePaths;
+//        Integer[] path1 = {10,13,16}; // dummy route
+//        possiblePaths.add(path1);
+        possiblePaths = aStarService.determinePath(startpid, stopmapid, stoppid, stopmapid);
 
 
         // go over all possible paths
