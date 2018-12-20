@@ -37,7 +37,8 @@ public class JobDispatchController {
      */
     @RequestMapping(value = "/jobs/dispatch", method = RequestMethod.POST)
     @ResponseBody
-    public String dispatch() {
+    public String dispatch()
+    {
         logger.info("Test Dispatching");
         jobListService.dispatchToCore();
         return "Done dispatching";
