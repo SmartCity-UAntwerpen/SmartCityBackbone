@@ -81,6 +81,24 @@ public class AStarServiceTest {
 
         List<Integer[]> routes = aStarService.determinePath(46, 3, 47, 1);
         assertEquals(5, routes.size());
+
+        assertEquals(2, routes.get(0).length);
+        assertEquals(12, (int) routes.get(0)[0]);
+        assertEquals(15, (int) routes.get(0)[1]);
+
+        assertEquals(2, routes.get(1).length);
+        assertEquals(12, (int) routes.get(1)[0]);
+        assertEquals(16, (int) routes.get(1)[1]);
+
+        assertEquals(2, routes.get(2).length);
+        assertEquals(13, (int) routes.get(2)[0]);
+        assertEquals(16, (int) routes.get(2)[1]);
+
+        assertEquals(1, routes.get(3).length);
+        assertEquals(10, (int) routes.get(3)[0]);
+
+        assertEquals(1, routes.get(4).length);
+        assertEquals(11, (int) routes.get(4)[0]);
     }
 
 }

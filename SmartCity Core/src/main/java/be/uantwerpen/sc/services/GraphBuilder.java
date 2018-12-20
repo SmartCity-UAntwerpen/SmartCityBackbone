@@ -2,6 +2,7 @@ package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.TransitLink;
 import be.uantwerpen.sc.models.TransitPoint;
+import be.uantwerpen.sc.repositories.TransitLinkRepository;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -24,42 +25,27 @@ public class GraphBuilder {
 
     private static final Logger logger = LogManager.getLogger(GraphBuilder.class);
 
-    private List<TransitLink> linkList;
     private TransitPointRepository pointRepository;
+    private TransitLinkRepository linkRepository;
 
     @Autowired
-    public GraphBuilder(TransitPointRepository pointRepository) {
+    public GraphBuilder(TransitPointRepository pointRepository, TransitLinkRepository linkRepository) {
         this.pointRepository = pointRepository;
-    }
-
-    public void addLinks(Collection<TransitLink> links) {
-        linkList.addAll(links);
-    }
-
-    public void clear() {
-        linkList.clear();
+        this.linkRepository = linkRepository;
     }
 
     /**
      * Returns a list of all points in the top map
      */
     public List<TransitPoint> getPointList() {
-        return linkList.stream().flatMap(link -> Stream.of(link.getStartId(), link.getStopId())).distinct().map(integer -> pointRepository.findById(integer)).collect(Collectors.toList());
+        return getLinkList().stream().flatMap(link -> Stream.of(link.getStartId(), link.getStopId())).distinct().map(integer -> pointRepository.findById(integer)).collect(Collectors.toList());
     }
 
     /**
      * Returns a list with all links of the top map
      */
     public List<TransitLink> getLinkList() {
-        return linkList;
-    }
-
-    /**
-     * Returns the link with given start and end point, or an empty optional if none is found.
-     */
-    public Optional<TransitLink> getCertainLink(Long startPoint, Long endPoint) {
-        return Optional.empty();
-//        return linkList.stream().filter(link -> link.getStartPoint().getId().equals(startPoint) && link.getStopPoint().getId().equals(endPoint)).findFirst();
+        return linkRepository.findAll();
     }
 
 }
