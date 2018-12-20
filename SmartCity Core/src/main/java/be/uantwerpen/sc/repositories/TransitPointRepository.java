@@ -7,7 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TransitPointRepository  extends CrudRepository<TransitPoint, Long> {
+public interface TransitPointRepository extends CrudRepository<TransitPoint, Long> {
     List<TransitPoint> findBy();
+
     TransitPoint findById(int id);
+
+    TransitPoint findByPidAndMapid(int pid, int mapId);
 }
