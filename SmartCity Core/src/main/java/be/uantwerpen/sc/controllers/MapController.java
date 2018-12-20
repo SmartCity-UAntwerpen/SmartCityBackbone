@@ -2,7 +2,7 @@ package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.*;
 import be.uantwerpen.sc.models.map.CustomMap;
-import be.uantwerpen.sc.pathplanning.AStarService;
+import be.uantwerpen.sc.services.AStarService;
 import be.uantwerpen.sc.repositories.BackendInfoRepository;
 import be.uantwerpen.sc.repositories.PointRepository;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
@@ -99,12 +99,12 @@ public class MapController {
         HashMap<Integer, Path> pathsHashMap = new HashMap<Integer, Path>();
         ArrayList<Path> pathRank = new ArrayList<Path>();
 
-        // get this from A*
-        List<Integer[]> possiblePaths;
+        // get list of possible paths (link ids) from A*
+        List<Integer[]> possiblePaths = new ArrayList<>();
 //        Integer[] path1 = {10,13,16}; // dummy route
-//        possiblePaths.add(path1);
-        possiblePaths = aStarService.determinePath(startpid, stopmapid, stoppid, stopmapid);
-
+//        possiblePaths.add(path1); // dummy route
+        possiblePaths = aStarService.determinePath(startpid, startmapid, stoppid, stopmapid);
+        // TODO check if lenght = en linkid = -1 => ligt op dezelfde map, 1 job uitsturen naar die map
 
         // go over all possible paths
         for(Integer[] links : possiblePaths) {
@@ -141,21 +141,22 @@ public class MapController {
                 System.out.println(mapinfo.getHostname());
 
                 // Request weight between points from backend
-                String url = "http://192.168.0.50" + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
+                String url = mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
                 System.out.println(url);
-//                response = backendService.requestJsonObject(url);
-//                int weight =  (int)response.get("weight"); // TODO better way to make it int
-// //           response = backendService.requestJsonObject("http://localhost:9000/link/testweight");
-                int weight = (int)(Math.random() * 10);
+                response = backendService.requestJsonObject(url);
+                int weight =  (int)response.get("weight"); // TODO better way to make it int
+//                int weight = (int)(Math.random() * 10); // to test wo/ backends
                 // Add the inner weights that the map calculated
                 path.addWeight(weight);
                 System.out.println("Weight: " + i + ": " + weight);
 
                 // TODO add link to jobList
                 // TODO move this to after top hasmap sort
-//                Job job = new Job((long) startPoint.getPid(), (long) stopPoint.getPid(), mapinfo.getMapId());
+                Job job = new Job((long) startPoint.getPid(), (long) stopPoint.getPid(), mapinfo.getMapId());
+                System.out.println(job.toString());
+
+                path.addJob(job);
 //                jobList.addJob(job);
-//                System.out.println(job.toString());
             }
             // add the total weight of the transitlinks, now we have the complete weight of the path
             path.addWeight(path.getTotalTransitWeight());
@@ -176,17 +177,19 @@ public class MapController {
 //            while(pathsHashMap.containsKey(pathWeightScore)){
 //                pathWeightScore +=1;
 //            }
-
-
-            // TODO Sort using arraylist
         }
+
+        // Sort the paths according to weight
         for(int i = 0; i < pathRank.size(); i++){
-            System.out.println("1) weight of link: " + pathRank.get(i).getWeight());
+            System.out.println(i + ") weight of link: " + pathRank.get(i).getWeight());
             System.out.println(pathRank.get(i).toString() );
         }
 
-        // save the chosen job list.
-//        jobListService.saveOrder(jobList);
+        // convert the chosen path to a jobs and save them as a job list.
+        int chosenPath = 0;
+        jobList = pathRank.get(chosenPath).getJobList();
+        System.out.println("dispatching jobList w/ rank: " + chosenPath);
+        jobListService.saveOrder(jobList);
 //        jobListService.dispatchToCore();
 
         return fullResponse;

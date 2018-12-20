@@ -4,16 +4,19 @@ import java.util.ArrayList;
 
 public class Path {
     ArrayList<TransitLink> transitPath;
+    JobList jobList;
     int weight;
 
-    void Path(){
+    public Path(){
         this.transitPath = new ArrayList<TransitLink>();
         this.weight = 0;
+        this.jobList = new JobList();
     }
 
-    void Path(int weight, ArrayList<TransitLink> transitPath){
+    public Path(int weight, ArrayList<TransitLink> transitPath){
         this.transitPath = transitPath;
         this.weight = weight;
+        this.jobList = new JobList();
     }
     public void addWeight(int weight){
         this.weight+=weight;
@@ -51,8 +54,26 @@ public class Path {
     public String toString() {
         String output = "";
         for(TransitLink link : transitPath){
-            output += "[" + link.getStopId() + "-" + link.getStopId() + "],";
+            output += "[" + link.getStartId() + "-" + link.getStopId() + "],";
         }
         return output;
     }
+
+    public JobList getJobList() {
+        return jobList;
+    }
+
+    public void setJobList(JobList jobList) {
+        this.jobList = jobList;
+    }
+
+    public void addJob(Job job){
+        jobList.addJob(job);
+    }
+
+    public void addJob(long startid, long stopid, int mapid){
+        Job job = new Job(startid, stopid, mapid);
+        this.addJob(job);
+    }
+
 }
