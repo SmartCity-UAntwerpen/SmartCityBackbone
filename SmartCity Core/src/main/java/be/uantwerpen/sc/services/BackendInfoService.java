@@ -20,4 +20,9 @@ public class BackendInfoService {
     public List<BackendInfo> findAll() {
         return backendInfoRepository.findAll();
     }
+
+    public BackendInfo getByName(String name)
+    {
+        return backendInfoRepository.findByName(name);
+    }
 }

@@ -107,18 +107,19 @@ public class AStarService {
      * @return A set of possible routes. Each route is an array of TransitLink IDs.
      */
     public List<Integer[]> determinePath(int startPid, int startMap, int endPid, int endMap) throws IllegalArgumentException {
-//        TransitPoint startPoint = transitPointRepository.findByPidAndMapid(startPid, startMap);
-//        TransitPoint endPoint = transitPointRepository.findByPidAndMapid(endPid, endMap);
-//
-//        if (startPoint == null || endPoint == null)
-//            throw new IllegalArgumentException("Start or end point are not recognized (startPid: " + startPid + ", startMap: " + startMap + ", endPid: " + endPid + ", endMap: " + endMap);
-
         String start = String.valueOf(startMap);
         String end = String.valueOf(endMap);
 
+        List<Integer[]> paths = new ArrayList<>();
+
+        if (start.equals(end)) {
+            // no need for A* if start and end point are in the same map
+            paths.add(new Integer[]{-1});
+            return paths;
+        }
+
         AStar astar = new AStar(this.graph);
         updateNodesAndEdges();
-        List<Integer[]> paths = new ArrayList<>();
         final int numberOfRoutes = 5;
         for (int i = 0; i < numberOfRoutes; i++) {
             Optional<Path> shortestRoute = getShortestRoute(astar, start, end);

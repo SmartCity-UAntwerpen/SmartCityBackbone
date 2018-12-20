@@ -76,6 +76,7 @@ public class JobDispatchController {
         jobListService.moveNextVehicleToPickUpPoint(idJob);
     }
 
+    // TODO Do we delete the job or set its status to DONE
     @RequestMapping(value = "/jobs/complete/{idjob}", method = RequestMethod.POST)
     @ResponseBody
     public String completeJob(@PathVariable("idjob") Long idJob)

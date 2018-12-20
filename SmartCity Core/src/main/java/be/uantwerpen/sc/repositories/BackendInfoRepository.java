@@ -11,4 +11,5 @@ import java.util.List;
 public interface BackendInfoRepository extends CrudRepository<BackendInfo, Long> {
     List<BackendInfo> findAll();
     BackendInfo findByMapId(int mapId);
+    BackendInfo findByName(String name);
 }
