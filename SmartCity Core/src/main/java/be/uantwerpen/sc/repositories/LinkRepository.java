@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface LinkRepository extends CrudRepository<Link, Long> {
     List<Link> findAll();
+
 }

@@ -5,10 +5,7 @@ import be.uantwerpen.sc.models.map.CustomMap;
 import be.uantwerpen.sc.repositories.BackendInfoRepository;
 import be.uantwerpen.sc.repositories.PointRepository;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
-import be.uantwerpen.sc.services.BackendInfoService;
-import be.uantwerpen.sc.services.BackendService;
-import be.uantwerpen.sc.services.JobListService;
-import be.uantwerpen.sc.services.MapControlService;
+import be.uantwerpen.sc.services.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +41,9 @@ public class MapController {
 
     @Autowired
     private JobListService jobListService;
+
+    @Autowired
+    private TransitLinkService transitLinkService;
     /**
      * Returns a map for the given type of vehicle
      * alternatively returns a map for the visualisation with variable 'visual'
@@ -88,71 +88,100 @@ public class MapController {
      */
     @RequestMapping(value = "planpath", method = RequestMethod.GET)
     public JSONObject planPath(@RequestParam int startpid, @RequestParam int startmapid, @RequestParam int stoppid, @RequestParam int stopmapid){
-        ArrayList<TransitLink> TransitMapRoute = new ArrayList<TransitLink>();
         JobList jobList = new JobList();
         JSONObject response = new JSONObject();
         JSONObject fullResponse = new JSONObject();
-        HashMap<Integer, ArrayList<TransitLink> > routesHashMap;
+        HashMap<Integer, Path> pathsHashMap = new HashMap<Integer, Path>();
+        ArrayList<Path> pathRank = new ArrayList<Path>();
 
-        int[] weights = {};
-
-        // TODO determin n routes ( A* ?)
-        // TODO DUMMY ROUTE
-        TransitMapRoute.add(new TransitLink(1,1,2,2));
-        TransitMapRoute.add(new TransitLink(2,3,1,4));
-        TransitMapRoute.add(new TransitLink(3,2,3,4));
+        // get this from A*
+        ArrayList<Integer[]> possiblePaths = new ArrayList<Integer[]>();
+        Integer[] path1 = {10,13,16}; // dummy route
+        possiblePaths.add(path1);
 
 
-        // -2 to stop on the last route and handle the last destination separtate
+        // go over all possible paths
+        for(Integer[] links : possiblePaths) {
+            Path path = new Path();
+            ArrayList<TransitLink> transitPath = new ArrayList<TransitLink>();
+            // Get a the full TranistLink Objects 
+            for (int i = 0; i < links.length; i++) {
+                int linkId = links[i];
+                TransitLink transitLink = transitLinkService.getLinkWithId(linkId);
+                transitPath.add(transitLink);
+                System.out.println(transitLink.getStartId());
+            }
+            path.setTransitPath(transitPath);
 
-        int length = TransitMapRoute.size() - 1;
-        for(int i = 0; i < length; i++){
-            int stopid = TransitMapRoute.get(i).getStopId();
-            int startid = TransitMapRoute.get(i+1).getStartId();
+            // Get the combined weight of the inner map links on the route
+            // -1 to stop on the last route and handle the last destination separtate
+            int length = transitPath.size() - 1;
+            for (int i = 0; i < length; i++) {
+                
+                // endpoint of one link and startpoint of second link should be on the same map
+                int stopid = transitPath.get(i).getStopId();
+                int startid = transitPath.get(i + 1).getStartId();
+                // get points of link from database
+                TransitPoint stopPoint = pointRepository.findById(stopid);
+                TransitPoint startPoint = pointRepository.findById(startid);
+                System.out.println("stoppoint Transitmap Id " + stopPoint.getMapid());
+                System.out.println("startpoint Transitmap Id " + startPoint.getMapid());
 
-            // get local points from database
-            TransitPoint stopPoint = pointRepository.findById(stopid);
-            TransitPoint startPoint = pointRepository.findById(startid);
-            System.out.println("stoppoint Transitmap Id " + stopPoint.getMapid());
-            System.out.println("startpoint Transitmap Id " + startPoint.getMapid());
+                // TODO check if points belong to the same map
+                // TODO build in check for flagpoints (destination) and handle accordingly
 
-            // TODO check if points belong to the same map
+                // Get the connection info of the map where the points belong to
+                BackendInfo mapinfo = backendInfoService.getInfoByMapId(stopPoint.getMapid());
+                System.out.println(mapinfo.getHostname());
 
-            // Get the connection info of the map where the points belong to
-            BackendInfo mapinfo = backendInfoService.getInfoByMapId(stopPoint.getMapid());
-            System.out.println(mapinfo.getHostname());
+                // Request weight between points from backend
+                String url = "http://192.168.0.50" + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
+                System.out.println(url);
+//                response = backendService.requestJsonObject(url);
+//                int weight =  (int)response.get("weight"); // TODO better way to make it int
+// //           response = backendService.requestJsonObject("http://localhost:9000/link/testweight");
+                int weight = (int)(Math.random() * 10);
+                // Add the inner weights that the map calculated
+                path.addWeight(weight);
+                System.out.println("Weight: " + i + ": " + weight);
 
-            // Request weight between points from backend
-            String url = "http://192.168.0.50" + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
-            System.out.println(url);
+                // TODO add link to jobList
+                // TODO move this to after top hasmap sort
+//                Job job = new Job((long) startPoint.getPid(), (long) stopPoint.getPid(), mapinfo.getMapId());
+//                jobList.addJob(job);
+//                System.out.println(job.toString());
+            }
+            // add the total weight of the transitlinks, now we have the complete weight of the path
+            path.addWeight(path.getTotalTransitWeight());
+            fullResponse.put("weight", path.getWeight());
 
-            response = backendService.requestJsonObject(url);
-//            response = backendService.requestJsonObject("http://localhost:9000/link/testweight");
+            // rank the path based on it's weight, if paths have the same wieght increment the key
+            // set the default rank as the last index of the ranking
+            int rank = pathRank.size();
+            for(int i = 0; i < pathRank.size(); i++){
+                if(path.getWeight() <= pathRank.get(i).getWeight() ){
+                   rank = i;
+                   break;
+                }
 
-            System.out.println("Weight: " + i + ": " + response.get("weight"));
+            }
+            pathRank.add(rank, path);
 
-            // TODO add link to jobList
-            // TODO move this to after top hasmap sort
-            Job job = new Job((long)startPoint.getPid(), (long)stopPoint.getPid() , mapinfo.getMapId());
-            jobList.addJob(job);
-            System.out.println(job.toString());
+//            while(pathsHashMap.containsKey(pathWeightScore)){
+//                pathWeightScore +=1;
+//            }
+
+
+            // TODO Sort using arraylist
+        }
+        for(int i = 0; i < pathRank.size(); i++){
+            System.out.println("1) weight of link: " + pathRank.get(i).getWeight());
+            System.out.println(pathRank.get(i).toString() );
         }
 
-        response.put("jobist", jobList.toString() );
-        System.out.println(jobList.getJobs().get(0).toString());
-
-        // TODO use hashmap to <totalweigth, joblist>
-
-        // TODO } end for each route
-
-
-        // TODO sort hashmap to get best route
-
-        // TODO construct joblist out of chosen route ( best route)
-
         // save the chosen job list.
-        jobListService.saveOrder(jobList);
-        jobListService.dispatchToCore();
+//        jobListService.saveOrder(jobList);
+//        jobListService.dispatchToCore();
 
         return fullResponse;
     }
