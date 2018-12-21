@@ -199,13 +199,12 @@ public class MapController {
     }
 
     //TODO Check if we receive a JSONobject from the robot backend
-
     @RequestMapping(value = "getTrafficLightStats", method = RequestMethod.GET)
     public JSONObject getTrafficLightStats()
     {
-        // Get the list of traffic lights and their status from the Robot backend end send it back to the MaaS
-
-        // Get the backendInfo object from the backendinfo service of the robot backend
+        /** Get the list of traffic lights and their status from the Robot backend end send it back to the MaaS
+            Get the backendInfo object from the backendinfo service of the robot backend
+         **/
         BackendInfo backendInfo = backendInfoService.getByName("Robot");
 
         String stringUrl = "http://";

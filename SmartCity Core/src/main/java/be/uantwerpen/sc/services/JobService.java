@@ -24,16 +24,19 @@ public class JobService {
         return this.jobRepository.findAll();
     }
 
-    public void save(final Job job){
-
+    public void save(final Job job)
+    {
         this.jobRepository.save(job);
     }
 
-    public Job getJob (Long id){
+    public Job getJob (Long id)
+    {
         return this.jobRepository.findOne(id);
-   }
+    }
 
-    public void delete(Long id) {
+    public void delete(Long id)
+    {
+        logger.debug("Deleting Job with id: " + id);
         this.jobRepository.delete(id);
     }
 
