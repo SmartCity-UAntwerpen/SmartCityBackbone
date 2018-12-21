@@ -1,5 +1,6 @@
 package be.uantwerpen.sc.controllers;
 
+import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.sc.services.JobListService;
 import be.uantwerpen.sc.services.JobService;
@@ -22,26 +23,22 @@ public class JobDispatchController {
 
     private static final Logger logger = LoggerFactory.getLogger(JobDispatchController.class);
 
-    /**
-     * @param jobList The jobList object to save (received from MaaS)
-     */
+    // TODO is a test endpoint. can be removed at the end.
     @RequestMapping(value = "/jobs/saveOrder", method = RequestMethod.POST)
-    public void saveOrder(@RequestBody JobList jobList) {
-        logger.info("Test: Saving jobList");
-        //System.out.println(jobList.toString());
-        jobListService.saveOrder(jobList);
-    }
+    public void saveOrder() {
+        logger.info("Test: Saving jobList -> First removing all jobs");
+        jobListService.deleteAll();
+        jobService.deleteAll();
+        JobList list = new JobList();
+        list.setIdDelivery("MaaSId1");
 
-    /**
-     * Dispatching (This request comes from MaaS)
-     */
-    @RequestMapping(value = "/jobs/dispatch", method = RequestMethod.POST)
-    @ResponseBody
-    public String dispatch()
-    {
-        logger.info("Test Dispatching");
-        jobListService.dispatchToCore();
-        return "Done dispatching";
+        Job job = new Job(1L,5L,11);
+        list.addJob(job);
+
+        job = new Job(7L,10L,10);
+        list.addJob(job);
+        jobListService.saveOrder(list);
+        jobListService.printJobList();
     }
 
     @RequestMapping(value = "/jobs/findAllJobLists",method = RequestMethod.GET)
@@ -76,7 +73,7 @@ public class JobDispatchController {
         jobListService.moveNextVehicleToPickUpPoint(idJob);
     }
 
-    // TODO Do we delete the job or set its status to DONE
+    // TODO Do we delete the job or set its status to DONE?
     @RequestMapping(value = "/jobs/complete/{idjob}", method = RequestMethod.POST)
     @ResponseBody
     public String completeJob(@PathVariable("idjob") Long idJob)
@@ -86,22 +83,25 @@ public class JobDispatchController {
             if (jl.getJobs().get(0).getId().equals(idJob)) {
                 jl.getJobs().remove(0);
                 jobService.delete(idJob);
-                logger.info("Rendezvous job with id " + idJob + " is deleted because it was complete");
+                logger.info("Job with id: " + idJob + " is deleted because it was completed");
             } else if (jl.getJobs().size() > 1 && jl.getJobs().get(1).getId().equals(idJob)) {
                 // Rendezvous
                 jl.getJobs().remove(1);
                 jobService.delete(idJob);
-                logger.info("Job " + idJob + " is deleted because it was complete");
+                logger.info("Job " + idJob + " is deleted because it was completed");
             }
 
-            if (jl.getJobs().isEmpty()) {
-                jobListService.deleteOrder(jl.getId()); // TODO Mag dit wel? Verwijderen terwijl we erover iteraten
-                logger.info("Deleted order: " + jl.getId());
+            if (jl.getJobs().isEmpty())
+            {
+                // TODO Mag dit wel? Verwijderen terwijl we erover iteraten
+                jobListService.deleteOrder(jl.getId());
             } else {
-                logger.info("Dispatching next job");
                 jobListService.dispatchToCore();
             }
         }
         return "Ok";
     }
+
+    // TODO Make a Job failed endpoint for when a job fails
+
 }

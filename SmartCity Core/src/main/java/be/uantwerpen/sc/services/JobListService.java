@@ -23,7 +23,8 @@ import java.util.List;
  * NV 2018
  */
 @Service
-public class JobListService {
+public class JobListService
+{
     private static final Logger logger = LogManager.getLogger(JobListService.class);
 
     @Autowired
@@ -42,11 +43,13 @@ public class JobListService {
         return this.jobListRepository.findAll();
     }
 
-    public JobList findOneByDelivery(String delivery) {
+    public JobList findOneByDelivery(String delivery)
+    {
         return this.jobListRepository.findByIdDelivery(delivery);
     }
 
-    public void saveOrder(final JobList joblist) {
+    public void saveOrder(final JobList joblist)
+    {
         this.jobListRepository.save(joblist);
     }
 
@@ -79,32 +82,23 @@ public class JobListService {
             if (dispatch(job) && job.getStatus().equals(JobState.TODO))
             {
                 job.setStatus(JobState.BUSY);
-                //job.setJoblist(jl);
                 jobService.save(job);
-
-                //if (jl.getJobs().size() > 1 && !jl.getJobs().get(1).getTypeVehicle().equals(jl.getJobs().get(0).getTypeVehicle())) {
-//                if (jl.getJobs().size() > 1) {
-//                    Job nextJob = jl.getJobs().get(1);
-//
-//                    if (dispatch(nextJob)) {
-//                        nextJob.setStatus(JobState.BUSY);
-//                        //nextJob.setJoblist(jl);
-//                        jobService.save(nextJob);
-//                    }
-//                }
             } else {
-                // An error has occurred. Rerun the calculations for paths on the MaaS
-                // TODO Test this out
-                //recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery());
+
+                // An error has occurred.
+                logger.error("An error has occured while dispatching to the backend!");
+                /*
+                //recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery()); TODO
 
                 // for debug purposes
-                    /* logger.info(" Lijst van Orders afdrukken");
+                    logger.info(" Lijst van Orders afdrukken");
                     for (JobList jl2: jobListRepository.findAll()) {
                         logger.info(" Order #" + jl2.getId());
                         for(int x = 0; x<jl2.getJobs().size(); x++) {
                             logger.info("jobID: " + jl2.getJobs().get(x).getId() + ";   startPos :" + jl2.getJobs().get(x).getIdStart() + ";   endPos :" + jl2.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl2.getJobs().get(x).getIdVehicle()+ ";   VehicleType :" + jl2.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl2.getJobs().get(x).getStatus());
                         }
-                    }*/
+                    }
+               */
             }
         }
     }
@@ -134,8 +128,6 @@ public class JobListService {
                 String.class
         );
 
-        logger.info(response.getBody());
-
         if(!response.getStatusCode().is2xxSuccessful() && response.getBody().equalsIgnoreCase("false")) {
             logger.warn("Error while dispatching Job: " + job.getId());
             logger.warn("Response body: " + response.getBody());
@@ -155,9 +147,10 @@ public class JobListService {
 
         for (JobList jl : this.jobListRepository.findAll())
         {
+            // Check if there are other jobs to do
             if (jl.getJobs().size() > 1)
             {
-                if (previousVehicle.getId() == jl.getJobs().get(0).getId())
+                if (previousVehicle.getId().equals(jl.getJobs().get(0).getId()))
                 {
                     nextJob = jl.getJobs().get(1);
                     break;
@@ -170,28 +163,27 @@ public class JobListService {
         if(nextJob == null)
         {
             // Just return when there is no rendez-vous
+            logger.info("No Job left to do for the jobList!");
             return;
         }
 
         // Get the backendInfo object from the info service for the given Job
-        BackendInfo backendInfo = backendInfoService.getInfoByMapId(previousVehicle.getIdMap());
+        BackendInfo backendInfo = backendInfoService.getInfoByMapId(nextJob.getIdMap());
 
         String stringUrl = "http://";
-        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/gotopoint/{pid}";
+        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/gotopoint/" + nextJob.getIdStart();
 
         logger.info("Dispatch gotopoint to backend: " + stringUrl);
 
         ResponseEntity<String> response = restTemplate.exchange(stringUrl,
                 HttpMethod.POST,
                 null,
-                String.class,
-                nextJob.getIdStart()
+                String.class
         );
     }
 
-    // TODO Nodig?
     /**
-     * function to check if order is empty or not
+     * Function to check if order is empty or not
      *
      * @param id (long) id of the order
      * @return (boolean) true if Order is empty
@@ -205,27 +197,29 @@ public class JobListService {
      *
      * @param id (long) id from the order that needs to be deleted
      */
-    public void deleteOrder(long id) {
+    public void deleteOrder(long id)
+    {
         this.jobListRepository.delete(id);
+        logger.info("Deleted Order/JobList: " + id);
     }
 
     public void deleteAll() {
+        logger.info("Deleting all JobLists!");
         this.jobListRepository.deleteAll();
     }
 
-    // TODO Implement?
+
     /**
-     * recalculate the order for which an error occured during the dispatch2core
+     * Recalculate the order for which an error occured during the dispatch2core
      *
      * @param idJob      (long) id from the job in which an error occured
      * @param idDelivery (string) id from delivery which needs to be saved when making a new order with correct input
      */
     public void recalculatePathAfterError(long idJob, String idDelivery)
     {
-
+        // TODO Implement?
     }
 
-    // TODO Nodig?
     /**
      * Function to find a delivery when a job is given
      *
@@ -248,7 +242,8 @@ public class JobListService {
         }
     }
 
-    public Long deleteByIdDelivery(String id) {
+    public Long deleteByIdDelivery(String id)
+    {
         return jobListRepository.deleteByIdDelivery(id);
     }
 
@@ -256,6 +251,4 @@ public class JobListService {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-
-
 }

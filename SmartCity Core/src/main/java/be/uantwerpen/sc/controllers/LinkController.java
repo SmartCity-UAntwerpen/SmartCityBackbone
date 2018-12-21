@@ -116,7 +116,8 @@ public class LinkController {
                 }
             }
             catch(Exception e){
-                System.out.println("Reading " + filePath + " failed" + e.getStackTrace());
+                System.out.println("Reading " + filePath + " failed");
+                e.printStackTrace();
             }
         }else{
             // TODO get linkArrays from the backends localhost)
