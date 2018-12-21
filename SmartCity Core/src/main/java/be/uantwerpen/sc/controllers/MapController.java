@@ -51,6 +51,9 @@ public class MapController {
     private TransitLinkService transitLinkService;
 
     @Autowired
+    private TransitPointService transitPointService;
+
+    @Autowired
     private AStarService aStarService;
     /**
      * Returns a map for the given type of vehicle
@@ -108,64 +111,82 @@ public class MapController {
 //        possiblePaths.add(path1); // dummy route
         possiblePaths = aStarService.determinePath(startpid, startmapid, stoppid, stopmapid);
         // TODO check if lenght = en linkid = -1 => ligt op dezelfde map, 1 job uitsturen naar die map
+        if((possiblePaths.size() == 1) && (possiblePaths.get(0)[0] == -1)){
+            Path onlyPath = new Path();
+            Job job = new Job((long) startpid, (long) stoppid, stopmapid);
+            onlyPath.addJob(job);
+            jobList = onlyPath.getJobList();
+            jobListService.saveOrder(jobList);
+            jobListService.dispatchToCore();
+
+            fullResponse.put("message", "points lie in same map, dispatching job between [" + startpid + "-" + stoppid + "on map" + startmapid );
+            return fullResponse;
+        }
 
         // go over all possible paths
         for(Integer[] links : possiblePaths) {
             Path path = new Path();
             ArrayList<TransitLink> transitPath = new ArrayList<TransitLink>();
+            System.out.println("---NEW LINK---");
             // Get a the full TranistLink Objects
             for (int i = 0; i < links.length; i++) {
                 int linkId = links[i];
                 TransitLink transitLink = transitLinkService.getLinkWithId(linkId);
                 transitPath.add(transitLink);
-                System.out.println(transitLink.getStartId());
             }
             path.setTransitPath(transitPath);
-
             // Get the combined weight of the inner map links on the route
             // -1 to stop on the last route and handle the last destination separtate
+
             int length = transitPath.size() - 1;
             for (int i = 0; i < length; i++) {
 
+
                 // endpoint of one link and startpoint of second link should be on the same map
                 int stopid = transitPath.get(i).getStopId();
-                int startid = transitPath.get(i + 1).getStartId();
+                int startid = transitPath.get(i).getStartId();
+
+
+                // Check if the startpoint of the optimal path is another point on the same map,
+                // -> if so dispatch first jobfrom the current point to the path
+                if(i == 0){
+                    TransitPoint firstPointInPath = transitPointService.getPointWithMapidAndPid(startpid, startmapid);
+                    if(startid == firstPointInPath.getId()){
+                        path.addJob(startpid, firstPointInPath.getPid(),startmapid );
+                    }
+                    break;
+                }
+
+
                 // get points of link from database
                 TransitPoint stopPoint = pointRepository.findById(stopid);
                 TransitPoint startPoint = pointRepository.findById(startid);
-                System.out.println("stoppoint Transitmap Id " + stopPoint.getMapid());
-                System.out.println("startpoint Transitmap Id " + startPoint.getMapid());
 
                 // TODO check if points belong to the same map
                 // TODO build in check for flagpoints (destination) and handle accordingly
 
                 // Get the connection info of the map where the points belong to
                 BackendInfo mapinfo = backendInfoService.getInfoByMapId(stopPoint.getMapid());
-                System.out.println(mapinfo.getHostname());
 
                 // Request weight between points from backend
-                String url = mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
-                System.out.println(url);
+                String url = "http://" + mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
+                System.out.println("requesting from cost from:+" + url);
+
                 response = backendService.requestJsonObject(url);
-                int weight =  (int)response.get("weight"); // TODO better way to make it int
+                System.out.println("response: " + response.toString());
+                int weight =  Integer.parseInt(response.get("cost").toString());
 //                int weight = (int)(Math.random() * 10); // to test wo/ backends
                 // Add the inner weights that the map calculated
                 path.addWeight(weight);
-                System.out.println("Weight: " + i + ": " + weight);
 
-                // TODO add link to jobList
-                // TODO move this to after top hasmap sort
+                // add a new job to the path
                 Job job = new Job((long) startPoint.getPid(), (long) stopPoint.getPid(), mapinfo.getMapId());
-                System.out.println(job.toString());
-
                 path.addJob(job);
-//                jobList.addJob(job);
             }
             // add the total weight of the transitlinks, now we have the complete weight of the path
             path.addWeight(path.getTotalTransitWeight());
-            fullResponse.put("weight", path.getWeight());
 
-            // rank the path based on it's weight, if paths have the same wieght increment the key
+            // rank the path based on it's weight, if paths have the same weight, increment the key
             // set the default rank as the last index of the ranking
             int rank = pathRank.size();
             for(int i = 0; i < pathRank.size(); i++){
@@ -177,12 +198,9 @@ public class MapController {
             }
             pathRank.add(rank, path);
 
-//            while(pathsHashMap.containsKey(pathWeightScore)){
-//                pathWeightScore +=1;
-//            }
         }
 
-        // Sort the paths according to weight
+        // print the pathranking
         for(int i = 0; i < pathRank.size(); i++){
             System.out.println(i + ") weight of link: " + pathRank.get(i).getWeight());
             System.out.println(pathRank.get(i).toString() );
@@ -193,7 +211,7 @@ public class MapController {
         jobList = pathRank.get(chosenPath).getJobList();
         System.out.println("dispatching jobList w/ rank: " + chosenPath);
         jobListService.saveOrder(jobList);
-//        jobListService.dispatchToCore();
+        jobListService.dispatchToCore();
 
         return fullResponse;
     }
@@ -207,7 +225,6 @@ public class MapController {
 
         // Get the backendInfo object from the backendinfo service of the robot backend
         BackendInfo backendInfo = backendInfoService.getByName("Robot");
-
         String stringUrl = "http://";
         stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + ""; // TODO Check with the Robot team which endpoint they have made
 

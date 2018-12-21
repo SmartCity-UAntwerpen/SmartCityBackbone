@@ -122,7 +122,7 @@ public class JobListService {
         BackendInfo backendInfo = backendInfoService.getInfoByMapId(job.getIdMap());
 
         String stringUrl = "http://";
-        stringUrl += "192.168.0.50" + ":" + backendInfo.getPort() + "/job/execute/";
+        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/execute/";
 
         boolean status;
         stringUrl += String.valueOf(job.getIdStart()) + "/" + String.valueOf(job.getIdEnd()) + "/" + String.valueOf(job.getId());
@@ -177,7 +177,7 @@ public class JobListService {
         BackendInfo backendInfo = backendInfoService.getInfoByMapId(previousVehicle.getIdMap());
 
         String stringUrl = "http://";
-        stringUrl += "192.168.0.50" + ":" + backendInfo.getPort() + "/job/gotopoint/{pid}";
+        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/gotopoint/{pid}";
 
         logger.info("Dispatch gotopoint to backend: " + stringUrl);
 
