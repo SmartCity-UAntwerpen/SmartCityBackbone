@@ -168,7 +168,7 @@ public class JobListService
         }
 
         // Get the backendInfo object from the info service for the given Job
-        BackendInfo backendInfo = backendInfoService.getInfoByMapId(previousVehicle.getIdMap());
+        BackendInfo backendInfo = backendInfoService.getInfoByMapId(nextJob.getIdMap());
 
         String stringUrl = "http://";
         stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/gotopoint/" + nextJob.getIdStart();
