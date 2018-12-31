@@ -145,7 +145,7 @@ public class MapController {
                 // endpoint of one link and startpoint of second link should be on the same map
                 int stopid = transitPath.get(i).getStopId();
                 int startid = transitPath.get(i).getStartId();
-
+                System.out.println("handling link" + stopid +"-"+ startid);
 
                 // Check if the startpoint of the optimal path is another point on the same map,
                 // -> if so dispatch first jobfrom the current point to the path
@@ -210,6 +210,9 @@ public class MapController {
         int chosenPath = 0;
         jobList = pathRank.get(chosenPath).getJobList();
         System.out.println("dispatching jobList w/ rank: " + chosenPath);
+
+        // TODO save iedere job apart
+
         jobListService.saveOrder(jobList);
         jobListService.dispatchToCore();
 
