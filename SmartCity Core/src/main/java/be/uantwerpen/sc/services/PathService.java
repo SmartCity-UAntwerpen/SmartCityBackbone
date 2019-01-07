@@ -39,21 +39,37 @@ public class PathService {
 
         //TODO check for a job on the starting map
 
+        int userStartId = transitPointService.getPointWithMapidAndPid(startpid, startmapid).getId();
 
+        if(userStartId != pointpairs[0]){
+            int userPid = transitPointService.getPointWithId(userStartId).getPid();
+            int startPid = transitPointService.getPointWithId(pointpairs[0]).getPid();
+            path.addJob(userPid, startPid, startmapid );
+        }
+
+        logger.info("--- determining new path ---");
         String linkLog = "TransitLink ids: ";
         for(int i = 0; i < pointpairs.length; i+=2){
             int startId = pointpairs[i];
             int stopId = pointpairs[i+1];
+
             TransitPoint startPoint = transitPointService.getPointWithId(startId);
             TransitPoint stopPoint = transitPointService.getPointWithId(stopId);
 
 
             if(startPoint.getMapid() != stopPoint.getMapid()){
+                logger.info("current points " + startId + "," + stopId + ", part of a transit link" );
                 TransitLink transitLink = transitLinkService.getLinkWithStartidAndStopid(startId,stopId);
+                // check if the transitlink exists with start and stopid in different order
+                if(transitLink == null) {
+                    transitLink = transitLinkService.getLinkWithStartidAndStopid(stopId, startId);
+                }
+
                 linkLog+= transitLink.getId() + "-";
                 transitPath.add(transitLink);
 
             }else{
+                logger.info("current points " + startId + "," + stopId + ", part of a inner map link" );
                 BackendInfo mapinfo = backendInfoService.getInfoByMapId(stopPoint.getMapid());
                 // Request weight between points from backend
                 String url = "http://" + mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
