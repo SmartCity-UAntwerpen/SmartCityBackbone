@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * A Star Class (will be used as a Service)
@@ -58,9 +59,15 @@ public class AStarService {
     private void makeEdge() {
         List<TransitLink> transitLinks = this.graphBuilder.getLinkList();
         for (TransitLink edge : transitLinks) {
-            this.graph.addEdge(Integer.toString(edge.getId()),
+            // adds forward link
+            this.graph.addEdge(edge.getId() + "[" + edge.getStartId() + "-" + edge.getStopId() + "]",
                     Integer.toString(transitPointRepository.findById(edge.getStartId()).getMapid()),
-                    Integer.toString(transitPointRepository.findById(edge.getStopId()).getMapid()), false)
+                    Integer.toString(transitPointRepository.findById(edge.getStopId()).getMapid()), true) // directed
+                    .setAttribute("weight", edge.getWeight() + 0.0);
+            // adds reverse link
+            this.graph.addEdge(edge.getId() + "[" + edge.getStopId() + "-" + edge.getStartId() + "]",
+                    Integer.toString(transitPointRepository.findById(edge.getStopId()).getMapid()),
+                    Integer.toString(transitPointRepository.findById(edge.getStartId()).getMapid()), true) // directed
                     .setAttribute("weight", edge.getWeight() + 0.0);
         }
     }
@@ -78,12 +85,13 @@ public class AStarService {
 
     /**
      * Determines the n-best routes between two points on maps.
+     * Returns the list of transit points of the links that need to be traversed.
      *
      * @param startPid Starting position
      * @param endPid   End position
      * @param startMap Map ID of starting point
      * @param endMap   Map ID of end point
-     * @return A set of possible routes. Each route is an array of TransitLink IDs.
+     * @return A set of possible routes. Each route is an array of TransitPoint IDs.
      */
     public List<Integer[]> determinePath(int startPid, int startMap, int endPid, int endMap) throws IllegalArgumentException {
         String start = String.valueOf(startMap);
@@ -93,7 +101,10 @@ public class AStarService {
 
         if (start.equals(end)) {
             // no need for A* if start and end point are in the same map
-            paths.add(new Integer[]{-1});
+            Integer startId = transitPointRepository.findByPidAndMapid(startPid, startMap).getId();
+            Integer endId = transitPointRepository.findByPidAndMapid(endPid, endMap).getId();
+            paths.add(new Integer[]{startId, endId});
+            logger.debug("Route for " + startPid + " to " + endPid + " found (map " + startMap + " to " + endMap + "): " + startId + ", " + endId);
             return paths;
         }
 
@@ -103,13 +114,28 @@ public class AStarService {
         for (int i = 0; i < numberOfRoutes; i++) {
             Optional<Path> shortestRoute = getShortestRoute(astar, start, end);
             if (shortestRoute.isPresent()) {
-                paths.add(shortestRoute.get().getEdgePath().stream().map(edge -> Integer.parseInt(edge.getId())).toArray(Integer[]::new));
+                List<Integer> pointList = new ArrayList<>();
+                for (int i1 = 0; i1 < shortestRoute.get().getEdgePath().size(); i1++) {
+                    Edge edge = shortestRoute.get().getEdgePath().get(i1);
+                    String[] points = edge.getId().substring(edge.getId().indexOf("[") + 1, edge.getId().length() - 1).split("-");
+                    if (i1 > 0) {
+                        pointList.add(Integer.parseInt(points[0]));
+                    }
+                    pointList.add(Integer.parseInt(points[0]));
+                    pointList.add(Integer.parseInt(points[1]));
+                    if (i1 < shortestRoute.get().getEdgePath().size() - 1) {
+                        pointList.add(Integer.parseInt(points[1]));
+                    }
+                }
+                Integer[] pathArray = new Integer[pointList.size()];
+                pathArray = pointList.toArray(pathArray);
+                paths.add(pathArray);
                 Edge lowestCostEdge = shortestRoute.get().getEdgePath().stream().min(Comparator.comparingDouble(o -> o.getAttribute("weight"))).orElseThrow(IllegalStateException::new);
                 graph.removeEdge(lowestCostEdge);
                 if (logger.isDebugEnabled()) {
                     StringBuilder path = new StringBuilder();
                     shortestRoute.get().getEdgePath().forEach(edge -> path.append(edge.getId()).append(" "));
-                    logger.debug("Route for " + startPid + " to " + endPid + " found: " + path.toString());
+                    logger.debug("Route for " + startPid + " to " + endPid + " (map " + startMap + " to " + endMap + "): " + path.toString());
                 }
             } else {
                 logger.debug("No more route for " + start + " to " + end + " found");
@@ -119,6 +145,14 @@ public class AStarService {
         return paths;
     }
 
+    /**
+     * Returns an A* path for the current shortest route.
+     *
+     * @param astar the AStar object
+     * @param start start point as string
+     * @param end   end point as string
+     * @return
+     */
     private Optional<Path> getShortestRoute(AStar astar, String start, String end) {
         astar.compute(start, end);
         if (astar.noPathFound())

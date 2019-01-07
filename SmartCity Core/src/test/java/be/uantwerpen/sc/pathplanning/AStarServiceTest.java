@@ -84,8 +84,9 @@ public class AStarServiceTest {
     public void determinePathSameMap() {
         List<Integer[]> routes = aStarService.determinePath(46, 3, 47, 3);
         assertEquals(1, routes.size());
-        assertEquals(1, routes.get(0).length);
-        assertEquals(-1, (int) routes.get(0)[0]);
+        assertEquals(2, routes.get(0).length);
+        assertEquals(7, (int) routes.get(0)[0]);
+        assertEquals(8, (int) routes.get(0)[1]);
     }
 
     @Test
@@ -93,23 +94,37 @@ public class AStarServiceTest {
         List<Integer[]> routes = aStarService.determinePath(46, 3, 47, 1);
         assertEquals(5, routes.size());
 
-        assertEquals(2, routes.get(0).length);
-        assertEquals(12, (int) routes.get(0)[0]);
-        assertEquals(15, (int) routes.get(0)[1]);
+        assertEquals(6, routes.get(0).length);
+        assertEquals(9, (int) routes.get(0)[0]);
+        assertEquals(5, (int) routes.get(0)[1]);
+        assertEquals(5, (int) routes.get(0)[2]);
+        assertEquals(4, (int) routes.get(0)[3]);
+        assertEquals(4, (int) routes.get(0)[4]);
+        assertEquals(3, (int) routes.get(0)[5]);
 
-        assertEquals(2, routes.get(1).length);
-        assertEquals(12, (int) routes.get(1)[0]);
-        assertEquals(16, (int) routes.get(1)[1]);
+        assertEquals(6,  routes.get(1).length);
+        assertEquals(9, (int) routes.get(1)[0]);
+        assertEquals(5, (int) routes.get(1)[1]);
+        assertEquals(5, (int) routes.get(1)[2]);
+        assertEquals(4, (int) routes.get(1)[3]);
+        assertEquals(4, (int) routes.get(1)[4]);
+        assertEquals(3, (int) routes.get(1)[5]);
 
-        assertEquals(2, routes.get(2).length);
-        assertEquals(13, (int) routes.get(2)[0]);
-        assertEquals(16, (int) routes.get(2)[1]);
+        assertEquals(6, routes.get(2).length);
+        assertEquals(8, (int) routes.get(2)[0]);
+        assertEquals(5, (int) routes.get(2)[1]);
+        assertEquals(5, (int) routes.get(2)[2]);
+        assertEquals(4, (int) routes.get(2)[3]);
+        assertEquals(4, (int) routes.get(2)[4]);
+        assertEquals(3, (int) routes.get(2)[5]);
 
-        assertEquals(1, routes.get(3).length);
-        assertEquals(10, (int) routes.get(3)[0]);
+        assertEquals(2, routes.get(3).length);
+        assertEquals(7, (int) routes.get(3)[0]);
+        assertEquals(1, (int) routes.get(3)[1]);
 
-        assertEquals(1, routes.get(4).length);
-        assertEquals(11, (int) routes.get(4)[0]);
+        assertEquals(2, routes.get(4).length);
+        assertEquals(9, (int) routes.get(4)[0]);
+        assertEquals(2, (int) routes.get(4)[1]);
     }
 
     @Test
