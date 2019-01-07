@@ -2,7 +2,9 @@ package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.*;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,17 +23,69 @@ public class PathService {
     TransitPointService transitPointService;
     @Autowired
     BackendInfoService backendInfoService;
+    @Autowired
+    BackendService backendService;
+    @Value("${enable.dispatching}")
+    boolean dispatchingEnabled;
 
     public PathService(){
 
     }
 
+
+    public Path makePathFromPointPairs(Integer[] pointpairs, int startpid, int startmapid){
+        Path path = new Path();
+        ArrayList<TransitLink> transitPath = new ArrayList<TransitLink>();
+
+        //TODO check for a job on the starting map
+
+
+        String linkLog = "TransitLink ids: ";
+        for(int i = 0; i < pointpairs.length; i+=2){
+            int startId = pointpairs[i];
+            int stopId = pointpairs[i+1];
+            TransitPoint startPoint = transitPointService.getPointWithId(startId);
+            TransitPoint stopPoint = transitPointService.getPointWithId(stopId);
+
+
+            if(startPoint.getMapid() != stopPoint.getMapid()){
+                TransitLink transitLink = transitLinkService.getLinkWithStartidAndStopid(startId,stopId);
+                linkLog+= transitLink.getId() + "-";
+                transitPath.add(transitLink);
+
+            }else{
+                BackendInfo mapinfo = backendInfoService.getInfoByMapId(stopPoint.getMapid());
+                // Request weight between points from backend
+                String url = "http://" + mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
+                logger.info("--requesting from cost from:+" + url);
+
+                int weight = 1;
+                if(dispatchingEnabled) {
+                    JSONObject response = backendService.requestJsonObject(url);
+                    System.out.println("response: " + response.toString());
+                    weight = Integer.parseInt(response.get("cost").toString());
+                }else {
+                    weight = (int)(Math.random() * 10); // to test wo/ backends
+                }
+                logger.info("--got weight: " + weight);
+                // Add the inner weights that the map calculated
+                path.addWeight(weight);
+                // add a new job to the path
+                Job job = new Job((long) startPoint.getPid(), (long) stopPoint.getPid(), mapinfo.getMapId());
+                path.addJob(job);
+            }
+            path.setTransitPath(transitPath);
+
+        }
+        logger.info(linkLog);
+        path.addWeight(path.getTotalTransitWeight());
+        return path;
+    }
     public Path makePathFromLinkIds(Integer[] linkids, int startpid, int startmapid){
         String linkLog = "Links: ";
         Path path = new Path();
         ArrayList<TransitLink> transitPath = new ArrayList<TransitLink>();
         // Get a the full TranistLink Objects
-        linkLog+= "linkIds: ";
         for (int i = 0; i < linkids.length; i++) {
             int linkId = linkids[i];
             linkLog += linkId+",";
@@ -57,11 +111,17 @@ public class PathService {
         // construct path object
         // Get the combined weight of the inner map links on the route
         // add these to the path object together with the topmap weights
-        int length = transitPath.size();
+        int length = transitPath.size() -1;
+        logger.info("length " + length);
         for (int i = 0; i < length; i++) {
             // endpoint of one link and startpoint of second link should be on the same map
+
+
             int stopid = transitPath.get(i).getStopId();
-            int startid = transitPath.get(i).getStartId();
+            int startid = transitPath.get(i+1).getStartId();
+
+
+
             logger.info("-handling link" + stopid +"-"+ startid);
 
             // Check if the startpoint of the optimal path is another point on the same map,
@@ -79,13 +139,18 @@ public class PathService {
             BackendInfo mapinfo = backendInfoService.getInfoByMapId(stopPoint.getMapid());
 
             // Request weight between points from backend
-            String url = "http://" + mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
+            String url = "http://" + mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + stopPoint.getPid() + "/" + startPoint.getPid();
             logger.info("--requesting from cost from:+" + url);
 
-//                response = backendService.requestJsonObject(url);
-//                System.out.println("response: " + response.toString());
-//                int weight =  Integer.parseInt(response.get("cost").toString());
-            int weight = (int)(Math.random() * 10); // to test wo/ backends
+            int weight = 1;
+            if(dispatchingEnabled) {
+
+                JSONObject response = backendService.requestJsonObject(url);
+                System.out.println("response: " + response.toString());
+                 weight = Integer.parseInt(response.get("cost").toString());
+            }else {
+                 weight = (int)(Math.random() * 10); // to test wo/ backends
+            }
             logger.info("--got weight: " + weight);
 
             // Add the inner weights that the map calculated

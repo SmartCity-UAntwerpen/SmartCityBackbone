@@ -13,4 +13,7 @@ public class TransitLinkService {
     public TransitLink getLinkWithId(int id){
         return transitLinkRepository.findById(id);
     }
+    public TransitLink getLinkWithStartidAndStopid(int startId, int stopId){
+        return transitLinkRepository.findByStartidAndStopid(startId, stopId);
+    }
 }

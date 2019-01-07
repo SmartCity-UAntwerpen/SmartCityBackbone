@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.Produces;
@@ -58,6 +59,9 @@ public class MapController {
 
     @Autowired
     private PathService pathService;
+
+    @Value("${enable.dispatching}")
+    boolean dispatchingEnabled;
     /**
      * Returns a map for the given type of vehicle
      * alternatively returns a map for the visualisation with variable 'visual'
@@ -117,16 +121,25 @@ public class MapController {
             onlyPath.addJob(job);
             jobList = onlyPath.getJobList();
             jobListService.saveOrder(jobList);
-//            jobListService.dispatchToCore(); // TODO
+            if(dispatchingEnabled) {
+                logger.info("Dispatching...");
+                try {
+                    jobListService.dispatchToCore();
+                }catch(Exception e){
+                    logger.warn("Dispatching failed");
+                    e.printStackTrace();
+                }
+            }
 
             logger.info("message", "points lie in same map, dispatching job between [" + startpid + "-" + stoppid + "]on map " + startmapid );
             return fullResponse;
         }
 
         // Process all paths given by AStar,
-        for(Integer[] links : possiblePaths) {
+        for(Integer[] pointPairs : possiblePaths) {
             // create a path (full transitlinks, jobs, requested weights) from the array of linkIds
-            Path path = pathService.makePathFromLinkIds(links, startpid, startmapid);
+//            Path path = pathService.makePathFromLinkIds(links, startpid, startmapid);
+            Path path = pathService.makePathFromPointPairs(pointPairs, startpid, startmapid);
             // rank the path based on it's weight, if paths have the same weight, increment the key
             // set the default rank as the last index of the ranking
             int rank = pathRank.size();
@@ -152,7 +165,15 @@ public class MapController {
         System.out.println("dispatching jobList w/ rank: " + chosenPath);
 
         jobListService.saveOrder(jobList);
-//        jobListService.dispatchToCore(); // TODO
+        if(dispatchingEnabled) {
+            logger.info("Dispatching...");
+            try{
+                jobListService.dispatchToCore();
+            }catch(Exception e){
+                logger.warn("Dispatching failed");
+                e.printStackTrace();
+            }
+        }
 
         return fullResponse;
     }

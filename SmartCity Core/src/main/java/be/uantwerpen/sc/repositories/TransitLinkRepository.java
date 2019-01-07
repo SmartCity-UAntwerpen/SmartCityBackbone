@@ -10,4 +10,5 @@ import java.util.List;
 public interface TransitLinkRepository extends CrudRepository<TransitLink, Long> {
     List<TransitLink> findAll();
     TransitLink findById(int id);
+    TransitLink findByStartidAndStopid(int startid, int stopid);
 }
