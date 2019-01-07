@@ -47,7 +47,7 @@ public class AStarServiceTest {
         transitPoints.add(new TransitPoint(9, 3, 48));
 
         List<TransitLink> transitLinks = new ArrayList<>();
-        transitLinks.add(new TransitLink(10, 1, 7, 10));
+        transitLinks.add(new TransitLink(10, 1, 7, 20));
         transitLinks.add(new TransitLink(11, 9, 2, 40));
         transitLinks.add(new TransitLink(12, 9, 5, 2));
         transitLinks.add(new TransitLink(13, 5, 8, 3));
@@ -110,6 +110,12 @@ public class AStarServiceTest {
 
         assertEquals(1, routes.get(4).length);
         assertEquals(11, (int) routes.get(4)[0]);
+    }
+
+    @Test
+    public void multipleRuns() {
+        determinePathMapAToMapB();
+        determinePathMapAToMapB();
     }
 
 }

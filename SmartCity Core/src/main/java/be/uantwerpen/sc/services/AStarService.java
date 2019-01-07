@@ -52,16 +52,6 @@ public class AStarService {
     }
 
     /**
-     * Destroy nodes function
-     * Will remove all the nodes in the Graph. This is needed when you want to destroy an old graph.
-     */
-    private void destroyNodes() {
-        for (int i = this.graph.getNodeCount(); i > 0; i--) {
-            this.graph.removeNode(i);
-        }
-    }
-
-    /**
      * Make Edge function
      * will make all the necessary edges in the Graph, using the information provided by the GraphBuilder
      */
@@ -71,17 +61,7 @@ public class AStarService {
             this.graph.addEdge(Integer.toString(edge.getId()),
                     Integer.toString(transitPointRepository.findById(edge.getStartId()).getMapid()),
                     Integer.toString(transitPointRepository.findById(edge.getStopId()).getMapid()), false)
-                    .setAttribute("weight", edge.getWeight());
-        }
-    }
-
-    /**
-     * Destroy edges function
-     * Will remove all the edges in the Graph. This is needed when you want to destroy an old graph.
-     */
-    private void destroyEdges() {
-        for (int i = this.graph.getEdgeCount(); i > 0; i--) {
-            this.graph.removeEdge(i);
+                    .setAttribute("weight", edge.getWeight() + 0.0);
         }
     }
 
@@ -91,8 +71,7 @@ public class AStarService {
      * before rebuilding the Graph, hence updating the Graph
      */
     private void updateNodesAndEdges() {
-        destroyNodes();
-        destroyEdges();
+        graph.clear(); // remove all edges and nodes
         makeNode();
         makeEdge();
     }
@@ -125,7 +104,7 @@ public class AStarService {
             Optional<Path> shortestRoute = getShortestRoute(astar, start, end);
             if (shortestRoute.isPresent()) {
                 paths.add(shortestRoute.get().getEdgePath().stream().map(edge -> Integer.parseInt(edge.getId())).toArray(Integer[]::new));
-                Edge lowestCostEdge = shortestRoute.get().getEdgePath().stream().min(Comparator.comparingInt(o -> o.getAttribute("weight"))).orElseThrow(IllegalStateException::new);
+                Edge lowestCostEdge = shortestRoute.get().getEdgePath().stream().min(Comparator.comparingDouble(o -> o.getAttribute("weight"))).orElseThrow(IllegalStateException::new);
                 graph.removeEdge(lowestCostEdge);
                 if (logger.isDebugEnabled()) {
                     StringBuilder path = new StringBuilder();
