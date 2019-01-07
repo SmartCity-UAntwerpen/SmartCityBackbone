@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.Produces;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -120,11 +119,11 @@ public class MapController {
             Job job = new Job((long) startpid, (long) stoppid, stopmapid);
             onlyPath.addJob(job);
             jobList = onlyPath.getJobList();
-            jobListService.saveOrder(jobList);
+            jobListService.saveJobList(jobList);
             if(dispatchingEnabled) {
                 logger.info("Dispatching...");
                 try {
-                    jobListService.dispatchToCore();
+                    jobListService.dispatchToBackend();
                 }catch(Exception e){
                     logger.warn("Dispatching failed");
                     e.printStackTrace();
@@ -164,11 +163,11 @@ public class MapController {
         jobList = pathRank.get(chosenPath).getJobList();
         System.out.println("dispatching jobList w/ rank: " + chosenPath);
 
-        jobListService.saveOrder(jobList);
+        jobListService.saveJobList(jobList);
         if(dispatchingEnabled) {
             logger.info("Dispatching...");
             try{
-                jobListService.dispatchToCore();
+                jobListService.dispatchToBackend();
             }catch(Exception e){
                 logger.warn("Dispatching failed");
                 e.printStackTrace();

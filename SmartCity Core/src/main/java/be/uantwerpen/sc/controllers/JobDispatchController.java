@@ -23,7 +23,7 @@ public class JobDispatchController {
 
     private static final Logger logger = LoggerFactory.getLogger(JobDispatchController.class);
 
-    // TODO is a test endpoint. can be removed at the end.
+    // TODO is a test endpoint. Can be removed at the end.
     @RequestMapping(value = "/jobs/saveOrder", method = RequestMethod.POST)
     public void saveOrder() {
         logger.info("Test: Saving jobList -> First removing all jobs");
@@ -37,7 +37,7 @@ public class JobDispatchController {
 
         job = new Job(7L,10L,10);
         list.addJob(job);
-        jobListService.saveOrder(list);
+        jobListService.saveJobList(list);
         jobListService.printJobList();
     }
 
@@ -54,7 +54,8 @@ public class JobDispatchController {
     }
 
     @RequestMapping(value = "/jobs/deleteOrder/{id}", method = RequestMethod.POST)
-    public void delete(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id)
+    {
         jobListService.deleteOrder(id);
     }
 
@@ -65,6 +66,7 @@ public class JobDispatchController {
         jobListService.deleteAll();
     }
 
+    // TODO Future work -> See if this can be done by the backend and remove it from here
     @RequestMapping(value = "/jobs/vehiclecloseby/{idjob}", method = RequestMethod.POST)
     public void vehicleCloseByToEnd(@PathVariable("idjob") Long idJob)
     {
@@ -96,12 +98,9 @@ public class JobDispatchController {
                 // TODO Mag dit wel? Verwijderen terwijl we erover iteraten
                 jobListService.deleteOrder(jl.getId());
             } else {
-                jobListService.dispatchToCore();
+                jobListService.dispatchToBackend();
             }
         }
         return "Ok";
     }
-
-    // TODO Make a Job failed endpoint for when a job fails
-
 }

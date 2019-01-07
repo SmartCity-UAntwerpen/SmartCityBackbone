@@ -5,7 +5,6 @@ import be.uantwerpen.sc.models.BackendInfo;
 import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.sc.repositories.BackendInfoRepository;
-import be.uantwerpen.sc.services.BackendInfoService;
 import be.uantwerpen.sc.services.JobListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -28,7 +27,7 @@ public class DatabaseLoaderDevelopment {
     public void initDatabase() {
         initJobLists();
         initBackends();
-       test();
+        test();
     }
 
     private void initJobLists() {
@@ -40,7 +39,7 @@ public class DatabaseLoaderDevelopment {
 
         job = new Job(7L,10L,10);
         list.addJob(job);
-        jobListService.saveOrder(list);
+        jobListService.saveJobList(list);
     }
 
     private void initBackends() {
