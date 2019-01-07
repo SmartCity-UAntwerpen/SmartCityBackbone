@@ -216,7 +216,7 @@ public class JobListService
      * @param idDelivery (string) id from delivery which needs to be saved when making a new order with correct input
      */
     public void recalculatePathAfterError(long idJob, String idDelivery)
-    {
+     {
         // TODO Implement?
     }
 
