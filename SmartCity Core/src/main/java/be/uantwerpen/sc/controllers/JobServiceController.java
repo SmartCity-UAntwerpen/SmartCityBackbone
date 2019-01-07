@@ -130,4 +130,11 @@ public class JobServiceController {
 //        return response;
 //
 //    }
+
+    // TODO Future work -> Backends use this endpoint to let the backbone know when a job failed to execute
+    @RequestMapping(value = "fail/{id}", method = RequestMethod.POST)
+    public void jobFailed(@PathVariable("id") Long id)
+    {
+        // Remove the job or resend it to the correct backend
+    }
 }
