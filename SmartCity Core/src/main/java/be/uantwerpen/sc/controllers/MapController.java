@@ -1,8 +1,10 @@
 package be.uantwerpen.sc.controllers;
 
-import be.uantwerpen.sc.models.*;
+import be.uantwerpen.sc.models.BackendInfo;
+import be.uantwerpen.sc.models.Job;
+import be.uantwerpen.sc.models.JobList;
+import be.uantwerpen.sc.models.Path;
 import be.uantwerpen.sc.models.map.CustomMap;
-
 import be.uantwerpen.sc.repositories.BackendInfoRepository;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
 import be.uantwerpen.sc.services.*;
@@ -14,6 +16,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.Produces;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +67,7 @@ public class MapController {
 
     @Value("${enable.dispatching}")
     boolean dispatchingEnabled;
+
     /**
      * Returns a map for the given type of vehicle
      * alternatively returns a map for the visualisation with variable 'visual'
@@ -72,8 +79,12 @@ public class MapController {
     @RequestMapping(value = "stringmapjson/{type}", method = RequestMethod.GET)
     public String customMapStringJson(@PathVariable("type") String type) {
         if (type.equals("visual")) {
-            mapControlService.buildTopMapJson();
-            return mapControlService.buildCustomMapJson("visual").getVisualPointsString();
+            try {
+                byte[] encoded = Files.readAllBytes(Paths.get("stringmapjsonNEW.txt"));
+                return new String(encoded, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         //further handling in customMap when type is a car, bot, drone, ...
         return "U014";
@@ -104,7 +115,7 @@ public class MapController {
      * Endpoint for a pathplanning from {startpoint:{pid, mapid}} to {stoppoint:{pid, mapid}}
      */
     @RequestMapping(value = "planpath", method = RequestMethod.GET)
-    public JSONObject planPath(@RequestParam int startpid, @RequestParam int startmapid, @RequestParam int stoppid, @RequestParam int stopmapid){
+    public JSONObject planPath(@RequestParam int startpid, @RequestParam int startmapid, @RequestParam int stoppid, @RequestParam int stopmapid) {
         JobList jobList = new JobList();
         JSONObject response = new JSONObject();
         JSONObject fullResponse = new JSONObject();
@@ -114,47 +125,47 @@ public class MapController {
         List<Integer[]> possiblePaths = new ArrayList<>();
         possiblePaths = aStarService.determinePath(startpid, startmapid, stoppid, stopmapid);
         // check if size is 1 en linkid is -1 => ligt op dezelfde map, 1 job uitsturen naar die map
-        if((possiblePaths.size() == 1) && (possiblePaths.get(0)[0] == -1)){
+        if ((possiblePaths.size() == 1) && (possiblePaths.get(0)[0] == -1)) {
             Path onlyPath = new Path();
             Job job = new Job((long) startpid, (long) stoppid, stopmapid);
             onlyPath.addJob(job);
             jobList = onlyPath.getJobList();
             jobListService.saveJobList(jobList);
-            if(dispatchingEnabled) {
+            if (dispatchingEnabled) {
                 logger.info("Dispatching...");
                 try {
                     jobListService.dispatchToBackend();
-                }catch(Exception e){
+                } catch (Exception e) {
                     logger.warn("Dispatching failed");
                     e.printStackTrace();
                 }
             }
 
-            logger.info("message", "points lie in same map, dispatching job between [" + startpid + "-" + stoppid + "]on map " + startmapid );
+            logger.info("message", "points lie in same map, dispatching job between [" + startpid + "-" + stoppid + "]on map " + startmapid);
             return fullResponse;
         }
 
         // Process all paths given by AStar,
-        for(Integer[] pointPairs : possiblePaths) {
+        for (Integer[] pointPairs : possiblePaths) {
             // create a path (full transitlinks, jobs, requested weights) from the array of linkIds
 //            Path path = pathService.makePathFromLinkIds(links, startpid, startmapid);
             Path path = pathService.makePathFromPointPairs(pointPairs, startpid, startmapid);
             // rank the path based on it's weight, if paths have the same weight, increment the key
             // set the default rank as the last index of the ranking
             int rank = pathRank.size();
-            for(int i = 0; i < pathRank.size(); i++){
-                if(path.getWeight() <= pathRank.get(i).getWeight() ){
-                   rank = i;
-                   break;
+            for (int i = 0; i < pathRank.size(); i++) {
+                if (path.getWeight() <= pathRank.get(i).getWeight()) {
+                    rank = i;
+                    break;
                 }
             }
             pathRank.add(rank, path);
         }
 
         // print the pathranking
-        for(int i = 0; i < pathRank.size(); i++){
+        for (int i = 0; i < pathRank.size(); i++) {
             System.out.println(i + ") weight of path: " + pathRank.get(i).getWeight());
-            System.out.println(pathRank.get(i).toString() );
+            System.out.println(pathRank.get(i).toString());
         }
 
         // convert the chosen path to a jobs and save them as a job list.
@@ -164,11 +175,11 @@ public class MapController {
         System.out.println("dispatching jobList w/ rank: " + chosenPath);
 
         jobListService.saveJobList(jobList);
-        if(dispatchingEnabled) {
+        if (dispatchingEnabled) {
             logger.info("Dispatching...");
-            try{
+            try {
                 jobListService.dispatchToBackend();
-            }catch(Exception e){
+            } catch (Exception e) {
                 logger.warn("Dispatching failed");
                 e.printStackTrace();
             }
@@ -179,10 +190,9 @@ public class MapController {
 
     //TODO Check if we receive a JSONobject from the robot backend
     @RequestMapping(value = "getTrafficLightStats", method = RequestMethod.GET)
-    public JSONObject getTrafficLightStats()
-    {
+    public JSONObject getTrafficLightStats() {
         /** Get the list of traffic lights and their status from the Robot backend end send it back to the MaaS
-            Get the backendInfo object from the backendinfo service of the robot backend
+         Get the backendInfo object from the backendinfo service of the robot backend
          **/
         BackendInfo backendInfo = backendInfoService.getByName("Robot");
         String stringUrl = "http://";
