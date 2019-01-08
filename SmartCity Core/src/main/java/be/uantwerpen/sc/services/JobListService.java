@@ -70,7 +70,16 @@ public class JobListService
     public void dispatchToBackend() {
         // Iterate over all orders
         for (JobList jl : this.jobListRepository.findAll()) {
-            Job job = jl.getJobs().get(0);
+            Job job;
+            try{
+                job = jl.getJobs().get(0);
+            }
+            catch(Exception e)
+            {
+                logger.error("Job not found: " + e);
+                return;
+            }
+
 
             // Check if the first job is still busy -> if so, go to the next list to dispatch its first job
             if (job.getStatus().equals(JobState.BUSY)) {

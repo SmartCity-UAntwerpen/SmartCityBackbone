@@ -27,7 +27,6 @@ public class JobDispatchController {
     @RequestMapping(value = "/jobs/saveOrder", method = RequestMethod.POST)
     public void saveOrder()
     {
-        jobListService.printJobList();
         logger.info("Test: Saving jobList -> First removing all jobs");
         jobListService.deleteAll();
         jobService.deleteAll();
