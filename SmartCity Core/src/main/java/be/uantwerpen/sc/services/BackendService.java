@@ -1,9 +1,12 @@
 package be.uantwerpen.sc.services;
 
+import be.uantwerpen.sc.controllers.MapController;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -14,6 +17,7 @@ import java.net.URL;
 
 @Service
 public class BackendService {
+    private static final Logger logger = LoggerFactory.getLogger(MapController.class);
 
 
     public JSONObject requestJsonObject(String url){
@@ -38,7 +42,15 @@ public class BackendService {
                 }
                 System.out.println("got: " + response + "\nfrom:" +  url);
                 try {
-                    JSONObject responseObject = (JSONObject) parser.parse(response);
+                    JSONObject responseObject;
+                    logger.info("raw response:" + response + response.getClass());
+                    if(response instanceof String) {
+                        responseObject = (JSONObject) parser.parse(response);
+                    }
+                    else {
+                        responseObject = new JSONObject();
+                        responseObject.put("cost", response);
+                    }
                     return responseObject;
                 }
                 catch(ParseException e){

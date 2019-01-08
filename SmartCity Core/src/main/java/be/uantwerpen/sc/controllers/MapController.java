@@ -149,7 +149,7 @@ public class MapController {
         for (Integer[] pointPairs : possiblePaths) {
             // create a path (full transitlinks, jobs, requested weights) from the array of linkIds
 //            Path path = pathService.makePathFromLinkIds(links, startpid, startmapid);
-            Path path = pathService.makePathFromPointPairs(pointPairs, startpid, startmapid);
+            Path path = pathService.makePathFromPointPairs(pointPairs, startpid, startmapid, stoppid, stopmapid);
             // rank the path based on it's weight, if paths have the same weight, increment the key
             // set the default rank as the last index of the ranking
             int rank = pathRank.size();
@@ -175,6 +175,7 @@ public class MapController {
         System.out.println("dispatching jobList w/ rank: " + chosenPath);
 
         jobListService.saveJobList(jobList);
+
         if (dispatchingEnabled) {
             logger.info("Dispatching...");
             try {

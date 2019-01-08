@@ -33,14 +33,12 @@ public class PathService {
     }
 
 
-    public Path makePathFromPointPairs(Integer[] pointpairs, int userStartPid, int startMapId){
+    public Path makePathFromPointPairs(Integer[] pointpairs, int userStartPid, int startMapId, int stopPid, int stopMapId){
         Path path = new Path();
         ArrayList<TransitLink> transitPath = new ArrayList<TransitLink>();
         logger.info("--- determining new path ---");
         // check if the starting point of the path is the same as the point where the user wants to depart from
         int userStartId = transitPointService.getPointWithMapidAndPid(userStartPid, startMapId).getId();
-        // TODO check if desitanation point lies in the middle
-
         if(userStartId != pointpairs[0]){
             logger.info("Startpoint is on the same map: First Job is within the staring map");
 //            int userPid = transitPointService.getPointWithId(userStartId).getPid(); // redundant call to get userStartPid
@@ -98,9 +96,28 @@ public class PathService {
                 Job job = new Job((long) startPoint.getPid(), (long) stopPoint.getPid(), mapInfo.getMapId());
                 path.addJob(job);
             }
-            path.setTransitPath(transitPath);
+
 
         }
+
+        // TODO check if the endpoint is in the endpoint map
+        int lastIndex = pointpairs.length -1;
+        int destinationId = transitPointService.getPointWithMapidAndPid(stopPid, stopMapId).getId();
+        if(destinationId != pointpairs[lastIndex]){
+            logger.info("EndPoint is on the same map: Last Job is within the end map");
+//            int userPid = transitPointService.getPointWithId(userStartId).getPid(); // redundant call to get userStartPid
+
+            BackendInfo mapInfo = backendInfoService.getInfoByMapId(stopMapId);
+            int lastTransitPid = transitPointService.getPointWithId(pointpairs[lastIndex]).getPid();
+
+            // TODO get the internal cost by, identify by mapid
+            int weight = getWeightFromBackend(mapInfo, lastTransitPid, stopPid);
+            path.addWeight(weight);
+            path.addJob(lastTransitPid, stopPid, stopMapId );
+        }
+
+
+        path.setTransitPath(transitPath);
         logger.info(linkLog);
         path.addWeight(path.getTotalTransitWeight());
         return path;
