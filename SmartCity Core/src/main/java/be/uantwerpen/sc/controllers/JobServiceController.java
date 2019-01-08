@@ -71,7 +71,7 @@ public class JobServiceController {
         JSONObject response = new JSONObject();
 
         Job job = jobService.getJob(id);
-        int progress = 0;
+        float progress = 0f;
 
         // If job is not found return 100 because this means that the job was completed and deleted from the database.
         if(job == null)
@@ -85,7 +85,7 @@ public class JobServiceController {
         switch(job.getStatus())
         {
             case DONE:
-                progress = 100;
+                progress = 100f;
                 break;
             case TODO:
                 // Do nothing -> returns 0 progress
@@ -99,17 +99,17 @@ public class JobServiceController {
                 String stringUrl = "http://";
                 stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/getprogress/" + job.getId();
 
-                ResponseEntity<Integer> responseBackEnd = restTemplate.exchange(stringUrl,
+                ResponseEntity<Float> responseBackEnd = restTemplate.exchange(stringUrl,
                         HttpMethod.GET,
                         null,
-                        Integer.class
+                        Float.class
                 );
                 logger.warn("Job progress from job with id " + job.getId() + " is " + responseBackEnd.getBody());
                 // TODO Check what we receive here
-                progress = Integer.parseInt(responseBackEnd.getBody().toString());
+                progress = Float.parseFloat(responseBackEnd.getBody().toString());
                 break;
             default:
-                progress = 0;
+                progress = 0f;
                 break;
         }
 
