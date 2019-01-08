@@ -45,17 +45,7 @@ public class DispatchingMultipleOrdersTest {
     @Test
     public void testDispatch() {
         // Endpoint to execute: /job/execute/{pidstart}/{pidstop}/{jobid}
-        // Add second list
-        JobList list2 = new JobList();
-        list2.setIdDelivery("MaaS2");
 
-        Job job = new Job(4L,20L,11);
-        list2.addJob(job);
-
-        job = new Job(8L,11L,10);
-        list2.addJob(job);
-        jobListService.saveJobList(list2);
-        jobListService.printJobList();
 
         // Dispatch first job, first list
         mockServer.expect(requestTo("http://localhost:7777/job/execute/1/5/1")).andExpect(method(HttpMethod.POST))
@@ -81,10 +71,24 @@ public class DispatchingMultipleOrdersTest {
         mockServer.expect(requestTo("http://localhost:8888/job/execute/8/11/4")).andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess("true", MediaType.TEXT_PLAIN));
 
-        int oldsize = jobListService.findAll().size();
 
         //** Start simulation
         //Test data is loaded by databaseLoaderDevelopment
+        jobListService.dispatchToBackend();
+
+        // Add second list
+        JobList list2 = new JobList();
+        list2.setIdDelivery("MaaS2");
+
+        Job job = new Job(4L,20L,11);
+        list2.addJob(job);
+
+        job = new Job(8L,11L,10);
+        list2.addJob(job);
+        jobListService.saveJobList(list2);
+
+        int oldsize = jobListService.findAll().size();
+
         jobListService.dispatchToBackend();
 
         // Job 1, list 1
