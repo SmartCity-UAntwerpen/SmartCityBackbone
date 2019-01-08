@@ -67,6 +67,7 @@ public class JobListService
         }
     }
 
+    // TODO: Test dispatch that allows jobs in other lists to be dispatched if the first job of the first list is still busy
     public void dispatchToBackend() {
         for (JobList jl : this.jobListRepository.findAll()) {
             // iterate over all orders
@@ -76,72 +77,36 @@ public class JobListService
             if (job.getStatus().equals(JobState.BUSY)) {
                 // probably not reached rendezvous point yet: wait
                 logger.info("The first job (" + job.getId() + ") of the jobList (" + jl.getId() + ") is still busy!");
-                return;
+
             }
-
-            if (dispatch(job) && job.getStatus().equals(JobState.TODO))
-            {
-                job.setStatus(JobState.BUSY);
-                jobService.save(job);
-            } else {
-
-                // An error has occurred.
-                logger.error("An error has occured while dispatching to the backend!");
-                /*
-                //recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery()); TODO
-
-                // for debug purposes
-                    logger.info(" Lijst van Orders afdrukken");
-                    for (JobList jl2: jobListRepository.findAll()) {
-                        logger.info(" Order #" + jl2.getId());
-                        for(int x = 0; x<jl2.getJobs().size(); x++) {
-                            logger.info("jobID: " + jl2.getJobs().get(x).getId() + ";   startPos :" + jl2.getJobs().get(x).getIdStart() + ";   endPos :" + jl2.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl2.getJobs().get(x).getIdVehicle()+ ";   VehicleType :" + jl2.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl2.getJobs().get(x).getStatus());
-                        }
+            else {
+                    if (dispatch(job) && job.getStatus().equals(JobState.TODO))
+                    {
+                        job.setStatus(JobState.BUSY);
+                        jobService.save(job);
                     }
-               */
+                    else {
+                        // An error has occurred.
+                        logger.error("An error has occured while dispatching to the backend!");
+                        /*
+                        //recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery()); TODO
+
+                        // for debug purposes
+                            logger.info(" Lijst van Orders afdrukken");
+                            for (JobList jl2: jobListRepository.findAll()) {
+                                logger.info(" Order #" + jl2.getId());
+                                for(int x = 0; x<jl2.getJobs().size(); x++) {
+                                    logger.info("jobID: " + jl2.getJobs().get(x).getId() + ";   startPos :" + jl2.getJobs().get(x).getIdStart() + ";   endPos :" + jl2.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl2.getJobs().get(x).getIdVehicle()+ ";   VehicleType :" + jl2.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl2.getJobs().get(x).getStatus());
+                                }
+                            }
+                        */
+                    }
             }
+
+
         }
     }
 
-    // TODO: Test dispatch that allows jobs in other lists to be dispatched if the first job of the first list is still busy
-//    public void dispatchToBackend() {
-//        for (JobList jl : this.jobListRepository.findAll()) {
-//            // iterate over all orders
-//            Job job = jl.getJobs().get(0);
-//
-//            // if successfully dispatched, update status of the job
-//            if (job.getStatus().equals(JobState.BUSY)) {
-//                // probably not reached rendezvous point yet: wait
-//                logger.info("The first job (" + job.getId() + ") of the jobList (" + jl.getId() + ") is still busy!");
-//
-//            }
-//            else {
-//                    if (dispatch(job) && job.getStatus().equals(JobState.TODO))
-//                    {
-//                        job.setStatus(JobState.BUSY);
-//                        jobService.save(job);
-//                    }
-//                    else {
-//                        // An error has occurred.
-//                        logger.error("An error has occured while dispatching to the backend!");
-//                        /*
-//                        //recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery()); TODO
-//
-//                        // for debug purposes
-//                            logger.info(" Lijst van Orders afdrukken");
-//                            for (JobList jl2: jobListRepository.findAll()) {
-//                                logger.info(" Order #" + jl2.getId());
-//                                for(int x = 0; x<jl2.getJobs().size(); x++) {
-//                                    logger.info("jobID: " + jl2.getJobs().get(x).getId() + ";   startPos :" + jl2.getJobs().get(x).getIdStart() + ";   endPos :" + jl2.getJobs().get(x).getIdEnd() + ";   vehicleID :" + jl2.getJobs().get(x).getIdVehicle()+ ";   VehicleType :" + jl2.getJobs().get(x).getTypeVehicle()+ ";   Status :" + jl2.getJobs().get(x).getStatus());
-//                                }
-//                            }
-//                        */
-//                    }
-//            }
-//
-//
-//        }
-//    }
 
     /**
      * Communication to the Backends of the different vehicles
