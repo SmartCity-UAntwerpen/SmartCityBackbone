@@ -25,7 +25,9 @@ public class JobDispatchController {
 
     // TODO is a test endpoint. Can be removed at the end.
     @RequestMapping(value = "/jobs/saveOrder", method = RequestMethod.POST)
-    public void saveOrder() {
+    public void saveOrder()
+    {
+        jobListService.printJobList();
         logger.info("Test: Saving jobList -> First removing all jobs");
         jobListService.deleteAll();
         jobService.deleteAll();
@@ -38,6 +40,16 @@ public class JobDispatchController {
         job = new Job(7L,10L,10);
         list.addJob(job);
         jobListService.saveJobList(list);
+
+        JobList list2 = new JobList();
+        list2.setIdDelivery("MaaS2");
+
+        job = new Job(4L,20L,11);
+        list2.addJob(job);
+
+        job = new Job(8L,11L,10);
+        list2.addJob(job);
+        jobListService.saveJobList(list2);
         jobListService.printJobList();
     }
 
@@ -75,7 +87,7 @@ public class JobDispatchController {
         jobListService.moveNextVehicleToPickUpPoint(idJob);
     }
 
-    // TODO Do we delete the job or set its status to DONE?
+    // TODO Future work -> Do we delete the job or set its status to DONE (so that we have an history of jobs)?
     @RequestMapping(value = "/jobs/complete/{idjob}", method = RequestMethod.POST)
     @ResponseBody
     public String completeJob(@PathVariable("idjob") Long idJob)
