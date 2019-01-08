@@ -67,7 +67,6 @@ public class MapController {
 
     @Value("${enable.dispatching}")
     boolean dispatchingEnabled;
-
     /**
      * Returns a map for the given type of vehicle
      * alternatively returns a map for the visualisation with variable 'visual'
@@ -190,13 +189,15 @@ public class MapController {
 
     //TODO Check if we receive a JSONobject from the robot backend
     @RequestMapping(value = "getTrafficLightStats", method = RequestMethod.GET)
-    public JSONObject getTrafficLightStats() {
-        /** Get the list of traffic lights and their status from the Robot backend end send it back to the MaaS
-         Get the backendInfo object from the backendinfo service of the robot backend
-         **/
+    public JSONObject getTrafficLightStats()
+    {
+        /*  Get the list of traffic lights and their status from the Robot backend end send it back to the MaaS
+            Get the backendInfo object from the backendinfo service of the robot backend
+        */
+
         BackendInfo backendInfo = backendInfoService.getByName("Robot");
         String stringUrl = "http://";
-        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + ""; // TODO Check with the Robot team which endpoint they have made
+        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/tlight/getAll"; // TODO Check with the Robot team which endpoint they have made
 
         return backendService.requestJsonObject(stringUrl);
     }
