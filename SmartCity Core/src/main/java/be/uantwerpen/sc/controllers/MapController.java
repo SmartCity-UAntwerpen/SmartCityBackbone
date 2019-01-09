@@ -65,8 +65,8 @@ public class MapController {
     @Autowired
     private PathService pathService;
 
-    @Value("${enable.dispatching}")
-    boolean dispatchingEnabled;
+    @Value("${backends.enabled}")
+    boolean backendsEnabled;
     /**
      * Returns a map for the given type of vehicle
      * alternatively returns a map for the visualisation with variable 'visual'
@@ -117,12 +117,17 @@ public class MapController {
     public JSONObject planPath(@RequestParam int startpid, @RequestParam int startmapid, @RequestParam int stoppid, @RequestParam int stopmapid) {
         JobList jobList = new JobList();
         JSONObject response = new JSONObject();
-        JSONObject fullResponse = new JSONObject();
         ArrayList<Path> pathRank = new ArrayList<Path>();
 
         // get list of possible paths (link ids) from A*
-        List<Integer[]> possiblePaths = new ArrayList<>();
-        possiblePaths = aStarService.determinePath(startpid, startmapid, stoppid, stopmapid);
+
+        List<Integer[]>  possiblePaths = aStarService.determinePath(startpid, startmapid, stoppid, stopmapid);
+
+        if(possiblePaths == null || possiblePaths.isEmpty()){
+            response.put("status", "No paths found");
+            return response;
+        }
+
         // check if size is 1 en linkid is -1 => ligt op dezelfde map, 1 job uitsturen naar die map
         if ((possiblePaths.size() == 1) && (possiblePaths.get(0)[0] == -1)) {
             Path onlyPath = new Path();
@@ -130,18 +135,11 @@ public class MapController {
             onlyPath.addJob(job);
             jobList = onlyPath.getJobList();
             jobListService.saveJobList(jobList);
-            if (dispatchingEnabled) {
-                logger.info("Dispatching...");
-                try {
-                    jobListService.dispatchToBackend();
-                } catch (Exception e) {
-                    logger.warn("Dispatching failed");
-                    e.printStackTrace();
-                }
-            }
-
             logger.info("message", "points lie in same map, dispatching job between [" + startpid + "-" + stoppid + "]on map " + startmapid);
-            return fullResponse;
+            dispatchToBackend();
+
+            response.put("status", "dispatching");
+            return response;
         }
 
         // Process all paths given by AStar,
@@ -175,17 +173,10 @@ public class MapController {
 
         jobListService.saveJobList(jobList);
 
-        if (dispatchingEnabled) {
-            logger.info("Dispatching...");
-            try {
-                jobListService.dispatchToBackend();
-            } catch (Exception e) {
-                logger.warn("Dispatching failed");
-                e.printStackTrace();
-            }
-        }
+        dispatchToBackend();
 
-        return fullResponse;
+        response.put("status", "dispatching" );
+        return response;
     }
 
     //TODO Check if we receive a JSONobject from the robot backend
@@ -195,11 +186,22 @@ public class MapController {
         /*  Get the list of traffic lights and their status from the Robot backend end send it back to the MaaS
             Get the backendInfo object from the backendinfo service of the robot backend
         */
-
         BackendInfo backendInfo = backendInfoService.getByName("Robot");
         String stringUrl = "http://";
         stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/tlight/getAll"; // TODO Check with the Robot team which endpoint they have made
 
         return backendService.requestJsonObject(stringUrl);
+    }
+
+    private void dispatchToBackend(){
+        if (backendsEnabled) {
+            logger.info("Dispatching...");
+            try {
+                jobListService.dispatchToBackend();
+            } catch (Exception e) {
+                logger.warn("Dispatching failed");
+                e.printStackTrace();
+            }
+        }
     }
 }

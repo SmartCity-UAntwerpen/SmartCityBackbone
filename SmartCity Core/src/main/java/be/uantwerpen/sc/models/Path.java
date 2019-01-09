@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Path {
     ArrayList<TransitLink> transitPath;
     JobList jobList;
-    int weight;
+    float weight;
 
     public Path(){
         this.transitPath = new ArrayList<TransitLink>();
@@ -13,12 +13,12 @@ public class Path {
         this.jobList = new JobList();
     }
 
-    public Path(int weight, ArrayList<TransitLink> transitPath){
+    public Path(float weight, ArrayList<TransitLink> transitPath){
         this.transitPath = transitPath;
         this.weight = weight;
         this.jobList = new JobList();
     }
-    public void addWeight(int weight){
+    public void addWeight(float weight){
         this.weight+=weight;
     }
 
@@ -30,11 +30,11 @@ public class Path {
         this.transitPath = transitPath;
     }
 
-    public int getWeight() {
+    public float getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(float weight) {
         this.weight = weight;
     }
 
@@ -42,6 +42,7 @@ public class Path {
     * Gets the combined weights of the TransitLinks in this path
     *
      */
+    //TODO weights still in INT in database
     public int getTotalTransitWeight(){
         int transitWeight = 0;
         for(TransitLink transitLink : transitPath){

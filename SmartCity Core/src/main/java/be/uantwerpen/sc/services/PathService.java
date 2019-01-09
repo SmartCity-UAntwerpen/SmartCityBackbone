@@ -25,8 +25,8 @@ public class PathService {
     BackendInfoService backendInfoService;
     @Autowired
     BackendService backendService;
-    @Value("${enable.dispatching}")
-    boolean dispatchingEnabled;
+    @Value("${backends.enabled}")
+    boolean backendsEnabled;
 
     public PathService(){
 
@@ -37,18 +37,16 @@ public class PathService {
         Path path = new Path();
         ArrayList<TransitLink> transitPath = new ArrayList<TransitLink>();
         logger.info("--- determining new path ---");
-        // check if the starting point of the path is the same as the point where the user wants to depart from
+
+        // Check if the starting point of path is the same as the point where the user wants to depart from
         int userStartId = transitPointService.getPointWithMapidAndPid(userStartPid, startMapId).getId();
         if(userStartId != pointpairs[0]){
             logger.info("Startpoint is on the same map: First Job is within the staring map");
 //            int userPid = transitPointService.getPointWithId(userStartId).getPid(); // redundant call to get userStartPid
 
-            // TODO check if point is transitpoint
             BackendInfo mapInfo = backendInfoService.getInfoByMapId(startMapId);
             int botStartPid = transitPointService.getPointWithId(pointpairs[0]).getPid();
-
-            // TODO get the internal cost by, identify by mapid
-            int weight = getWeightFromBackend(mapInfo, userStartPid, botStartPid);
+            float weight = backendService.getWeight(mapInfo, userStartPid, botStartPid);
             path.addWeight(weight);
             path.addJob(userStartPid, botStartPid, startMapId );
         }
@@ -76,13 +74,13 @@ public class PathService {
             }else{
                 logger.info("current points " + startId + "," + stopId + ", part of a inner map link" );
                 BackendInfo mapInfo = backendInfoService.getInfoByMapId(stopPoint.getMapid());
-                int weight = getWeightFromBackend(mapInfo, startPoint.getPid(), stopPoint.getPid());
+                float weight = backendService.getWeight(mapInfo, startPoint.getPid(), stopPoint.getPid());
 //                // Request weight between points from backend
 //                String url = "http://" + mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
 //                logger.info("--requesting from cost from:+" + url);
 //
 //                int weight = 1;
-//                if(dispatchingEnabled) {
+//                if(backendsEnabled) {
 //                    JSONObject response = backendService.requestJsonObject(url);
 //                    System.out.println("response: " + response.toString());
 //                    weight = Integer.parseInt(response.get("cost").toString());
@@ -111,7 +109,7 @@ public class PathService {
             int lastTransitPid = transitPointService.getPointWithId(pointpairs[lastIndex]).getPid();
 
             // TODO get the internal cost by, identify by mapid
-            int weight = getWeightFromBackend(mapInfo, lastTransitPid, stopPid);
+            float weight = backendService.getWeight(mapInfo, lastTransitPid, stopPid);
             path.addWeight(weight);
             path.addJob(lastTransitPid, stopPid, stopMapId );
         }
@@ -122,23 +120,8 @@ public class PathService {
         path.addWeight(path.getTotalTransitWeight());
         return path;
     }
-    private int getWeightFromBackend(BackendInfo mapinfo, int startPid, int stopPid){
-        // Request weight between points from backend
-        int weight;
-        if(dispatchingEnabled) {
-            String url = "http://" + mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + startPid + "/" + stopPid;
-            logger.info("--requesting from cost from:+" + url);
-            JSONObject response = backendService.requestJsonObject(url);
-            System.out.println("response: " + response.toString());
-            weight = Integer.parseInt(response.get("cost").toString());
-        }else {
-            weight = (int)(Math.random() * 10); // to test wo/ backends
-            logger.info("testing w/ random weight: " + weight);
-        }
-        logger.info("--got weight: " + weight);
-        return weight;
-    }
 
+    @Deprecated
     public Path makePathFromLinkIds(Integer[] linkids, int startpid, int startmapid){
         String linkLog = "Links: ";
         Path path = new Path();
@@ -195,13 +178,13 @@ public class PathService {
 
             // Get the connection info of the map where the points belong to
             BackendInfo mapInfo = backendInfoService.getInfoByMapId(stopPoint.getMapid());
-            int weight = getWeightFromBackend(mapInfo, stopPoint.getPid(), startPoint.getPid());
+            float weight = backendService.getWeight(mapInfo, stopPoint.getPid(), startPoint.getPid());
 //            // Request weight between points from backend
 //            String url = "http://" + mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + stopPoint.getPid() + "/" + startPoint.getPid();
 //            logger.info("--requesting from cost from:+" + url);
 //
 //            int weight = 1;
-//            if(dispatchingEnabled) {
+//            if(backendsEnabled) {
 //
 //                JSONObject response = backendService.requestJsonObject(url);
 //                System.out.println("response: " + response.toString());

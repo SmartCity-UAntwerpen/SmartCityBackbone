@@ -1,12 +1,14 @@
 package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.controllers.MapController;
+import be.uantwerpen.sc.models.BackendInfo;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -18,7 +20,8 @@ import java.net.URL;
 @Service
 public class BackendService {
     private static final Logger logger = LoggerFactory.getLogger(MapController.class);
-
+    @Value("${backends.enabled}")
+    boolean backendsEnabled;
 
     public JSONObject requestJsonObject(String url){
 
@@ -44,18 +47,16 @@ public class BackendService {
                 try {
                     JSONObject responseObject;
                     logger.info("raw response:" + response + response.getClass());
-                    if(response instanceof String) {
-                        responseObject = (JSONObject) parser.parse(response);
-                    }
-                    else {
-                        responseObject = new JSONObject();
-                        responseObject.put("cost", response);
-                    }
+                    responseObject = (JSONObject) parser.parse(response);
                     return responseObject;
                 }
                 catch(ParseException e){
                     System.out.println("could not parse folowing string: " + response);
                     System.out.println(e.getStackTrace());
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    return null;
                 }
             } else {
                 System.out.println("Request Failed, Responsecode returned: " + conn.getResponseCode());
@@ -119,5 +120,29 @@ public class BackendService {
 
         return linkArray ;
     }
+
+
+    public float getWeight(BackendInfo mapinfo, int startPid, int stopPid){
+        // Request weight between points from backend
+        float weight ;
+        if(backendsEnabled) {
+            String url = "http://" + mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + startPid + "/" + stopPid;
+            logger.info("--requesting from cost from:+" + url);
+            JSONObject response = this.requestJsonObject(url);
+            if(response != null) {
+                logger.info("response: " + response.toString());
+                weight = Float.parseFloat(response.get("cost").toString());
+            }else{
+                weight = 0;
+                logger.warn("Got incompattible weight from backend: using weight " + weight );
+            }
+        }else {
+            weight = (float)(Math.random() * 10); // to test wo/ backends
+            logger.info("testing w/ random weight " + weight);
+        }
+        logger.info("--got weight: " + weight);
+        return weight;
+    }
+
 
 }

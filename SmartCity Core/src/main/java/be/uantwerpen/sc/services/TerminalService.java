@@ -19,6 +19,9 @@ public class TerminalService {
     @Autowired
     BackendInfoService backendInfoService;
 
+    @Autowired
+    BackendService backendService;
+
     private Terminal terminal;
 
     /**
@@ -67,7 +70,6 @@ public class TerminalService {
                 if (commandString.split(" ", 2).length <= 1) {
                     terminal.printTerminalInfo("Missing arguments! 'delete {id_delivery}'");
                 } else {
-
                     try {
                         this.deleteDelivery(commandString.split(" ", 2)[1]);
                     } catch (Exception e) {
@@ -75,10 +77,33 @@ public class TerminalService {
                     }
                 }
                 break;
+            case "weight":
+                if (commandString.split(" ", 4).length != 4) {
+                    terminal.printTerminalInfo("wrong arguments! 'weight {mapid startpid stoppid}'");
+                } else {
+                    String[] splitCommands = commandString.split(" ", 4);
+                    int[] commandsArray = new int[splitCommands.length-1];
+                    for(int i = 1; i < splitCommands.length; i++ ){
+                        commandsArray[i-1] = Integer.parseInt(splitCommands[i]);
+                    }
+                    BackendInfo backendInfo = backendInfoService.getInfoByMapId(commandsArray[0]);
+                    if(backendInfo == null){
+                        terminal.printTerminalInfo("Map doesn't exist, available backends");
+                        this.printAllBackends();
+                        break;
+                    }else{
+                        float weight = backendService.getWeight(backendInfo, commandsArray[1], commandsArray[2]);
+                        terminal.printTerminal("map " + backendInfo.getMapId() + " " + backendInfo.getName() + backendInfo.getHostname()+":"+backendInfo.getPort() + ":");
+                        terminal.printTerminal("weight between:" + commandsArray[1]+ " and " + commandsArray[2] + " is "+ weight);
+                    }
+                }
+                break;
             case "exit":
                 exitSystem();
                 break;
             case "help":
+                printHelp("");
+                break;
             case "?":
                 printHelp("");
                 break;
