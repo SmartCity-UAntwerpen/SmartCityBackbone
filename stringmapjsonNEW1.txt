@@ -1,0 +1,33 @@
+{"maplist":
+  [{"mapId":1,"offsetX":150,"offsetY":0,"access":"car","pointList":
+    [{"id":0,"x":0,"y":0,"type":"ENDPOINT","neighbours":
+      [{"neighbour":1},{"neighbour":2},{"neighbour":3},{"neighbour":4}]},
+    {"id":1,"x":137,"y":87,"type":"ENDPOINT","neighbours":
+      [{"neighbour":0},{"neighbour":2},{"neighbour":3},{"neighbour":4}]},
+    {"id":2,"x":134,"y":180,"type":"ENDPOINT","neighbours":
+      [{"neighbour":0},{"neighbour":1},{"neighbour":3},{"neighbour":4}]},
+    {"id":3,"x":126,"y":300,"type":"INTERSECTION","neighbours":
+      [{"neighbour":0},{"neighbour":1},{"neighbour":2},{"neighbour":4}]},
+    {"id":4,"x":119,"y":391,"type":"INTERSECTION","neighbours":
+      [{"neighbour":0},{"neighbour":1},{"neighbour":2},{"neighbour":3}]}
+  ]},
+  {"mapId":2,"offsetX":0,"offsetY":150,"access":"drone","pointList":
+    [{"id":0,"x":25,"y":0,"type":"ENDPOINT","neighbours":
+      [{"neighbour":1},{"neighbour":2}]},
+    {"id":1,"x":125,"y":0,"type":"ENDPOINT","neighbours":
+        [{"neighbour":0},{"neighbour":2}]},
+    {"id":2,"x":75,"y":50,"type":"ENDPOINT","neighbours":
+        [{"neighbour":0},{"neighbour":1}]}
+  ]},
+  {"mapId":3,"offsetX":0,"offsetY":0,"access":"robot","pointList":
+    [{"id":1,"x":75,"y":25,"type":"ENDPOINT","neighbours":[{"neighbour":2}]},
+    {"id":2,"x":75,"y":75,"type":"INTERSECTION","neighbours":
+      [{"neighbour":1},{"neighbour":3},{"neighbour":5},{"neighbour":6}]},
+    {"id":3,"x":25,"y":75,"type":"ENDPOINT","neighbours":[{"neighbour":2}]},
+    {"id":4,"x":125,"y":25,"type":"ENDPOINT","neighbours":[{"neighbour":5}]},
+    {"id":5,"x":125,"y":75,"type":"INTERSECTION","neighbours":
+      [{"neighbour":2},{"neighbour":4},{"neighbour":6}]},
+    {"id":6,"x":100,"y":125,"type":"LIGHT","neighbours":
+      [{"neighbour":2},{"neighbour":5}]}
+  ]}
+]}

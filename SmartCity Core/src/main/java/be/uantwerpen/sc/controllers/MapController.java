@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.Produces;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Defines functions that can be called to control different kinds of maps,
@@ -67,6 +69,7 @@ public class MapController {
 
     @Value("${backends.enabled}")
     boolean backendsEnabled;
+
     /**
      * Returns a map for the given type of vehicle
      * alternatively returns a map for the visualisation with variable 'visual'
@@ -79,7 +82,7 @@ public class MapController {
     public String customMapStringJson(@PathVariable("type") String type) {
         if (type.equals("visual")) {
             try {
-                byte[] encoded = Files.readAllBytes(Paths.get("stringmapjsonNEW.txt"));
+                byte[] encoded = Files.readAllBytes(Paths.get("stringmapjsonNEW1.txt"));
                 return new String(encoded, StandardCharsets.UTF_8);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -121,9 +124,9 @@ public class MapController {
 
         // get list of possible paths (link ids) from A*
 
-        List<Integer[]>  possiblePaths = aStarService.determinePath(startpid, startmapid, stoppid, stopmapid);
+        List<Integer[]> possiblePaths = aStarService.determinePath(startpid, startmapid, stoppid, stopmapid);
 
-        if(possiblePaths == null || possiblePaths.isEmpty()){
+        if (possiblePaths == null || possiblePaths.isEmpty()) {
             response.put("status", "No paths found");
             return response;
         }
@@ -175,25 +178,31 @@ public class MapController {
 
         dispatchToBackend();
 
-        response.put("status", "dispatching" );
+        response.put("status", "dispatching");
         return response;
     }
 
-    //TODO Check if we receive a JSONobject from the robot backend
+    // TODO Check if we receive a JSONobject from the robot backend
     @RequestMapping(value = "getTrafficLightStats", method = RequestMethod.GET)
-    public JSONObject getTrafficLightStats()
-    {
-        /*  Get the list of traffic lights and their status from the Robot backend end send it back to the MaaS
-            Get the backendInfo object from the backendinfo service of the robot backend
-        */
+    @ResponseBody
+    public String getTrafficLightStats() throws IOException {
         BackendInfo backendInfo = backendInfoService.getByName("Robot");
         String stringUrl = "http://";
         stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/tlight/getAll"; // TODO Check with the Robot team which endpoint they have made
 
-        return backendService.requestJsonObject(stringUrl);
+        return readStringFromURL(stringUrl);
     }
 
-    private void dispatchToBackend(){
+    private String readStringFromURL(String requestURL) throws IOException {
+        try (Scanner scanner = new Scanner(new URL(requestURL).openStream(),
+                StandardCharsets.UTF_8.toString())) {
+            scanner.useDelimiter("\\A");
+            return scanner.hasNext() ? scanner.next() : "";
+        }
+    }
+
+
+    private void dispatchToBackend() {
         if (backendsEnabled) {
             logger.info("Dispatching...");
             try {
