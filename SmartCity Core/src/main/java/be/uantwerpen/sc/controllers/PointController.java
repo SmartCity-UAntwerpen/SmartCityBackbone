@@ -22,5 +22,4 @@ public class PointController {
 
         return points;
     }
-
 }

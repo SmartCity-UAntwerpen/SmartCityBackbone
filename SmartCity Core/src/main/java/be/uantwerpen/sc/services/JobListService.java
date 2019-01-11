@@ -49,6 +49,28 @@ public class JobListService
         return this.jobListRepository.findById(ldelivery);
     }
 
+    /**
+     * Function to find a delivery when a job is given
+     *
+     * @param idDelivery (String) Id from the delivery
+     * @return Job       (Job) first job from the order that is found matching the delivery ID
+     */
+    public Job findDelivery(String idDelivery) {
+        Job found = new Job();
+        boolean foundUpdated = false;
+        for (JobList jl : this.jobListRepository.findAll()) {
+            if (idDelivery.equals(jl.getIdDelivery())) {
+                foundUpdated = true;
+                found = jl.getJobs().get(0);
+            }
+        }
+        if (!foundUpdated) {
+            return null;
+        } else {
+            return found;
+        }
+    }
+
     public void saveJobList(final JobList joblist)
     {
         this.jobListRepository.save(joblist);
@@ -68,6 +90,9 @@ public class JobListService
         }
     }
 
+    /**
+     * This function will go through all JobLists and look at which Job should be dispatched.
+     */
     public void dispatchToBackend() {
         // Iterate over all orders
         for (JobList jl : this.jobListRepository.findAll()) {
@@ -80,7 +105,6 @@ public class JobListService
                 logger.error("Job not found: " + e);
                 return;
             }
-
 
             // Check if the first job is still busy -> if so, go to the next list to dispatch its first job
             if (job.getStatus().equals(JobState.BUSY)) {
@@ -146,6 +170,7 @@ public class JobListService
     }
 
     /**
+     * TODO Future Work -> See JobDispatchController for possible use/removal
      * Communication to the Backends of the different vehicles to dispatch a job
      *
      * @param jobId id of the job that is almost at its endpoint
@@ -198,7 +223,7 @@ public class JobListService
     }
 
     /**
-     * Function to check if order is empty or not
+     * Function to check if an order is empty or not
      *
      * @param id (long) id of the order
      * @return (boolean) true if Order is empty
@@ -227,38 +252,6 @@ public class JobListService
     }
 
     /**
-     * Recalculate the order for which an error occured during the dispatchToBackend
-     *
-     * @param idJob      (long) id from the job for which an error has occured
-     * @param idDelivery (string) id from delivery which needs to be saved when making a new order with correct input
-     */
-    public void recalculatePathAfterError(long idJob, String idDelivery) {
-         //TODO Future work -> What can be done after this error happens?
-    }
-
-    /**
-     * Function to find a delivery when a job is given
-     *
-     * @param idDelivery (String) Id from the delivery
-     * @return Job       (Job) first job from the order that is found mathcing the delivery ID
-     */
-    public Job findDelivery(String idDelivery) {
-        Job found = new Job();
-        boolean foundUpdated = false;
-        for (JobList jl : this.jobListRepository.findAll()) {
-            if (idDelivery.equals(jl.getIdDelivery())) {
-                foundUpdated = true;
-                found = jl.getJobs().get(0);
-            }
-        }
-        if (!foundUpdated) {
-            return null;
-        } else {
-            return found;
-        }
-    }
-
-    /**
      * Delete order with its name
      *
      * @param id      (String) id from the jobList to delete
@@ -266,6 +259,16 @@ public class JobListService
     public Long deleteByIdDelivery(String id)
     {
         return jobListRepository.deleteByIdDelivery(id);
+    }
+
+    /**
+     * TODO Future work -> What can be done after this error happens?
+     * Recalculate the order for which an error occured during the dispatchToBackend
+     *
+     * @param idJob      (long) id from the job for which an error has occured
+     * @param idDelivery (string) id from delivery which needs to be saved when making a new order with correct input
+     */
+    public void recalculatePathAfterError(long idJob, String idDelivery) {
     }
 
     @Bean
