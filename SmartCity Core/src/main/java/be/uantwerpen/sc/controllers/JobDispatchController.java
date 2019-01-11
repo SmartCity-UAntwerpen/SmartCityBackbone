@@ -59,7 +59,7 @@ public class JobDispatchController {
     }
 
     @RequestMapping(value = "/jobs/findOneByDelivery/{delivery}",method = RequestMethod.GET)
-    public JobList findOneByDelivery(@PathVariable("delivery") String delivery)
+    public JobList findOneByDelivery(@PathVariable("delivery") int delivery)
     {
         return jobListService.findOneByDelivery(delivery);
     }

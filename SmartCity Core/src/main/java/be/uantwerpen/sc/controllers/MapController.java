@@ -127,6 +127,7 @@ public class MapController {
             logger.info("start/stop point both in map:" + startmapid+", dispatching job between [" + startpid + "-" + stoppid + "]on map " );
             dispatchToBackend();
             response.put("status", "dispatching");
+            response.put("deliveryid", jobList.getId());
             return response;
         }
 
@@ -134,6 +135,7 @@ public class MapController {
 
         if (possiblePaths == null || possiblePaths.isEmpty()) {
             response.put("status", "No paths found");
+            response.put("deliveryid", -1);
             return response;
         }
 
@@ -169,12 +171,13 @@ public class MapController {
         // TODO Future Work: Relay the 5 best possible paths to the user, make him/her choose
         int chosenPath = 0; // here we just choose the cheapest path;
         jobList = pathRank.get(chosenPath).getJobList();
-        System.out.println("dispatching jobList w/ rank: " + chosenPath);
+        logger.info("dispatching jobList w/ rank: " + chosenPath);
 
         jobListService.saveJobList(jobList);
 
         dispatchToBackend();
         response.put("status", "dispatching");
+        response.put("deliveryid", jobList.getId());
         return response;
     }
 

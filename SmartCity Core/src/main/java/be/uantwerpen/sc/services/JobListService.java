@@ -43,9 +43,10 @@ public class JobListService
         return this.jobListRepository.findAll();
     }
 
-    public JobList findOneByDelivery(String delivery)
+    public JobList findOneByDelivery(int delivery)
     {
-        return this.jobListRepository.findByIdDelivery(delivery);
+        long ldelivery = (long)delivery;
+        return this.jobListRepository.findById(ldelivery);
     }
 
     public void saveJobList(final JobList joblist)

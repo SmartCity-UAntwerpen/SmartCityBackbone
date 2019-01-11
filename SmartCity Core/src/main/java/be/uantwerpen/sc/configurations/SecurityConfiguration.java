@@ -18,12 +18,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     protected void devConfiguration(HttpSecurity http) throws Exception {
         for (String profile : environment.getActiveProfiles()) {
+            // disable by default
+            http.csrf().disable();
             if (profile.equals("dev")) {
                 //Permit access to H2 console --Development only
                 http.authorizeRequests().antMatchers("/h2console/**")
                         .permitAll();
 
-                http.csrf().disable();
+//                http.csrf().disable();
                 http.headers().frameOptions().disable();
 
                 return;
