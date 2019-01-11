@@ -151,10 +151,11 @@ public class TerminalService {
             default:
                 terminal.printTerminal("Available commands:");
                 terminal.printTerminal("-------------------");
-                terminal.printTerminal("'add backend {name}' : add a new backend interactively");
+//                terminal.printTerminal("'add backend {name}' : add a new backend interactively");
                 terminal.printTerminal("'show {deliveries,backends}' : show all data in the database.");
                 terminal.printTerminal("'reset' : remove all deliveries from the database.");
                 terminal.printTerminal("'delete {id_delivery}' : remove the delivery with the given id from the database.");
+                terminal.printTerminal("weight {mapid startpid stoppid} : request  the weight between two points on a given map");
                 terminal.printTerminal("'exit' : shutdown the server.");
                 terminal.printTerminal("'help' / '?' : show all available commands.\n");
                 break;

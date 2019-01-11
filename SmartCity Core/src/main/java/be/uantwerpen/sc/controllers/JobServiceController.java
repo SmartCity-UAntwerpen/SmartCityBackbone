@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,9 @@ public class JobServiceController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Value("${backends.enabled}")
+    boolean backendsEnabled;
 
     /**
      * Asks JobService to search the database for all jobs and returns them
@@ -71,7 +75,7 @@ public class JobServiceController {
         JSONObject response = new JSONObject();
 
         Job job = jobService.getJob(id);
-        float progress = 0f;
+        int progress = 0;
 
         // If job is not found return 100 because this means that the job was completed and deleted from the database.
         if(job == null)
@@ -85,31 +89,20 @@ public class JobServiceController {
         switch(job.getStatus())
         {
             case DONE:
-                progress = 100f;
+                progress = 100;
                 break;
             case TODO:
                 // Do nothing -> returns 0 progress
                 break;
             case BUSY:
-                // Get the actual progress from the backend of the vehicle
-
-                // Get the backendInfo object from the info service
-                BackendInfo backendInfo = backendInfoService.getInfoByMapId(job.getIdMap());
-
-                String stringUrl = "http://";
-                stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/getprogress/" + job.getId();
-
-                ResponseEntity<Float> responseBackEnd = restTemplate.exchange(stringUrl,
-                        HttpMethod.GET,
-                        null,
-                        Float.class
-                );
-                logger.warn("Job progress from job with id " + job.getId() + " is " + responseBackEnd.getBody());
-                // TODO Check what we receive here
-                progress = Float.parseFloat(responseBackEnd.getBody().toString());
+                if(backendsEnabled){
+                   progress = getProgressFromBackend(job);
+                }else{
+                   progress = (int)Math.floor(Math.random()*101);
+                }
                 break;
             default:
-                progress = 0f;
+                progress = 0;
                 break;
         }
 
@@ -130,6 +123,24 @@ public class JobServiceController {
 //        return response;
 //
 //    }
+    private int getProgressFromBackend(Job job){
+        // Get the actual progress from the backend of the vehicle
+
+        // Get the backendInfo object from the info service
+        BackendInfo backendInfo = backendInfoService.getInfoByMapId(job.getIdMap());
+
+        String stringUrl = "http://";
+        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/getprogress/" + job.getId();
+
+        ResponseEntity<Float> responseBackEnd = restTemplate.exchange(stringUrl,
+                HttpMethod.GET,
+                null,
+                Float.class
+        );
+        logger.info("Job progress from job with id " + job.getId() + " is " + responseBackEnd.getBody());
+        // TODO Check what we receive here
+        return Integer.parseInt(responseBackEnd.getBody().toString());
+    }
 
     // TODO Future work -> Backends use this endpoint to let the backbone know when a job failed to execute
     @RequestMapping(value = "fail/{id}", method = RequestMethod.POST)

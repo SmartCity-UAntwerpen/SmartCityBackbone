@@ -4,7 +4,6 @@ be\uantwerpen\sc\repositories\TransitLinkRepository.class
 be\uantwerpen\sc\models\TransitPoint.class
 be\uantwerpen\sc\services\TransitLinkService.class
 be\uantwerpen\sc\configurations\SystemPropertyActiveProfileResolver.class
-be\uantwerpen\sc\controllers\LinkController.class
 be\uantwerpen\sc\services\BackendInfoService.class
 be\uantwerpen\sc\controllers\JobDispatchController.class
 be\uantwerpen\sc\repositories\JobRepository.class

@@ -56,12 +56,6 @@ public class MapController {
     private JobListService jobListService;
 
     @Autowired
-    private TransitLinkService transitLinkService;
-
-    @Autowired
-    private TransitPointService transitPointService;
-
-    @Autowired
     private AStarService aStarService;
 
     @Autowired
@@ -124,6 +118,18 @@ public class MapController {
 
         // get list of possible paths (link ids) from A*
 
+        if(startmapid == stopmapid){
+            Path onlyPath = new Path();
+            Job job = new Job((long) startpid, (long) stoppid, stopmapid);
+            onlyPath.addJob(job);
+            jobList = onlyPath.getJobList();
+            jobListService.saveJobList(jobList);
+            logger.info("start/stop point both in map:" + startmapid+", dispatching job between [" + startpid + "-" + stoppid + "]on map " );
+            dispatchToBackend();
+            response.put("status", "dispatching");
+            return response;
+        }
+
         List<Integer[]> possiblePaths = aStarService.determinePath(startpid, startmapid, stoppid, stopmapid);
 
         if (possiblePaths == null || possiblePaths.isEmpty()) {
@@ -133,16 +139,7 @@ public class MapController {
 
         // check if size is 1 en linkid is -1 => ligt op dezelfde map, 1 job uitsturen naar die map
         if ((possiblePaths.size() == 1) && (possiblePaths.get(0)[0] == -1)) {
-            Path onlyPath = new Path();
-            Job job = new Job((long) startpid, (long) stoppid, stopmapid);
-            onlyPath.addJob(job);
-            jobList = onlyPath.getJobList();
-            jobListService.saveJobList(jobList);
-            logger.info("message", "points lie in same map, dispatching job between [" + startpid + "-" + stoppid + "]on map " + startmapid);
-            dispatchToBackend();
-
-            response.put("status", "dispatching");
-            return response;
+            // TODO: if points lie on the same map, the astart service will not be called, depricate check in astart?
         }
 
         // Process all paths given by AStar,
@@ -177,7 +174,6 @@ public class MapController {
         jobListService.saveJobList(jobList);
 
         dispatchToBackend();
-
         response.put("status", "dispatching");
         return response;
     }
@@ -204,9 +200,9 @@ public class MapController {
 
     private void dispatchToBackend() {
         if (backendsEnabled) {
-            logger.info("Dispatching...");
             try {
                 jobListService.dispatchToBackend();
+                logger.info("Dispatching...");
             } catch (Exception e) {
                 logger.warn("Dispatching failed");
                 e.printStackTrace();

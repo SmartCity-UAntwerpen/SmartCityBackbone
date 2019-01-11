@@ -171,8 +171,13 @@ public class JobListService
         // Check if nextJob is null which can be when there is no job left to do
         if(nextJob == null)
         {
+            // no previous vehecle f.e. when got a close by when np
+            if(previousVehicle == null) {
+                logger.warn("JobListService: no previous vehicle");
+            }else{
+                logger.info("No Job left to do for this Job (id: " + previousVehicle.getId() + ").");
+            }
             // Just return when there is no rendez-vous
-            logger.info("No Job left to do for this Job (id: " + previousVehicle.getId() + ").");
             return;
         }
 

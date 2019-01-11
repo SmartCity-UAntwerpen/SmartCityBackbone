@@ -74,6 +74,8 @@ public class BackendService {
     public JSONArray requestFromBackend(String ip, String port, String endpoint) {
         return requestFromBackend(ip, port, endpoint, "");
     }
+
+    // TODO define get/post in String method parameter
     /* a generic method do do a request to a server and parse the response to a JSONArray
      *
      * @param String ip: server ip
@@ -131,7 +133,12 @@ public class BackendService {
             JSONObject response = this.requestJsonObject(url);
             if(response != null) {
                 logger.info("response: " + response.toString());
-                weight = Float.parseFloat(response.get("cost").toString());
+                try {
+                    weight = Float.parseFloat(response.get("cost").toString());
+                }catch(Exception e){
+                    logger.warn("could not parse ''cost'' from response");
+                    weight = 0;
+                }
             }else{
                 weight = 0;
                 logger.warn("Got incompattible weight from backend: using weight " + weight );
