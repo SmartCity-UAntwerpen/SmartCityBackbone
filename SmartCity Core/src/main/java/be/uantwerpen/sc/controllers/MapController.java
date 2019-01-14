@@ -184,13 +184,12 @@ public class MapController {
         return response;
     }
 
-    // TODO Check if we receive a JSONobject from the robot backend
     @RequestMapping(value = "getTrafficLightStats", method = RequestMethod.GET)
     @ResponseBody
     public String getTrafficLightStats() throws IOException {
         BackendInfo backendInfo = backendInfoService.getByName("Robot");
         String stringUrl = "http://";
-        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/tlight/getAll"; // TODO Check with the Robot team which endpoint they have made
+        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/tlight/getAll";
 
         return readStringFromURL(stringUrl);
     }
@@ -202,7 +201,6 @@ public class MapController {
             return scanner.hasNext() ? scanner.next() : "";
         }
     }
-
 
     private void dispatchToBackend() {
         if (backendsEnabled) {

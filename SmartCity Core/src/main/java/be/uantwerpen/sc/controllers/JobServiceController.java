@@ -11,10 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+
 
 import java.util.List;
 
@@ -22,7 +20,7 @@ import java.util.List;
 @RequestMapping("/job/service/")
 public class JobServiceController {
 
-    private static final Logger logger = LoggerFactory.getLogger(JobDispatchController.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobServiceController.class);
 
     @Autowired
     private JobService jobService;
@@ -32,9 +30,6 @@ public class JobServiceController {
 
     @Autowired
     private BackendService backendService;
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Value("${backends.enabled}")
     boolean backendsEnabled;
@@ -80,12 +75,9 @@ public class JobServiceController {
 
         int progress = 0;
 
-        // if backends are disabled return a random progress to test visualiation
+        // If backends are disabled return a random progress to test visualiation
         if(!backendsEnabled){
             progress = (int)Math.floor(Math.random()*101);
-//            response.put("JobId", id);
-//            response.put("Progress", progress);
-//            response.put("JobState", JobState.BUSY);
             response = buildProgressResponse(id, progress, JobState.BUSY.toString());
             return  response;
         }
@@ -117,26 +109,11 @@ public class JobServiceController {
                 progress = 0;
                 break;
         }
-
-//        response.put("id", id);
-//        response.put("progress", progress);
-//        response.put("JobState", job.getStatus());
         response = buildProgressResponse(id, progress, job.getStatus().toString());
 
         return response;
     }
 
-//    @RequestMapping(value = "testEndPoint/{id}", method = RequestMethod.GET)
-//    public JSONObject testEndPoint(@PathVariable("id") Long id) {
-//        JSONObject response = new JSONObject();
-//
-//        int progress = 50;
-//        response.put("JobId", id);
-//        response.put("Progress", progress);
-//        response.put("JobState", JobState.DONE);
-//        return response;
-//
-//    }
     private int getProgressFromBackend(Job job){
         // Get the actual progress from the backend of the vehicle
         int progress = 0;
@@ -146,22 +123,17 @@ public class JobServiceController {
         String stringUrl = "http://";
         stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/getprogress/" + job.getId();
 
-//        ResponseEntity<Float> responseBackEnd = restTemplate.exchange(stringUrl,
-//                HttpMethod.GET,
-//                null,
-//                Float.class
-//        );
         JSONObject response = backendService.requestJsonObject(stringUrl);
         try {
             if (response != null & job.getId() != null) {
                 logger.info("Job progress from job with id " + job.getId() + " is " + response.get("progress").toString());
                 progress = Integer.parseInt(response.get("progress").toString());
             } else {
-                logger.warn("Couldn't retrieve progress");
+                logger.warn("Couldn't retrieve progress!");
                 progress = 0;
             }
         }catch(Exception e){
-            logger.warn("Exception: Couldn't retrieve progress");
+            logger.warn("Exception: Couldn't retrieve progress!" + e);
             progress = 0;
         }
         return progress;
@@ -174,7 +146,8 @@ public class JobServiceController {
         // Remove the job or resend it to the correct backend
     }
 
-    private JSONObject buildProgressResponse(long id, int progress, String status){
+    private JSONObject buildProgressResponse(long id, int progress, String status)
+    {
         JSONObject response = new JSONObject();
 
         response.put("id", id);
@@ -182,6 +155,5 @@ public class JobServiceController {
         response.put("status", status);
 
         return response;
-
     }
 }

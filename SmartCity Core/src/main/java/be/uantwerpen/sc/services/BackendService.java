@@ -1,6 +1,5 @@
 package be.uantwerpen.sc.services;
 
-import be.uantwerpen.sc.controllers.MapController;
 import be.uantwerpen.sc.models.BackendInfo;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,7 +18,7 @@ import java.net.URL;
 
 @Service
 public class BackendService {
-    private static final Logger logger = LoggerFactory.getLogger(MapController.class);
+    private static final Logger logger = LoggerFactory.getLogger(BackendService.class);
     @Value("${backends.enabled}")
     boolean backendsEnabled;
 
@@ -28,7 +27,7 @@ public class BackendService {
         String responseLine;
         String response = "";
 
-        // used to parse strings to json
+        //Used to parse strings to json
         JSONParser parser = new JSONParser();
         JSONObject jsonResponse = new JSONObject();
         try {
@@ -43,16 +42,16 @@ public class BackendService {
                 while ((responseLine = br.readLine()) != null) {
                     response += responseLine;
                 }
-                System.out.println("got: " + response + "\nfrom:" +  url);
+                logger.debug("Got: " + response + "\nFrom:" +  url);
                 try {
                     JSONObject responseObject;
-                    logger.info("raw response:" + response + response.getClass());
+                    logger.debug("Raw response:" + response + response.getClass());
                     responseObject = (JSONObject) parser.parse(response);
                     return responseObject;
                 }
                 catch(ParseException e){
-                    System.out.println("could not parse folowing string: " + response);
-                    System.out.println(e.getStackTrace());
+                    logger.warn("could not parse folowing string: " + response);
+                    logger.warn(e.getStackTrace().toString());
                 }
                 catch (Exception e){
                     e.printStackTrace();
@@ -103,17 +102,17 @@ public class BackendService {
                 while ((responseLine = br.readLine()) != null) {
                     response += responseLine;
                 }
-                System.out.println("got: " + response + "\nfrom:" + ip + ":" + port + endpoint);
+                logger.debug("Got: " + response + "\nFrom:" + ip + ":" + port + endpoint);
                 try {
                     JSONArray jsonArray = (JSONArray) parser.parse(response);
                     return jsonArray;
                 }
                 catch(ParseException e){
-                    System.out.println("could not parse folowwing string: " + response);
-                    System.out.println(e.getStackTrace());
+                    logger.warn("Could not parse folowing string: " + response);
+                    logger.warn(e.getStackTrace().toString());
                 }
             } else {
-                System.out.println("Request Failed, Responsecode returned: " + conn.getResponseCode());
+                logger.error("Request Failed! Responsecode returned: " + conn.getResponseCode());
             }
 
         }catch(IOException e){
@@ -129,25 +128,25 @@ public class BackendService {
         float weight ;
         if(backendsEnabled) {
             String url = "http://" + mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + startPid + "/" + stopPid;
-            logger.info("--requesting from cost from:+" + url);
+            logger.info("--Requesting cost from: " + url);
             JSONObject response = this.requestJsonObject(url);
             if(response != null) {
-                logger.info("response: " + response.toString());
+                logger.debug("Response: " + response.toString());
                 try {
                     weight = Float.parseFloat(response.get("cost").toString());
                 }catch(Exception e){
-                    logger.warn("could not parse ''cost'' from response");
+                    logger.warn("Could not parse ''cost'' from response!");
                     weight = 0;
                 }
             }else{
                 weight = 0;
-                logger.warn("Got incompattible weight from backend: using weight " + weight );
+                logger.warn("Got incompatible weight from backend: Using weight " + weight );
             }
         }else {
             weight = (float)(Math.random() * 10); // to test wo/ backends
-            logger.info("testing w/ random weight " + weight);
+            logger.debug("Testing w/ random weight: " + weight);
         }
-        logger.info("--got weight: " + weight);
+        logger.info("--Got weight: " + weight);
         return weight;
     }
 
