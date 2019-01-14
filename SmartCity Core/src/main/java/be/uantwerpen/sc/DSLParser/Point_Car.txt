@@ -1,7 +1,0 @@
-#text file is separated on \t
-#Comments are denoted by '#'
-#pid	x	y	z	map
-46	-6.1	-28.78	0.73	0.69	v
-47	-6.47	-21.69	0.66	0.75	v
-48	-5.91	-1.03	0.52	0.85	v
-49	6.09	0.21	-0.04	1.00	v

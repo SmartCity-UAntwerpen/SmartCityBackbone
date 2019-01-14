@@ -1,4 +1,3 @@
-be\uantwerpen\sc\DSLParser\Parser.class
 be\uantwerpen\sc\models\BackendInfo.class
 be\uantwerpen\sc\repositories\TransitLinkRepository.class
 be\uantwerpen\sc\models\TransitPoint.class
@@ -7,14 +6,12 @@ be\uantwerpen\sc\configurations\SystemPropertyActiveProfileResolver.class
 be\uantwerpen\sc\services\BackendInfoService.class
 be\uantwerpen\sc\controllers\JobDispatchController.class
 be\uantwerpen\sc\repositories\JobRepository.class
-be\uantwerpen\sc\DSLParser\Link_Robot.class
 be\uantwerpen\sc\configurations\StandAloneConfiguration.class
 be\uantwerpen\sc\repositories\JobListRepository.class
 be\uantwerpen\sc\services\AStarService.class
 be\uantwerpen\sc\controllers\JobServiceController.class
 be\uantwerpen\sc\services\GraphBuilder.class
 be\uantwerpen\sc\configurations\SecurityConfiguration.class
-be\uantwerpen\sc\DSLParser\Point_Car.class
 be\uantwerpen\sc\configurations\SystemLoader$StartupProcess.class
 be\uantwerpen\sc\services\TransitPointService.class
 be\uantwerpen\sc\controllers\MapController.class
@@ -23,7 +20,6 @@ be\uantwerpen\sc\services\TerminalService.class
 be\uantwerpen\sc\models\map\CustomMap.class
 be\uantwerpen\sc\configurations\SystemLoader$1.class
 be\uantwerpen\sc\services\JobService.class
-be\uantwerpen\sc\DSLParser\Point_Robot.class
 be\uantwerpen\sc\services\JobListService.class
 be\uantwerpen\sc\repositories\LinkRepository.class
 be\uantwerpen\sc\services\LinkControlService.class
@@ -32,16 +28,13 @@ be\uantwerpen\sc\SmartCityCoreApplication.class
 be\uantwerpen\sc\repositories\TransitPointRepository.class
 be\uantwerpen\sc\models\TransitLink.class
 be\uantwerpen\sc\controllers\JobServiceController$1.class
-be\uantwerpen\sc\DSLParser\Point_Drone.class
 be\uantwerpen\sc\repositories\PointRepository.class
 be\uantwerpen\sc\services\BackendService.class
 be\uantwerpen\sc\services\MapControlService.class
 be\uantwerpen\sc\repositories\BackendInfoRepository.class
 be\uantwerpen\sc\controllers\PointController.class
-be\uantwerpen\sc\DSLParser\Point.class
 be\uantwerpen\sc\configurations\DevelopmentConfiguration.class
 be\uantwerpen\sc\models\Path.class
 be\uantwerpen\sc\services\TerminalService$1.class
-be\uantwerpen\sc\DSLParser\Link.class
 be\uantwerpen\sc\services\PathService.class
 be\uantwerpen\sc\configurations\SystemLoader.class

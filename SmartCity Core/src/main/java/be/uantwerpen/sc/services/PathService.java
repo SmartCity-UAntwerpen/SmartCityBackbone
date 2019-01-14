@@ -51,7 +51,9 @@ public class PathService {
             path.addJob(userStartPid, botStartPid, startMapId );
         }
 
+
         String linkLog = "TransitLink ids: ";
+        // traverse points two by two and determine the weights between them
         for(int i = 0; i < pointpairs.length; i+=2){
             int startId = pointpairs[i];
             int stopId = pointpairs[i+1];
@@ -121,6 +123,8 @@ public class PathService {
         return path;
     }
 
+    // Eerst gaf de A* service de paden door in de vorm van een array van linkids. Hier ontstand het probleem dat we onmogelijk de richting konden bepalen
+    // daarom is er overgegaan op point ids op volgorde .
     @Deprecated
     public Path makePathFromLinkIds(Integer[] linkids, int startpid, int startmapid){
         String linkLog = "Links: ";

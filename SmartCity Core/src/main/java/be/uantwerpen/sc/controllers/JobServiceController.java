@@ -98,7 +98,7 @@ public class JobServiceController {
 //            response.put("JobId", id);
 //            response.put("Progress", progress);
 //            response.put("JobState", JobState.DONE);
-            response = buildProgressResponse(id, progress, JobState.DONE.toString());
+            response = buildProgressResponse(id, progress, JobState.TODO.toString());
             return response;
         }
 

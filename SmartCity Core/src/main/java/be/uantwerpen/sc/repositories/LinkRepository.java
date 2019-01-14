@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Deprecated
 @Repository
 public interface LinkRepository extends CrudRepository<Link, Long> {
     List<Link> findAll();

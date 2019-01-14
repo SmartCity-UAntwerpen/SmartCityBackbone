@@ -119,20 +119,25 @@ public class MapController {
         // get list of possible paths (link ids) from A*
 
         if(startmapid == stopmapid){
+            // build job
             Path onlyPath = new Path();
             Job job = new Job((long) startpid, (long) stoppid, stopmapid);
             onlyPath.addJob(job);
+            // save and execute job
             jobList = onlyPath.getJobList();
             jobListService.saveJobList(jobList);
             logger.info("start/stop point both in map:" + startmapid+", dispatching job between [" + startpid + "-" + stoppid + "]on map " );
             dispatchToBackend();
             response.put("status", "dispatching");
+            // send back the delivery id to the MaaS
             response.put("deliveryid", jobList.getId());
             return response;
         }
 
+        // Determine (5 for now) best TransitMap routes, returns a list of integer pairs
         List<Integer[]> possiblePaths = aStarService.determinePath(startpid, startmapid, stoppid, stopmapid);
 
+        // no paths available, send back deliveryid -1 to let the MaaS know.
         if (possiblePaths == null || possiblePaths.isEmpty()) {
             response.put("status", "No paths found");
             response.put("deliveryid", -1);
@@ -141,14 +146,14 @@ public class MapController {
 
         // check if size is 1 en linkid is -1 => ligt op dezelfde map, 1 job uitsturen naar die map
         if ((possiblePaths.size() == 1) && (possiblePaths.get(0)[0] == -1)) {
-            // TODO: if points lie on the same map, the astart service will not be called, depricate check in astart?
+            // TODO catch if something went wrong in the aStar pathplanning
         }
 
         // Process all paths given by AStar,
         for (Integer[] pointPairs : possiblePaths) {
             // create a path (full transitlinks, jobs, requested weights) from the array of linkIds
-//            Path path = pathService.makePathFromLinkIds(links, startpid, startmapid);
             Path path = pathService.makePathFromPointPairs(pointPairs, startpid, startmapid, stoppid, stopmapid);
+
             // rank the path based on it's weight, if paths have the same weight, increment the key
             // set the default rank as the last index of the ranking
             int rank = pathRank.size();
@@ -167,14 +172,12 @@ public class MapController {
             System.out.println(pathRank.get(i).toString());
         }
 
-        // convert the chosen path to a jobs and save them as a job list.
+        // Convert the chosen path to a jobs and save them as a job list.
         // TODO Future Work: Relay the 5 best possible paths to the user, make him/her choose
         int chosenPath = 0; // here we just choose the cheapest path;
         jobList = pathRank.get(chosenPath).getJobList();
         logger.info("dispatching jobList w/ rank: " + chosenPath);
-
         jobListService.saveJobList(jobList);
-
         dispatchToBackend();
         response.put("status", "dispatching");
         response.put("deliveryid", jobList.getId());
@@ -205,7 +208,6 @@ public class MapController {
         if (backendsEnabled) {
             try {
                 jobListService.dispatchToBackend();
-                logger.info("Dispatching...");
             } catch (Exception e) {
                 logger.warn("Dispatching failed");
                 e.printStackTrace();

@@ -23,27 +23,27 @@ public class GraphBuilder {
 
     private static final Logger logger = LogManager.getLogger(GraphBuilder.class);
 
-    private TransitPointRepository pointRepository;
-    private TransitLinkRepository linkRepository;
+    private TransitPointRepository transitPointRepository;
+    private TransitLinkRepository transitLinkRepository;
 
     @Autowired
-    public GraphBuilder(TransitPointRepository pointRepository, TransitLinkRepository linkRepository) {
-        this.pointRepository = pointRepository;
-        this.linkRepository = linkRepository;
+    public GraphBuilder(TransitPointRepository transitPointRepository, TransitLinkRepository transitLinkRepository) {
+        this.transitPointRepository = transitPointRepository;
+        this.transitLinkRepository = transitLinkRepository;
     }
 
     /**
      * Returns a list of all points in the top map
      */
     public List<TransitPoint> getPointList() {
-        return getLinkList().stream().flatMap(link -> Stream.of(link.getStartId(), link.getStopId())).distinct().map(integer -> pointRepository.findById(integer)).collect(Collectors.toList());
+        return getLinkList().stream().flatMap(link -> Stream.of(link.getStartId(), link.getStopId())).distinct().map(integer -> transitPointRepository.findById(integer)).collect(Collectors.toList());
     }
 
     /**
      * Returns a list with all links of the top map
      */
     public List<TransitLink> getLinkList() {
-        return linkRepository.findAll();
+        return transitLinkRepository.findAll();
     }
 
 }
