@@ -55,17 +55,17 @@ public class DispatchingMultipleOrdersTest {
         mockServer.expect(requestTo("http://localhost:7777/job/execute/4/20/3")).andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess("true", MediaType.TEXT_PLAIN));
 
-        // check transit behaviour, first list
-        mockServer.expect(requestTo("http://localhost:8888/job/gotopoint/7")).andExpect(method(HttpMethod.POST))
-                .andRespond(withSuccess("true", MediaType.TEXT_PLAIN));
+        // Check transit behaviour, first list. Uncomment if this method is used in the real environment
+        //mockServer.expect(requestTo("http://localhost:8888/job/gotopoint/7")).andExpect(method(HttpMethod.POST))
+                //.andRespond(withSuccess("true", MediaType.TEXT_PLAIN));
 
         // Dispatch second job, first list
         mockServer.expect(requestTo("http://localhost:8888/job/execute/7/10/2")).andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess("true", MediaType.TEXT_PLAIN));
 
-        // check transit behaviour, second list
-        mockServer.expect(requestTo("http://localhost:8888/job/gotopoint/8")).andExpect(method(HttpMethod.POST))
-                .andRespond(withSuccess("true", MediaType.TEXT_PLAIN));
+        // Check transit behaviour, second list. Uncomment if this method is used in the real environment
+        //mockServer.expect(requestTo("http://localhost:8888/job/gotopoint/8")).andExpect(method(HttpMethod.POST))
+                //.andRespond(withSuccess("true", MediaType.TEXT_PLAIN));
 
         // Dispatch second job, second list
         mockServer.expect(requestTo("http://localhost:8888/job/execute/8/11/4")).andExpect(method(HttpMethod.POST))
@@ -92,19 +92,19 @@ public class DispatchingMultipleOrdersTest {
         jobListService.dispatchToBackend();
 
         // Job 1, list 1
-        sendCloseBy(1L);
+        //sendCloseBy(1L);
         sendDone(1L);
 
         // Job 1, list 2
-        sendCloseBy(3L);
+        //sendCloseBy(3L);
         sendDone(3L);
 
         // Job 2, list 1
-        sendCloseBy(2L);
+        //sendCloseBy(2L);
         sendDone(2L);
 
         // Job 2, list 2
-        sendCloseBy(4L);
+        //sendCloseBy(4L);
         sendDone(4L);
 
         int newsize = jobListService.findAll().size();

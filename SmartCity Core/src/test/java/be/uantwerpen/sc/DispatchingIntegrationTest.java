@@ -45,9 +45,9 @@ public class DispatchingIntegrationTest {
         //:8083/job/execute/{pidstart}/{pidstop}/{jobid}
         mockServer.expect(requestTo("http://localhost:7777/job/execute/1/5/1")).andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess("true", MediaType.TEXT_PLAIN));
-        // check transit behaviour
-        mockServer.expect(requestTo("http://localhost:8888/job/gotopoint/7")).andExpect(method(HttpMethod.POST))
-                .andRespond(withSuccess("true", MediaType.TEXT_PLAIN));
+        // Check transit behaviour. Uncomment if this method is used in the real environment
+        //mockServer.expect(requestTo("http://localhost:8888/job/gotopoint/7")).andExpect(method(HttpMethod.POST))
+                //.andRespond(withSuccess("true", MediaType.TEXT_PLAIN));
 
         // Dispatch second job
         mockServer.expect(requestTo("http://localhost:8888/job/execute/7/10/2")).andExpect(method(HttpMethod.POST))
@@ -59,11 +59,11 @@ public class DispatchingIntegrationTest {
         //Test data is loaded by databaseLoaderDevelopment
         jobListService.dispatchToBackend();
 
-        sendCloseBy(1L);
+        //sendCloseBy(1L);
         sendDone(1L);
 
         // job 2
-        sendCloseBy(2L);
+        //sendCloseBy(2L);
         sendDone(2L);
 
         int newsize = jobListService.findAll().size();
