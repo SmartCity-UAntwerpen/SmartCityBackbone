@@ -4,7 +4,6 @@ import be.uantwerpen.sc.models.BackendInfo;
 import be.uantwerpen.sc.models.Job;
 import be.uantwerpen.sc.models.JobList;
 import be.uantwerpen.sc.models.Path;
-import be.uantwerpen.sc.models.map.CustomMap;
 import be.uantwerpen.sc.repositories.BackendInfoRepository;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
 import be.uantwerpen.sc.services.*;
@@ -36,18 +35,18 @@ import java.util.Scanner;
 public class MapController {
 
     private static final Logger logger = LoggerFactory.getLogger(MapController.class);
-    
-    @Autowired
-    private BackendInfoRepository backendInfoRepository;
+
+//    @Autowired
+//    private BackendInfoRepository backendInfoRepository;
 
     @Autowired
     private BackendInfoService backendInfoService;
 
-    @Autowired
-    private BackendService backendService;
-
-    @Autowired
-    private TransitPointRepository pointRepository;
+//    @Autowired
+//    private BackendService backendService;
+//
+//    @Autowired
+//    private TransitPointRepository pointRepository;
 
     @Autowired
     private JobListService jobListService;
