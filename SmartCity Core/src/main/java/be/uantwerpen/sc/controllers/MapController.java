@@ -36,10 +36,7 @@ import java.util.Scanner;
 public class MapController {
 
     private static final Logger logger = LoggerFactory.getLogger(MapController.class);
-
-    @Autowired
-    private MapControlService mapControlService;
-
+    
     @Autowired
     private BackendInfoRepository backendInfoRepository;
 
@@ -87,25 +84,7 @@ public class MapController {
 //        return mapControlService.buildCustomMapJson(type).toString(type);
     }
 
-    /**
-     * Creates a JSON String of links for the MaaS backbone
-     *
-     * @return JSON String of links for the MaaS backbone
-     */
-    @Produces("application/json")
-    @RequestMapping(value = "topmapjson/links", method = RequestMethod.GET)
-    public String topLinksStringJson() {
-        CustomMap map = mapControlService.buildTopMapJson();
-        return map.getTopMapLinksString();
-    }
 
-    //creates a string of points for the MaaS backbone
-    @Produces("application/json")
-    @RequestMapping(value = "topmapjson/points", method = RequestMethod.GET)
-    public String topPointsStringJson() {
-        CustomMap map = mapControlService.buildTopMapJson();
-        return map.getTopMapPointsString();
-    }
 
     /**
      * Endpoint for a pathplanning from {startpoint:{pid, mapid}} to {stoppoint:{pid, mapid}}
