@@ -58,10 +58,10 @@ public class JobListService
     public Job findDelivery(String idDelivery) {
         Job found = new Job();
         boolean foundUpdated = false;
-        for (JobList jl : this.jobListRepository.findAll()) {
-            if (idDelivery.equals(jl.getIdDelivery())) {
+        for (JobList jobList : this.jobListRepository.findAll()) {
+            if (idDelivery.equals(jobList.getIdDelivery())) {
                 foundUpdated = true;
-                found = jl.getJobs().get(0);
+                found = jobList.getJobs().get(0);
             }
         }
         if (!foundUpdated) {
@@ -82,10 +82,10 @@ public class JobListService
      */
     public void printJobList() {
         logger.info("Print job list.");
-        for (JobList jl : this.jobListRepository.findAll()) {
-            logger.info(" Order #" + jl.getId());
-            for (int x = 0; x < jl.getJobs().size(); x++) {
-                logger.info("jobID: " + jl.getJobs().get(x).getId() + ";   startPos :" + jl.getJobs().get(x).getIdStart() + ";   endPos :" + jl.getJobs().get(x).getIdEnd() + ";   Status :" + jl.getJobs().get(x).getStatus());
+        for (JobList jobList : this.jobListRepository.findAll()) {
+            logger.info(" Order #" + jobList.getId());
+            for (int x = 0; x < jobList.getJobs().size(); x++) {
+                logger.info("jobID: " + jobList.getJobs().get(x).getId() + ";   startPos :" + jobList.getJobs().get(x).getIdStart() + ";   endPos :" + jobList.getJobs().get(x).getIdEnd() + ";   Status :" + jobList.getJobs().get(x).getStatus());
             }
         }
     }
@@ -95,10 +95,10 @@ public class JobListService
      */
     public void dispatchToBackend() {
         // Iterate over all orders
-        for (JobList jl : this.jobListRepository.findAll()) {
+        for (JobList jobList : this.jobListRepository.findAll()) {
             Job job;
             try{
-                job = jl.getJobs().get(0);
+                job = jobList.getJobs().get(0);
             }
             catch(Exception e)
             {
@@ -109,7 +109,7 @@ public class JobListService
             // Check if the first job is still busy -> if so, go to the next list to dispatch its first job
             if (job.getStatus().equals(JobState.BUSY)) {
                 // Probably has not reached the rendezvous point yet: wait
-                logger.info("The first job (" + job.getId() + ") of the jobList (" + jl.getId() + ") is still busy!");
+                logger.info("The first job (" + job.getId() + ") of the jobList (" + jobList.getId() + ") is still busy!");
             }
             else {
                     if (dispatch(job) && job.getStatus().equals(JobState.TODO))
@@ -122,7 +122,7 @@ public class JobListService
                         // An error has occurred.
                         logger.error("An error has occured while dispatching job with id: " + job.getId() + " to the backend!");
 
-                        //recalculatePathAfterError(jl.getJobs().get(0).getId(), jl.getIdDelivery());
+                        //recalculatePathAfterError(jobList.getJobs().get(0).getId(), jobList.getIdDelivery());
 
                         // For debug purposes
                         logger.debug("All joblists after dispatch error.");
@@ -146,6 +146,7 @@ public class JobListService
 
         String stringUrl = "http://";
         stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/execute/";
+        //stringUrl += "smartcity.ddns.net:8083/job/execute/";
 
         boolean status;
         stringUrl += String.valueOf(job.getIdStart()) + "/" + String.valueOf(job.getIdEnd()) + "/" + String.valueOf(job.getId());
@@ -180,14 +181,14 @@ public class JobListService
         Job previousVehicle = jobService.getJob(jobId);
         Job nextJob = null;
 
-        for (JobList jl : this.jobListRepository.findAll())
+        for (JobList jobList : this.jobListRepository.findAll())
         {
             // Check if there are other jobs to do
-            if (jl.getJobs().size() > 1)
+            if (jobList.getJobs().size() > 1)
             {
-                if (previousVehicle.getId().equals(jl.getJobs().get(0).getId()))
+                if (previousVehicle.getId().equals(jobList.getJobs().get(0).getId()))
                 {
-                    nextJob = jl.getJobs().get(1);
+                    nextJob = jobList.getJobs().get(1);
                     break;
                 }
             }

@@ -34,7 +34,7 @@ public class DatabaseLoaderDevelopment {
         JobList list = new JobList();
         list.setIdDelivery("MaaSId1");
 
-        Job job = new Job(1L,5L,11);
+        Job job = new Job(1L,5L,5);
         list.addJob(job);
 
         job = new Job(7L,10L,10);
@@ -43,10 +43,12 @@ public class DatabaseLoaderDevelopment {
     }
 
     private void initBackends() {
-        BackendInfo backend = new BackendInfo("localhost",7777,11,"BotTest");
+        //BackendInfo backend = new BackendInfo("localhost",7777,11,"BotTest");
+        BackendInfo backend = new BackendInfo("smartcity.ddns.net",7777,5,"BotTest");
         backendInfoRepository.save(backend);
 
-        backend = new BackendInfo("localhost",8888,10,"BotTest");
+        //backend = new BackendInfo("localhost",8888,10,"BotTest");
+        backend = new BackendInfo("smartcity.ddns.net",8888,10,"BotTest");
         backendInfoRepository.save(backend);
     }
 
