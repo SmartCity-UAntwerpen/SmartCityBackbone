@@ -32,6 +32,7 @@ public class TerminalService {
             @Override
             public void executeCommand(String commandString) {
                 parseCommand(commandString);
+                parseCommand(commandString);
             }
         };
     }
