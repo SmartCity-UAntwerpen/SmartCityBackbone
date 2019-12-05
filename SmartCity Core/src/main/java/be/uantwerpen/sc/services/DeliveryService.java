@@ -33,20 +33,20 @@ public class DeliveryService {
         return this.deliveryRepository.save(delivery);
     }
 
-    public Delivery getJob (Long id)
+    public Delivery getDelivery(Long id)
     {
-        return this.deliveryRepository.findOne(id);
+        return this.deliveryRepository.findById(id);
     }
 
     public void delete(Long id)
     {
-        logger.debug("Deleting Job with id: " + id);
+        logger.debug("Deleting Delivert with id: " + id);
         this.deliveryRepository.delete(id);
     }
 
     public void deleteAll()
     {
-        logger.info("Deleting all jobs!");
+        logger.info("Deleting all Deliveries!");
         this.deliveryRepository.deleteAll();
     }
 }
