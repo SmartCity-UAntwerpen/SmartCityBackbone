@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "point")
+@Table(name = "transitpoint")
 public class TransitPoint {
     @Id
     private int id;
