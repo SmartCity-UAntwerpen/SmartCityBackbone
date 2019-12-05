@@ -2,6 +2,7 @@ package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.Delivery;
 import be.uantwerpen.sc.services.DeliveryService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class DeliveryController {
     @RequestMapping(value = "get/{id}", method = RequestMethod.GET)
     public Delivery getDelivery(@PathVariable("id") Long id)
     {
-        return deliveryService.getDelivery(id);
+        return deliveryService.getJob(id);
     }
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.POST)
