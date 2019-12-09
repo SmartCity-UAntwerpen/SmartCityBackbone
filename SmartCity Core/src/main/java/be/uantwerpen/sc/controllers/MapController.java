@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
  * Defines functions that can be called to control different kinds of maps,
  * delegates mostly to MapControlService.
  *
- * @see MapControlService
  */
 @RestController
 @RequestMapping(value = "/map/")
@@ -109,8 +108,6 @@ public class MapController {
                 // Do stuff with the points:
                 // 1) Generate pointslist
                 // 2) for each point, generate neighbours
-                System.out.println("now parsing again");
-                //List<MapPoint> points = new ArrayList<>(mapService.getPointsByMapId(map.getId()));
                 List<MapPoint> points = mapService.getPointsByMapId(map.getId());
                 JsonArrayBuilder jsonPoints = Json.createArrayBuilder();
                 for (MapPoint point : points) {
@@ -147,7 +144,6 @@ public class MapController {
 
             // Return the root object
             return jsonRoot.build().toString();
-
         }
         //further handling in customMap when type is a car, bot, drone, ...
         return "U014";

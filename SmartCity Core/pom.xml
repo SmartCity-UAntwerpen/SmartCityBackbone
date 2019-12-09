@@ -5,7 +5,7 @@
 
     <groupId>be.uantwerpen.sc</groupId>
     <artifactId>SCCore</artifactId>
-    <version>INT-0.6</version>
+    <version>INT-0.8</version>
     <packaging>jar</packaging>
 
     <name>SmartCity Core</name>
@@ -57,7 +57,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>1.5.3.RELEASE</version>
+<!--            <version>1.5.3.RELEASE</version>-->
         </dependency>
 
         <!-- In-memory database -->
@@ -98,6 +98,16 @@
             <version>4.3.0.Final</version>
         </dependency>
         <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>4.3.11.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.3.11.Final</version>
+        </dependency>
+        <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
@@ -115,16 +125,29 @@
             <artifactId>gs-algo</artifactId>
             <version>1.3</version>
         </dependency>
-
-        <dependency>
-            <groupId>javax.json</groupId>
-            <artifactId>javax.json-api</artifactId>
-            <version>1.1.4</version>
-        </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
-            <version>1.1</version>
+            <!-- Important: use this specific version, otherwise you get a conflict in the JAR           -->
+            <version>1.0.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-entitymanager</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>javax.json</groupId>
+            <artifactId>javax.json-api</artifactId>
+            <!-- Important: use this specific version, otherwise you get a conflict in the JAR           -->
+            <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-entitymanager</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

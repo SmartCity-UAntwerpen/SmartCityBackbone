@@ -10,12 +10,12 @@ public class MapPoint {
     int id;
     int pointId;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = Map.class)
     @JoinColumn(name = "mapId")
     Map map;
     int x;
     int y;
-    @ManyToOne
+    @ManyToOne(targetEntity = MapPointType.class)
     @JoinColumn(name = "type")
     MapPointType mapPointType;
 
