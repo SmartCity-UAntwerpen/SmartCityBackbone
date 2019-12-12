@@ -1,9 +1,9 @@
 package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.BackendInfo;
-import be.uantwerpen.sc.models.Job;
-import be.uantwerpen.sc.models.JobList;
-import be.uantwerpen.sc.models.JobState;
+import be.uantwerpen.sc.models.jobs.Job;
+import be.uantwerpen.sc.models.jobs.JobState;
+import be.uantwerpen.sc.models.jobs.JobList;
 import be.uantwerpen.sc.repositories.JobListRepository;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;

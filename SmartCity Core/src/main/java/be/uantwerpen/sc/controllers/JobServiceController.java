@@ -1,8 +1,8 @@
 package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.BackendInfo;
-import be.uantwerpen.sc.models.Job;
-import be.uantwerpen.sc.models.JobState;
+import be.uantwerpen.sc.models.jobs.Job;
+import be.uantwerpen.sc.models.jobs.JobState;
 import be.uantwerpen.sc.services.BackendInfoService;
 import be.uantwerpen.sc.services.BackendService;
 import be.uantwerpen.sc.services.JobService;

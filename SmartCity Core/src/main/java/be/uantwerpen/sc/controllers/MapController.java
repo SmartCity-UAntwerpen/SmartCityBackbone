@@ -1,8 +1,8 @@
 package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.BackendInfo;
-import be.uantwerpen.sc.models.Job;
-import be.uantwerpen.sc.models.JobList;
+import be.uantwerpen.sc.models.jobs.Job;
+import be.uantwerpen.sc.models.jobs.JobList;
 import be.uantwerpen.sc.models.Path;
 import be.uantwerpen.sc.models.map.Map;
 import be.uantwerpen.sc.models.map.MapPoint;
@@ -37,17 +37,8 @@ public class MapController {
 
     private static final Logger logger = LoggerFactory.getLogger(MapController.class);
 
-//    @Autowired
-//    private BackendInfoRepository backendInfoRepository;
-
     @Autowired
     private BackendInfoService backendInfoService;
-
-//    @Autowired
-//    private BackendService backendService;
-//
-//    @Autowired
-//    private TransitPointRepository pointRepository;
 
     @Autowired
     private JobListService jobListService;
@@ -166,7 +157,7 @@ public class MapController {
      */
     @RequestMapping(value = "planpath", method = RequestMethod.GET)
     public JSONObject planPath(@RequestParam int startpid, @RequestParam int startmapid, @RequestParam int stoppid, @RequestParam int stopmapid) {
-        JobList jobList = new JobList();
+        JobList jobList;
         JSONObject response = new JSONObject();
         ArrayList<Path> pathRank = new ArrayList<Path>();
 

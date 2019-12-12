@@ -2,8 +2,8 @@ package be.uantwerpen.sc.data;
 
 
 import be.uantwerpen.sc.models.BackendInfo;
-import be.uantwerpen.sc.models.Job;
-import be.uantwerpen.sc.models.JobList;
+import be.uantwerpen.sc.models.jobs.Job;
+import be.uantwerpen.sc.models.jobs.JobList;
 import be.uantwerpen.sc.repositories.BackendInfoRepository;
 import be.uantwerpen.sc.services.JobListService;
 import org.springframework.beans.factory.annotation.Autowired;

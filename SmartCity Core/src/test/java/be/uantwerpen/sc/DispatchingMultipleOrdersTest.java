@@ -1,8 +1,8 @@
 package be.uantwerpen.sc;
 
 import be.uantwerpen.sc.controllers.JobDispatchController;
-import be.uantwerpen.sc.models.Job;
-import be.uantwerpen.sc.models.JobList;
+import be.uantwerpen.sc.models.jobs.Job;
+import be.uantwerpen.sc.models.jobs.JobList;
 import be.uantwerpen.sc.services.JobListService;
 import org.junit.Before;
 import org.junit.Test;

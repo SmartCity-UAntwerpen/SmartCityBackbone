@@ -5,7 +5,7 @@
 
     <groupId>be.uantwerpen.sc</groupId>
     <artifactId>SCCore</artifactId>
-    <version>INT-0.8</version>
+    <version>INT-0.9</version>
     <packaging>jar</packaging>
 
     <name>SmartCity Core</name>
@@ -111,13 +111,6 @@
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
-        </dependency>
-
-        <!-- Smartcity Common -->
-        <dependency>
-            <groupId>be.uantwerpen.sc</groupId>
-            <artifactId>SmartCityCommon</artifactId>
-            <version>0.0.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>

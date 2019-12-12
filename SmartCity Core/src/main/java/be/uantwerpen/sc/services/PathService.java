@@ -1,6 +1,7 @@
 package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.*;
+import be.uantwerpen.sc.models.jobs.Job;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

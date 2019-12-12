@@ -1,10 +1,8 @@
 package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.BackendInfo;
-import be.uantwerpen.sc.models.Bot;
-import be.uantwerpen.sc.models.Job;
-import be.uantwerpen.sc.models.JobList;
-import be.uantwerpen.sc.models.links.Link;
+import be.uantwerpen.sc.models.jobs.Job;
+import be.uantwerpen.sc.models.jobs.JobList;
 import be.uantwerpen.sc.tools.Terminal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
