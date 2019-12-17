@@ -55,7 +55,7 @@ public class DeliveryController {
     {
        Delivery del = deliveryService.save(delivery);
       // Delivery del = delivery;
-        JSONObject response =  planPath(del.getPointA(),del.getMapA(),del.getPointB(),del.getMapB(),1);
+        JSONObject response =  planPath(del.getPointA(),del.getMapA(),del.getPointB(),del.getMapB(),delivery.getId());
         return response;
     }
     @RequestMapping(value = "savedelivery", method = RequestMethod.POST)
