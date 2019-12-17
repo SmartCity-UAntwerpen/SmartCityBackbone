@@ -32,7 +32,7 @@ public class DatabaseLoaderDevelopment {
 
     private void initJobLists() {
         JobList list = new JobList();
-        list.setIdDelivery("MaaSId1");
+        list.setIdDelivery(1);
 
         Job job = new Job(1L,5L,5);
         list.addJob(job);

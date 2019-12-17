@@ -12,11 +12,11 @@ import java.util.List;
 public class JobList extends MyAbstractPersistable<Long> {
 
     @OneToMany(cascade= CascadeType.ALL)
-    @JoinColumn(name="ID_ORDER", referencedColumnName="ID")
+    @JoinColumn(name="jobListId", referencedColumnName="ID")
     private List<Job> jobs;
 
     @Column(name = "idDelivery", unique = false, nullable = false)
-    private String idDelivery;
+    private int idDelivery;
 
     public void addJob(Job job)
     {
@@ -25,7 +25,7 @@ public class JobList extends MyAbstractPersistable<Long> {
 
     public JobList() {
         this.jobs = new ArrayList<Job>();
-        this.idDelivery = "-1";
+        this.idDelivery = -1;
     }
 
     public JobList(List<Job> jobs) {
@@ -44,6 +44,7 @@ public class JobList extends MyAbstractPersistable<Long> {
     public int size() {
         return jobs.size();
     }
+
     public List<Job> getJobs() {
         return jobs;
     }
@@ -52,11 +53,11 @@ public class JobList extends MyAbstractPersistable<Long> {
         this.jobs = jobs;
     }
 
-    public String getIdDelivery() {
+    public int getIdDelivery() {
         return idDelivery;
     }
 
-    public void setIdDelivery(String idDelivery) {
+    public void setIdDelivery(int idDelivery) {
         this.idDelivery = idDelivery;
     }
 

@@ -13,4 +13,6 @@ import java.util.List;
 @Repository
 public interface DeliveryRepository extends CrudRepository<Delivery, Long> {
     List<Delivery> findAll();
+    Delivery findById(long id);
+    //Delivery findByOrderID(long OrderID);
 }

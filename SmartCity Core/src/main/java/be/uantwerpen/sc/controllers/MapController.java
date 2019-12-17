@@ -152,17 +152,15 @@ public class MapController {
     }
 
 
-    /**
-     * Endpoint for a pathplanning from {startpoint:{pid, mapid}} to {stoppoint:{pid, mapid}}
-     */
-    @RequestMapping(value = "planpath", method = RequestMethod.GET)
-    public JSONObject planPath(@RequestParam int startpid, @RequestParam int startmapid, @RequestParam int stoppid, @RequestParam int stopmapid) {
+
+    public JSONObject planPath(int startpid, int startmapid, int stoppid, int stopmapid) {
         JobList jobList;
         JSONObject response = new JSONObject();
         ArrayList<Path> pathRank = new ArrayList<Path>();
 
         // get list of possible paths (link ids) from A*
 
+        //Setup jobs when the job is in one map
         if (startmapid == stopmapid) {
             // build job
             Path onlyPath = new Path();
@@ -174,8 +172,6 @@ public class MapController {
             logger.info("start/stop point both in map:" + startmapid + ", dispatching job between [" + startpid + "-" + stoppid + "]on map ");
             dispatchToBackend();
             response.put("status", "dispatching");
-            // send back the delivery id to the MaaS
-            response.put("deliveryid", jobList.getId());
             return response;
         }
 
@@ -185,7 +181,7 @@ public class MapController {
         // no paths available, send back deliveryid -1 to let the MaaS know.
         if (possiblePaths == null || possiblePaths.isEmpty()) {
             response.put("status", "No paths found");
-            response.put("deliveryid", -1);
+           // response.put("deliveryid", -1);
             return response;
         }
 
