@@ -1,11 +1,15 @@
 package be.uantwerpen.sc.models;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="backend_info")
 public class BackendInfo {
     @Id
+    @Column(name="map_id")
     private int mapId;
     private String hostname;
     private int port;

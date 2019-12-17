@@ -1,7 +1,7 @@
 package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.Delivery;
-import be.uantwerpen.sc.models.Job;
+import be.uantwerpen.sc.models.jobs.Job;
 import be.uantwerpen.sc.repositories.DeliveryRepository;
 import be.uantwerpen.sc.repositories.JobRepository;
 import org.apache.log4j.LogManager;

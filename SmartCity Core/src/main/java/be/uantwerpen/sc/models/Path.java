@@ -1,5 +1,8 @@
 package be.uantwerpen.sc.models;
 
+import be.uantwerpen.sc.models.jobs.Job;
+import be.uantwerpen.sc.models.jobs.JobList;
+
 import java.util.ArrayList;
 
 public class Path {

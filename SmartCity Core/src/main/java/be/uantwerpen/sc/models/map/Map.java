@@ -10,7 +10,7 @@ public class Map {
     int id;
     int offsetX;
     int offsetY;
-    @ManyToOne
+    @ManyToOne(targetEntity = MapAccessType.class)
     @JoinColumn(name="access")
     MapAccessType access;
 
