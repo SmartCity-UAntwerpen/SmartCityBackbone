@@ -33,11 +33,14 @@ public class DeliveryService {
         return this.deliveryRepository.save(delivery);
     }
 
-    public Delivery getJob (Long id)
+    public Delivery getDelivery(Long id)
     {
         return this.deliveryRepository.findOne(id);
     }
-
+    public Delivery getByOrderID(int orderID)
+    {
+        return this.deliveryRepository.findByOrderID(orderID);
+    }
     public void delete(Long id)
     {
         logger.debug("Deleting Job with id: " + id);

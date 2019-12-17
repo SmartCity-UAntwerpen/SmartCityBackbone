@@ -2,8 +2,8 @@ package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.Delivery;
 
+import be.uantwerpen.sc.models.TransitPoint;
 import be.uantwerpen.sc.services.DeliveryService;
-import org.apache.coyote.Response;
 
 import be.uantwerpen.sc.models.Path;
 import be.uantwerpen.sc.models.jobs.Job;
@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import javax.json.Json;
-import javax.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +28,9 @@ public class DeliveryController {
 
     @Autowired
     private DeliveryService deliveryService;
+
+    @Autowired
+    private TransitPointService transitPointService;
 
     @Autowired
     private JobListService jobListService;
@@ -45,11 +46,11 @@ public class DeliveryController {
 
     @Value("${backends.enabled}")
     boolean backendsEnabled;
-    @RequestMapping(value = "getall", method = RequestMethod.GET)
-    public List<Delivery> findAllDeliveries()
-    {
-        return deliveryService.findAll();
-    }
+//    @RequestMapping(value = "getall", method = RequestMethod.GET)
+//    public List<Delivery> findAllDeliveries()
+//    {
+//        return deliveryService.findAll();
+//    }
     @RequestMapping(value = "createDelivery", method = RequestMethod.POST)
     public JSONObject Create(@RequestBody Delivery delivery)
     {
@@ -58,16 +59,21 @@ public class DeliveryController {
         JSONObject response =  planPath(del.getPointA(),del.getMapA(),del.getPointB(),del.getMapB(),delivery.getId());
         return response;
     }
-    @RequestMapping(value = "savedelivery", method = RequestMethod.POST)
-    public Delivery save(@RequestBody Delivery delivery)
-    {
-        return deliveryService.save(delivery);
-    }
+//    @RequestMapping(value = "savedelivery", method = RequestMethod.POST)
+//    public Delivery save(@RequestBody Delivery delivery)
+//    {
+//        return deliveryService.save(delivery);
+//    }
 
-    @RequestMapping(value = "get/{id}", method = RequestMethod.GET)
-    public Delivery getDelivery(@PathVariable("id") Long id)
+//    @RequestMapping(value = "get/{id}/{mapid}", method = RequestMethod.GET)
+//    public TransitPoint getDelivery(@PathVariable("id") int id, @PathVariable("mapid") int mapid)
+//    {
+//        return transitPointService.getPointWithMapidAndPid(id,mapid);
+//    }
+    @RequestMapping(value = "getByOrderId/{orderID}", method = RequestMethod.GET)
+    public Delivery getDelivery(@PathVariable("orderID") int orderID)
     {
-        return deliveryService.getJob(id);
+        return deliveryService.getByOrderID(orderID);
     }
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.POST)
@@ -109,6 +115,8 @@ public class DeliveryController {
             //response.put("deliveryid", jobList.getId());
             return response;
         }
+
+        //todo code hierboven moet weggelaten worden en de transitpoints moeten vervangen worden door onze mappoint en de links laten staan
 
         // Determine (5 for now) best TransitMap routes, returns a list of integer pairs
         List<Integer[]> possiblePaths = aStarService.determinePath(startpid, startmapid, stoppid, stopmapid);
@@ -153,10 +161,11 @@ public class DeliveryController {
         int chosenPath = 0; // here we just choose the cheapest path;
         jobList = pathRank.get(chosenPath).getJobList();
         logger.info("dispatching jobList w/ rank: " + chosenPath);
+        jobList.setIdDelivery((int)deliveryId);
         jobListService.saveJobList(jobList);
         dispatchToBackend();
         response.put("status", "dispatching");
-        response.put("deliveryid", jobList.getId());
+        response.put("joblistID", jobList.getId());
         return response;
     }
     private void dispatchToBackend() {

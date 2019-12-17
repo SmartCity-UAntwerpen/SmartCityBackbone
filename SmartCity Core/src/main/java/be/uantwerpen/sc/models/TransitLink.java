@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "transitlink")
+@Table(name = "TransitLink")
 public class TransitLink {
     @Id
     int id;

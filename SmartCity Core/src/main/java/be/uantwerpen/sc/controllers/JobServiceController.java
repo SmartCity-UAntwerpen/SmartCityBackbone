@@ -1,6 +1,7 @@
 package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.BackendInfo;
+import be.uantwerpen.sc.models.FailedJob;
 import be.uantwerpen.sc.models.jobs.Job;
 import be.uantwerpen.sc.models.jobs.JobState;
 import be.uantwerpen.sc.services.BackendInfoService;
@@ -67,6 +68,13 @@ public class JobServiceController {
     {
         jobService.deleteAll();
     }
+
+    @RequestMapping(value = "failed", method = RequestMethod.POST)
+    public String jobFailed(@RequestBody FailedJob failedJob) {
+        //TODO handel de data
+        return "success";
+    }
+
 
     @RequestMapping(value = "getJobProgress/{id}", method = RequestMethod.GET)
     public JSONObject getJobProgress(@PathVariable("id") Long id)

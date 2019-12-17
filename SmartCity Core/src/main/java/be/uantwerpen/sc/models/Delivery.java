@@ -1,6 +1,5 @@
 package be.uantwerpen.sc.models;
 
-import be.uantwerpen.sc.models.jobs.Job;
 import be.uantwerpen.sc.models.jobs.JobList;
 
 import javax.persistence.*;
@@ -23,7 +22,7 @@ public class Delivery extends MyAbstractPersistable<Long> {
     @JoinColumn(name="idDelivery", referencedColumnName="ID")
     private List<JobList> jobLists;
 
-    private int OrderID;
+    private int orderID;
     private int pointA;
     private int pointB;
     private int mapA;
@@ -37,7 +36,7 @@ public class Delivery extends MyAbstractPersistable<Long> {
     }
 
     public Delivery(int orderID, int pointA, int pointB, int mapA, int mapB, int passengers, String type, String date) {
-        OrderID = orderID;
+        this.orderID = orderID;
         this.pointA = pointA;
         this.pointB = pointB;
         this.mapA = mapA;
@@ -84,7 +83,7 @@ public class Delivery extends MyAbstractPersistable<Long> {
     }
 
     public int getOrderID() {
-        return OrderID;
+        return orderID;
     }
 
     public void setComplete(boolean complete) {
