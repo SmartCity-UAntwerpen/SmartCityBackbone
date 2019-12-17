@@ -78,7 +78,7 @@ public class DispatchingMultipleOrdersTest {
 
         // Add second list
         JobList list2 = new JobList();
-        list2.setIdDelivery("MaaS2");
+        list2.setIdDelivery(2);
 
         Job job = new Job(4L,20L,11);
         list2.addJob(job);

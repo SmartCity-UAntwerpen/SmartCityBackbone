@@ -1,6 +1,10 @@
 package be.uantwerpen.sc.models;
 
+import be.uantwerpen.sc.models.jobs.Job;
+import be.uantwerpen.sc.models.jobs.JobList;
+
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by NV 2018
@@ -13,26 +17,27 @@ import javax.persistence.*;
 @Entity
 @Table(name = "deliveries")
 public class Delivery extends MyAbstractPersistable<Long> {
-    private String username;
-    private String firstname;
-    private String lastname;
-    private String pointA;
-    private String pointB;
+
+
+    @OneToMany(cascade= CascadeType.ALL)
+    @JoinColumn(name="idDelivery", referencedColumnName="ID")
+    private List<JobList> jobLists;
+
+    private int OrderID;
+    private int pointA;
+    private int pointB;
     private int mapA;
     private int mapB;
     private int passengers;
     private String type;
     private String date;
     private boolean complete = false;
-    private int backboneID;
 
     public Delivery() {
     }
 
-    public Delivery(String username, String firstname, String lastname, String pointA, String pointB, int mapA, int mapB, int passengers, String type, String date, boolean complete, int backboneId) {
-        this.username = username;
-        this.firstname = firstname;
-        this.lastname = lastname;
+    public Delivery(int orderID, int pointA, int pointB, int mapA, int mapB, int passengers, String type, String date) {
+        OrderID = orderID;
         this.pointA = pointA;
         this.pointB = pointB;
         this.mapA = mapA;
@@ -40,26 +45,17 @@ public class Delivery extends MyAbstractPersistable<Long> {
         this.passengers = passengers;
         this.type = type;
         this.date = date;
-        this.complete = complete;
-        this.backboneID = backboneId;
-    }
-    public String getUsername() {
-        return username;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public List<JobList> getJobLists() {
+        return jobLists;
     }
 
-    public String getLastname() {
-        return lastname;
-    }
-
-    public String getPointA() {
+    public int getPointA() {
         return pointA;
     }
 
-    public String getPointB() {
+    public int getPointB() {
         return pointB;
     }
 
@@ -87,8 +83,11 @@ public class Delivery extends MyAbstractPersistable<Long> {
         return complete;
     }
 
-    public int getBackboneID() {
-        return backboneID;
+    public int getOrderID() {
+        return OrderID;
     }
 
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
 }
