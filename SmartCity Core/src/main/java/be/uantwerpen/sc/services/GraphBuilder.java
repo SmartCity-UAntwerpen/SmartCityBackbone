@@ -2,6 +2,9 @@ package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.TransitLink;
 import be.uantwerpen.sc.models.TransitPoint;
+import be.uantwerpen.sc.models.map.Map;
+import be.uantwerpen.sc.models.map.MapPoint;
+import be.uantwerpen.sc.repositories.MapPointRepository;
 import be.uantwerpen.sc.repositories.TransitLinkRepository;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
 import org.apache.log4j.LogManager;
@@ -23,20 +26,20 @@ public class GraphBuilder {
 
     private static final Logger logger = LogManager.getLogger(GraphBuilder.class);
 
-    private TransitPointRepository transitPointRepository;
+    private MapPointRepository mapPointRepository;
     private TransitLinkRepository transitLinkRepository;
 
     @Autowired
-    public GraphBuilder(TransitPointRepository transitPointRepository, TransitLinkRepository transitLinkRepository) {
-        this.transitPointRepository = transitPointRepository;
+    public GraphBuilder(MapPointRepository mapPointRepository, TransitLinkRepository transitLinkRepository) {
+        this.mapPointRepository = mapPointRepository;
         this.transitLinkRepository = transitLinkRepository;
     }
 
     /**
      * Returns a list of all points in the top map
      */
-    public List<TransitPoint> getPointList() {
-        return getLinkList().stream().flatMap(link -> Stream.of(link.getStartId(), link.getStopId())).distinct().map(integer -> transitPointRepository.findById(integer)).collect(Collectors.toList());
+    public List<MapPoint> getPointList() {
+        return getLinkList().stream().flatMap(link -> Stream.of(link.getStartId(), link.getStopId())).distinct().map(integer -> mapPointRepository.findById(integer)).collect(Collectors.toList());
     }
 
     /**

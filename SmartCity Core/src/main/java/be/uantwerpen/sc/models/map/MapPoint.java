@@ -10,6 +10,7 @@ public class MapPoint {
     int id;
     int pointId;
 
+
     @ManyToOne(targetEntity = Map.class)
     @JoinColumn(name = "mapId")
     Map map;
@@ -76,5 +77,9 @@ public class MapPoint {
 
     public void setMapPointType(MapPointType mapPointType) {
         this.mapPointType = mapPointType;
+    }
+
+    public int getMapId() {
+        return map.id;
     }
 }

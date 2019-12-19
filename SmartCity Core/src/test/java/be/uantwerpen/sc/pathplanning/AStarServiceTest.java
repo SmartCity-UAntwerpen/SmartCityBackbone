@@ -55,17 +55,17 @@ public class AStarServiceTest {
         transitLinks.add(new TransitLink(15, 4, 3, 1));
         transitLinks.add(new TransitLink(16, 3, 4, 5));
 
-        when(graphBuilder.getPointList()).thenReturn(transitPoints);
-        when(graphBuilder.getLinkList()).thenReturn(transitLinks);
-        when(transitPointRepository.findById(anyInt())).thenAnswer((Answer<TransitPoint>) invocationOnMock -> {
-            int id = invocationOnMock.getArgumentAt(0, int.class);
-            return transitPoints.stream().filter(transitPoint -> transitPoint.getId() == id).findFirst().orElse(null);
-        });
-        when(transitPointRepository.findByPidAndMapid(anyInt(), anyInt())).thenAnswer((Answer<TransitPoint>) invocationOnMock -> {
-            int pid = invocationOnMock.getArgumentAt(0, int.class);
-            int mapId = invocationOnMock.getArgumentAt(1, int.class);
-            return transitPoints.stream().filter(transitPoint -> transitPoint.getPid() == pid && transitPoint.getMapid() == mapId).findFirst().orElse(null);
-        });
+//        when(graphBuilder.getPointList()).thenReturn(transitPoints);
+//        when(graphBuilder.getLinkList()).thenReturn(transitLinks);
+//        when(transitPointRepository.findById(anyInt())).thenAnswer((Answer<TransitPoint>) invocationOnMock -> {
+//            int id = invocationOnMock.getArgumentAt(0, int.class);
+//            return transitPoints.stream().filter(transitPoint -> transitPoint.getId() == id).findFirst().orElse(null);
+//        });
+//        when(transitPointRepository.findByPidAndMapid(anyInt(), anyInt())).thenAnswer((Answer<TransitPoint>) invocationOnMock -> {
+//            int pid = invocationOnMock.getArgumentAt(0, int.class);
+//            int mapId = invocationOnMock.getArgumentAt(1, int.class);
+//            return transitPoints.stream().filter(transitPoint -> transitPoint.getPid() == pid && transitPoint.getMapid() == mapId).findFirst().orElse(null);
+//        });
     }
 
     @Test

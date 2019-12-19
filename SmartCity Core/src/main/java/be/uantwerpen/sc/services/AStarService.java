@@ -2,6 +2,8 @@ package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.TransitLink;
 import be.uantwerpen.sc.models.TransitPoint;
+import be.uantwerpen.sc.models.map.MapPoint;
+import be.uantwerpen.sc.repositories.MapPointRepository;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -36,7 +38,7 @@ public class AStarService {
     @Autowired
     private GraphBuilder graphBuilder;
     @Autowired
-    private TransitPointRepository transitPointRepository;
+    private MapPointRepository mapPointRepository;
 
     public AStarService() {
         this.graph = new MultiGraph("SmartCityGraph");
@@ -47,9 +49,9 @@ public class AStarService {
      * will make all the necessairy nodes in the Graph, using information provided by the Graphbuilder service.
      */
     private void makeNode() {
-        List<TransitPoint> transitPoints = this.graphBuilder.getPointList();
+        List<MapPoint> transitPoints = this.graphBuilder.getPointList();
         // provide all the nodes
-        transitPoints.stream().map(TransitPoint::getMapid).distinct().forEach(mapId -> graph.addNode(String.valueOf(mapId)));
+        transitPoints.stream().map(MapPoint::getMapId).distinct().forEach(mapId -> graph.addNode(String.valueOf(mapId)));
     }
 
     /**
@@ -61,13 +63,13 @@ public class AStarService {
         for (TransitLink edge : transitLinks) {
             // adds forward link
             this.graph.addEdge(edge.getId() + "[" + edge.getStartId() + "-" + edge.getStopId() + "]",
-                    Integer.toString(transitPointRepository.findById(edge.getStartId()).getMapid()),
-                    Integer.toString(transitPointRepository.findById(edge.getStopId()).getMapid()), true) // directed
+                    Integer.toString(mapPointRepository.findById(edge.getStartId()).getMap().getId()),
+                    Integer.toString(mapPointRepository.findById(edge.getStopId()).getMap().getId()), true) // directed
                     .setAttribute("weight", edge.getWeight() + 0.0);
             // adds reverse link
             this.graph.addEdge(edge.getId() + "[" + edge.getStopId() + "-" + edge.getStartId() + "]",
-                    Integer.toString(transitPointRepository.findById(edge.getStopId()).getMapid()),
-                    Integer.toString(transitPointRepository.findById(edge.getStartId()).getMapid()), true) // directed
+                    Integer.toString(mapPointRepository.findById(edge.getStopId()).getMap().getId()),
+                    Integer.toString(mapPointRepository.findById(edge.getStartId()).getMap().getId()), true) // directed
                     .setAttribute("weight", edge.getWeight() + 0.0);
         }
     }
@@ -101,8 +103,8 @@ public class AStarService {
 
         if (start.equals(end)) {
             // no need for A* if start and end point are in the same map
-            Integer startId = transitPointRepository.findByPidAndMapid(startPid, startMap).getId();
-            Integer endId = transitPointRepository.findByPidAndMapid(endPid, endMap).getId();
+            Integer startId = mapPointRepository.findByPointIdAndMap_Id(startPid, startMap).getId();
+            Integer endId = mapPointRepository.findByPointIdAndMap_Id(endPid, endMap).getId();
             paths.add(new Integer[]{startId, endId});
             logger.debug("Route for " + startPid + " to " + endPid + " found (map " + startMap + " to " + endMap + "): " + startId + ", " + endId);
             return paths;

@@ -1,6 +1,8 @@
 package be.uantwerpen.sc.controllers;
 
+import be.uantwerpen.sc.models.Delivery;
 import be.uantwerpen.sc.models.jobs.JobList;
+import be.uantwerpen.sc.services.DeliveryService;
 import be.uantwerpen.sc.services.JobListService;
 import be.uantwerpen.sc.services.JobService;
 import org.slf4j.Logger;
@@ -19,6 +21,9 @@ public class JobDispatchController {
     @Autowired
     private JobService jobService;
 
+    @Autowired
+    private DeliveryService deliveryService;
+
     private static final Logger logger = LoggerFactory.getLogger(JobDispatchController.class);
 
     @RequestMapping(value = "/jobs/findAllJobLists",method = RequestMethod.GET)
@@ -27,10 +32,10 @@ public class JobDispatchController {
         return jobListService.findAll();
     }
 
-    @RequestMapping(value = "/jobs/findOneByDelivery/{delivery}",method = RequestMethod.GET)
-    public JobList findOneByDelivery(@PathVariable("delivery") int delivery)
+    @RequestMapping(value = "/jobs/findOneByOrder/{orderId}",method = RequestMethod.GET)
+    public JobList findOneByOrder(@PathVariable("orderId") int orderId)
     {
-        return jobListService.findOneByDelivery(delivery);
+        return  deliveryService.getByOrderID(orderId).getJobLists().get(0);
     }
 
     @RequestMapping(value = "/jobs/deleteOrder/{id}", method = RequestMethod.POST)
