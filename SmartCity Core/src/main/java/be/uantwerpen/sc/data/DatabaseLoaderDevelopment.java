@@ -34,10 +34,10 @@ public class DatabaseLoaderDevelopment {
         JobList list = new JobList();
         list.setIdDelivery(1);
 
-        Job job = new Job(1L,5L,5);
+        Job job = new Job(1L,5L,5,1);
         list.addJob(job);
 
-        job = new Job(7L,10L,10);
+        job = new Job(7L,10L,10,1);
         list.addJob(job);
         jobListService.saveJobList(list);
     }

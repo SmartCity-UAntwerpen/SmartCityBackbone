@@ -102,21 +102,25 @@ public class DeliveryController {
         if (startmapid == stopmapid) {
             // build job
             Path onlyPath = new Path();
-            Job job = new Job((long) startpid, (long) stoppid, stopmapid);
+            Job job = new Job((long) startpid, (long) stoppid, stopmapid, 1);
             onlyPath.addJob(job);
             // save and execute job
             jobList = onlyPath.getJobList();
             jobList.setIdDelivery((int)deliveryId);
             jobListService.saveJobList(jobList);
+//            JobList jobList1 = new JobList();
+//            jobList1.addJob(new Job((long) startpid, (long) stoppid, stopmapid));
+//            jobList1.setIdDelivery((int)deliveryId);
+//            jobListService.saveJobList(jobList1);
             logger.info("start/stop point both in map:" + startmapid + ", dispatching job between [" + startpid + "-" + stoppid + "]on map ");
             dispatchToBackend();
             response.put("status", "dispatching");
+            response.put("message", "dispatching");
+            response.put("success",true);
             // send back the delivery id to the MaaS
             //response.put("deliveryid", jobList.getId());
             return response;
         }
-
-        //todo code hierboven moet weggelaten worden en de transitpoints moeten vervangen worden door onze mappoint en de links laten staan
 
         // Determine (5 for now) best TransitMap routes, returns a list of integer pairs
         List<Integer[]> possiblePaths = aStarService.determinePath(startpid, startmapid, stoppid, stopmapid);
@@ -163,8 +167,9 @@ public class DeliveryController {
         logger.info("dispatching jobList w/ rank: " + chosenPath);
         jobList.setIdDelivery((int)deliveryId);
         jobListService.saveJobList(jobList);
-        dispatchToBackend();
+      dispatchToBackend();
         response.put("status", "dispatching");
+        response.put("message", "dispatching");
         response.put("joblistID", jobList.getId());
         return response;
     }

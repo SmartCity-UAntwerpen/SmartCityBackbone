@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
+@Deprecated
 @Table(name = "TransitPoint")
 public class TransitPoint {
     @Id

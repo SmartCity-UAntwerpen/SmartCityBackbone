@@ -1,9 +1,8 @@
 be\uantwerpen\sc\models\BackendInfo.class
-be\uantwerpen\sc\repositories\TransitLinkRepository.class
 be\uantwerpen\sc\models\TransitPoint.class
 be\uantwerpen\sc\models\jobs\Job.class
 be\uantwerpen\sc\models\MyAbstractPersistable.class
-be\uantwerpen\sc\services\TransitLinkService.class
+be\uantwerpen\sc\models\FailedJob.class
 be\uantwerpen\sc\configurations\SystemPropertyActiveProfileResolver.class
 be\uantwerpen\sc\services\BackendInfoService.class
 be\uantwerpen\sc\controllers\JobDispatchController.class
@@ -28,9 +27,12 @@ be\uantwerpen\sc\services\JobService.class
 be\uantwerpen\sc\models\jobs\JobState.class
 be\uantwerpen\sc\models\map\MapAccessType.class
 be\uantwerpen\sc\services\JobListService.class
+be\uantwerpen\sc\repositories\LinkRepository.class
 be\uantwerpen\sc\models\Delivery.class
+be\uantwerpen\sc\services\LinkService.class
 be\uantwerpen\sc\repositories\MapRepository.class
 be\uantwerpen\sc\tools\Terminal$TerminalReader.class
+be\uantwerpen\sc\models\map\Link.class
 be\uantwerpen\sc\SmartCityCoreApplication.class
 be\uantwerpen\sc\tools\Terminal.class
 be\uantwerpen\sc\repositories\TransitPointRepository.class

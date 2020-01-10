@@ -69,13 +69,6 @@ public class JobServiceController {
         jobService.deleteAll();
     }
 
-    @RequestMapping(value = "failed", method = RequestMethod.POST)
-    public String jobFailed(@RequestBody FailedJob failedJob) {
-        //TODO handel de data
-        return "success";
-    }
-
-
     @RequestMapping(value = "getJobProgress/{id}", method = RequestMethod.GET)
     public JSONObject getJobProgress(@PathVariable("id") Long id)
     {
@@ -105,13 +98,16 @@ public class JobServiceController {
         switch(job.getStatus())
         {
             case DONE:
-                progress = 100;
+                    progress = 100;
                 break;
             case TODO:
                 // Do nothing -> returns 0 progress
                 break;
             case BUSY:
                     progress = getProgressFromBackend(job);
+                break;
+            case FAILED:
+                    response.put("Progress", true);
                 break;
             default:
                 progress = 0;
@@ -147,12 +143,7 @@ public class JobServiceController {
         return progress;
     }
 
-    // TODO Future work -> Backends use this endpoint to let the backbone know when a job failed to execute
-    @RequestMapping(value = "fail/{id}", method = RequestMethod.POST)
-    public void jobFailed(@PathVariable("id") Long id)
-    {
-        // Remove the job or resend it to the correct backend
-    }
+    // TODO Future work -> Backends use this endpoint to let the backbone know when a job fails to execute
 
     private JSONObject buildProgressResponse(long id, int progress, String status)
     {

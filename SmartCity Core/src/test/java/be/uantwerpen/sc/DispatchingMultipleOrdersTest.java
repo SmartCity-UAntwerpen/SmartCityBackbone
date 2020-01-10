@@ -80,10 +80,10 @@ public class DispatchingMultipleOrdersTest {
         JobList list2 = new JobList();
         list2.setIdDelivery(2);
 
-        Job job = new Job(4L,20L,11);
+        Job job = new Job(4L,20L,11,1);
         list2.addJob(job);
 
-        job = new Job(8L,11L,10);
+        job = new Job(8L,11L,10,1);
         list2.addJob(job);
         jobListService.saveJobList(list2);
 

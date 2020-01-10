@@ -2,6 +2,11 @@ package be.uantwerpen.sc.services;
 
 import be.uantwerpen.sc.models.*;
 import be.uantwerpen.sc.models.jobs.Job;
+import be.uantwerpen.sc.models.map.Link;
+import be.uantwerpen.sc.models.map.Map;
+import be.uantwerpen.sc.models.map.MapPoint;
+import be.uantwerpen.sc.repositories.LinkRepository;
+import be.uantwerpen.sc.repositories.MapPointRepository;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +22,17 @@ public class PathService {
     private static final Logger logger = LoggerFactory.getLogger(PathService.class);
 
     @Autowired
-    TransitLinkService transitLinkService;
+    LinkRepository linkRepository;
     @Autowired
-    TransitPointRepository pointRepository;
-    @Autowired
-    TransitPointService transitPointService;
+    MapPointRepository mapPointRepository;
     @Autowired
     BackendInfoService backendInfoService;
     @Autowired
     BackendService backendService;
+    @Autowired
+    LinkService linkService;
+
+
     @Value("${backends.enabled}")
     boolean backendsEnabled;
 
@@ -36,20 +43,21 @@ public class PathService {
 
     public Path makePathFromPointPairs(Integer[] pointpairs, int userStartPid, int startMapId, int stopPid, int stopMapId){
         Path path = new Path();
-        ArrayList<TransitLink> transitPath = new ArrayList<TransitLink>();
+        ArrayList<Link> transitPath = new ArrayList<Link>();
         logger.info("--- determining new path ---");
 
         // Check if the starting point of path is the same as the point where the user wants to depart from
-        int userStartId = transitPointService.getPointWithMapidAndPid(userStartPid, startMapId).getId();
+        int userStartId = mapPointRepository.findByPointIdAndMap_Id(userStartPid,startMapId).getId();
         if(userStartId != pointpairs[0]){
             logger.info("Startpoint is on the same map: First Job is within the staring map");
 //            int userPid = transitPointService.getPointWithId(userStartId).getPid(); // redundant call to get userStartPid
 
             BackendInfo mapInfo = backendInfoService.getInfoByMapId(startMapId);
-            int botStartPid = transitPointService.getPointWithId(pointpairs[0]).getPid();
+            int botStartPid = mapPointRepository.findById(pointpairs[0]).getPointId();
             float weight = backendService.getWeight(mapInfo, userStartPid, botStartPid);
+            //float weight = 10;
             path.addWeight(weight);
-            path.addJob(userStartPid, botStartPid, startMapId );
+            path.addJob(userStartPid, botStartPid, startMapId,weight);
         }
 
 
@@ -59,25 +67,25 @@ public class PathService {
             int startId = pointpairs[i];
             int stopId = pointpairs[i+1];
 
-            TransitPoint startPoint = transitPointService.getPointWithId(startId);
-            TransitPoint stopPoint = transitPointService.getPointWithId(stopId);
+            MapPoint startPoint = mapPointRepository.findById(startId);
+            MapPoint stopPoint = mapPointRepository.findById(stopId);
 
 
-            if(startPoint.getMapid() != stopPoint.getMapid()){
+            if(startPoint.getMapId() != stopPoint.getMapId()){
                 logger.info("current points " + startId + "," + stopId + ", part of a transit link" );
-                TransitLink transitLink = transitLinkService.getLinkWithStartidAndStopid(startId,stopId);
+                Link link = linkService.getLinkWithStartidAndStopid(startId,stopId);
                 // check if the transitlink exists with start and stopid in different order
-                if(transitLink == null) {
-                    transitLink = transitLinkService.getLinkWithStartidAndStopid(stopId, startId);
+                if(link == null) {
+                    link = linkService.getLinkWithStartidAndStopid(stopId, startId);
                 }
 
-                linkLog+= transitLink.getId() + "-";
-                transitPath.add(transitLink);
+                linkLog+= link.getId() + "-";
+                transitPath.add(link);
 
             }else{
                 logger.info("current points " + startId + "," + stopId + ", part of a inner map link" );
-                BackendInfo mapInfo = backendInfoService.getInfoByMapId(stopPoint.getMapid());
-                float weight = backendService.getWeight(mapInfo, startPoint.getPid(), stopPoint.getPid());
+                BackendInfo mapInfo = backendInfoService.getInfoByMapId(stopPoint.getMapId());
+                float weight = backendService.getWeight(mapInfo, startPoint.getPointId(), stopPoint.getPointId());
 //                // Request weight between points from backend
 //                String url = "http://" + mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + startPoint.getPid() + "/" + stopPoint.getPid();
 //                logger.info("--requesting from cost from:+" + url);
@@ -94,7 +102,7 @@ public class PathService {
                 // Add the inner weights that the map calculated
                 path.addWeight(weight);
                 // add a new job to the path
-                Job job = new Job((long) startPoint.getPid(), (long) stopPoint.getPid(), mapInfo.getMapId());
+                Job job = new Job((long) startPoint.getPointId(), (long) stopPoint.getPointId(), mapInfo.getMapId(),weight);
                 path.addJob(job);
             }
 
@@ -103,18 +111,18 @@ public class PathService {
 
         // TODO check if the endpoint is in the endpoint map
         int lastIndex = pointpairs.length -1;
-        int destinationId = transitPointService.getPointWithMapidAndPid(stopPid, stopMapId).getId();
+        int destinationId = mapPointRepository.findByPointIdAndMap_Id(stopPid, stopMapId).getId();
         if(destinationId != pointpairs[lastIndex]){
             logger.info("EndPoint is on the same map: Last Job is within the end map");
 //            int userPid = transitPointService.getPointWithId(userStartId).getPid(); // redundant call to get userStartPid
 
             BackendInfo mapInfo = backendInfoService.getInfoByMapId(stopMapId);
-            int lastTransitPid = transitPointService.getPointWithId(pointpairs[lastIndex]).getPid();
+            int lastTransitPid = mapPointRepository.findById(pointpairs[lastIndex]).getPointId();
 
             // TODO get the internal cost by, identify by mapid
             float weight = backendService.getWeight(mapInfo, lastTransitPid, stopPid);
             path.addWeight(weight);
-            path.addJob(lastTransitPid, stopPid, stopMapId );
+            path.addJob(lastTransitPid, stopPid, stopMapId ,weight);
         }
 
 
@@ -130,12 +138,12 @@ public class PathService {
     public Path makePathFromLinkIds(Integer[] linkids, int startpid, int startmapid){
         String linkLog = "Links: ";
         Path path = new Path();
-        ArrayList<TransitLink> transitPath = new ArrayList<TransitLink>();
+        ArrayList<Link> transitPath = new ArrayList<Link>();
         // Get a the full TranistLink Objects
         for (int i = 0; i < linkids.length; i++) {
             int linkId = linkids[i];
             linkLog += linkId+",";
-            TransitLink transitLink = transitLinkService.getLinkWithId(linkId);
+            Link transitLink = linkService.getLinkWithId(linkId);
             transitPath.add(transitLink);
         }
         logger.info(linkLog);
@@ -143,15 +151,15 @@ public class PathService {
 
 
         // check if there needs to be a job from the starting pid to a point on the same map.
-        int firstStartid = transitPath.get(0).getStartId();
-        TransitPoint userStartPoint = transitPointService.getPointWithMapidAndPid(startpid, startmapid);
+        int firstStartid = transitPath.get(0).getPointA();
+        MapPoint userStartPoint = mapPointRepository.findByPointIdAndMap_Id(startpid, startmapid);
         // if the starting id is not equal to the path's starting point id where the user wants to depart from:
         if(firstStartid != userStartPoint.getId()){
             logger.info("-startpoint on same map: TODO GET THE COST ");
             // TODO request cost of navigation to point on same map
             // TODO better naming
-            int startLinkPid = transitPointService.getPointWithId(firstStartid).getPid();
-            path.addJob(startpid, startLinkPid, startmapid );
+            int startLinkPid = mapPointRepository.findById(firstStartid).getPointId();
+            path.addJob(startpid, startLinkPid, startmapid ,1);
         }
 
         // construct path object
@@ -163,8 +171,8 @@ public class PathService {
             // endpoint of one link and startpoint of second link should be on the same map
 
 
-            int stopid = transitPath.get(i).getStopId();
-            int startid = transitPath.get(i+1).getStartId();
+            int stopid = transitPath.get(i).getPointB();
+            int startid = transitPath.get(i+1).getPointA();
 
 
 
@@ -175,15 +183,15 @@ public class PathService {
 
 
             // get points of link from database
-            TransitPoint stopPoint = pointRepository.findById(stopid);
-            TransitPoint startPoint = pointRepository.findById(startid);
+            MapPoint stopPoint = mapPointRepository.findById(stopid);
+            MapPoint startPoint = mapPointRepository.findById(startid);
 
             // TODO check if points belong to the same map
             // TODO build in check for flagpoints (destination) and handle accordingly
 
             // Get the connection info of the map where the points belong to
-            BackendInfo mapInfo = backendInfoService.getInfoByMapId(stopPoint.getMapid());
-            float weight = backendService.getWeight(mapInfo, stopPoint.getPid(), startPoint.getPid());
+            BackendInfo mapInfo = backendInfoService.getInfoByMapId(stopPoint.getMapId());
+            float weight = backendService.getWeight(mapInfo, stopPoint.getPointId(), startPoint.getPointId());
 //            // Request weight between points from backend
 //            String url = "http://" + mapinfo.getHostname() + ":" + mapinfo.getPort() + "/" + stopPoint.getPid() + "/" + startPoint.getPid();
 //            logger.info("--requesting from cost from:+" + url);
@@ -203,7 +211,7 @@ public class PathService {
             path.addWeight(weight);
 
             // add a new job to the path
-            Job job = new Job((long) startPoint.getPid(), (long) stopPoint.getPid(), mapInfo.getMapId());
+            Job job = new Job((long) startPoint.getPointId(), (long) stopPoint.getPointId(), mapInfo.getMapId(),weight);
             path.addJob(job);
         }
         // add the total weight of the transitlinks, now we have the complete weight of the path

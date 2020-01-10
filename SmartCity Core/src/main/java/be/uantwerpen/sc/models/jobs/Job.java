@@ -21,16 +21,18 @@ public class Job extends MyAbstractPersistable<Long> {
      */
     private int idMap;
     private JobState status;
+    private float cost;
 
     public Job() {
 
     }
 
-    public Job(Long idStart, Long idEnd, int idMap) {
+    public Job(Long idStart, Long idEnd, int idMap, float cost) {
         this.idStart = idStart;
         this.idEnd = idEnd;
         this.idMap = idMap;
         this.status = JobState.TODO;
+        this.cost = cost;
     }
 
     public String toString(){
@@ -69,4 +71,11 @@ public class Job extends MyAbstractPersistable<Long> {
         this.status = status;
     }
 
+    public float getCost() {
+        return cost;
+    }
+
+    public void setCost(float cost) {
+        this.cost = cost;
+    }
 }

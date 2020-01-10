@@ -1,7 +1,6 @@
 package be.uantwerpen.sc.services;
 
-import be.uantwerpen.sc.models.TransitLink;
-import be.uantwerpen.sc.models.TransitPoint;
+import be.uantwerpen.sc.models.map.Link;
 import be.uantwerpen.sc.models.map.MapPoint;
 import be.uantwerpen.sc.repositories.MapPointRepository;
 import be.uantwerpen.sc.repositories.TransitPointRepository;
@@ -59,17 +58,17 @@ public class AStarService {
      * will make all the necessary edges in the Graph, using the information provided by the GraphBuilder
      */
     private void makeEdge() {
-        List<TransitLink> transitLinks = this.graphBuilder.getLinkList();
-        for (TransitLink edge : transitLinks) {
+        List<Link> transitLinks = this.graphBuilder.getLinkList();
+        for (Link edge : transitLinks) {
             // adds forward link
-            this.graph.addEdge(edge.getId() + "[" + edge.getStartId() + "-" + edge.getStopId() + "]",
-                    Integer.toString(mapPointRepository.findById(edge.getStartId()).getMap().getId()),
-                    Integer.toString(mapPointRepository.findById(edge.getStopId()).getMap().getId()), true) // directed
+            this.graph.addEdge(edge.getId() + "[" + edge.getPointA() + "-" + edge.getPointB() + "]",
+                    Integer.toString(mapPointRepository.findById(edge.getPointA()).getMap().getId()),
+                    Integer.toString(mapPointRepository.findById(edge.getPointB()).getMap().getId()), true) // directed
                     .setAttribute("weight", edge.getWeight() + 0.0);
             // adds reverse link
-            this.graph.addEdge(edge.getId() + "[" + edge.getStopId() + "-" + edge.getStartId() + "]",
-                    Integer.toString(mapPointRepository.findById(edge.getStopId()).getMap().getId()),
-                    Integer.toString(mapPointRepository.findById(edge.getStartId()).getMap().getId()), true) // directed
+            this.graph.addEdge(edge.getId() + "[" + edge.getPointB() + "-" + edge.getPointA() + "]",
+                    Integer.toString(mapPointRepository.findById(edge.getPointB()).getMap().getId()),
+                    Integer.toString(mapPointRepository.findById(edge.getPointA()).getMap().getId()), true) // directed
                     .setAttribute("weight", edge.getWeight() + 0.0);
         }
     }
@@ -112,7 +111,7 @@ public class AStarService {
 
         AStar astar = new AStar(this.graph);
         updateNodesAndEdges();
-        final int numberOfRoutes = 5;
+        final int numberOfRoutes = 1;
         for (int i = 0; i < numberOfRoutes; i++) {
             Optional<Path> shortestRoute = getShortestRoute(astar, start, end);
             if (shortestRoute.isPresent()) {

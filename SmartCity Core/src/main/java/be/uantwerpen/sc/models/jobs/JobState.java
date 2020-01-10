@@ -1,5 +1,5 @@
 package be.uantwerpen.sc.models.jobs;
 
 public enum JobState {
-    DONE, TODO, BUSY
+    DONE, TODO, BUSY, FAILED
 }

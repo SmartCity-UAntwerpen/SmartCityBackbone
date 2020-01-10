@@ -164,7 +164,7 @@ public class MapController {
         if (startmapid == stopmapid) {
             // build job
             Path onlyPath = new Path();
-            Job job = new Job((long) startpid, (long) stoppid, stopmapid);
+            Job job = new Job((long) startpid, (long) stoppid, stopmapid,1);
             onlyPath.addJob(job);
             // save and execute job
             jobList = onlyPath.getJobList();

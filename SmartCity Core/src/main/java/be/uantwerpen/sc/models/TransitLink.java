@@ -5,6 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
+@Deprecated
 @Table(name = "TransitLink")
 public class TransitLink {
     @Id

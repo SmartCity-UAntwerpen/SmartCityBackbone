@@ -92,44 +92,87 @@ public class JobListService
     /**
      * This function will go through all JobLists and look at which Job should be dispatched.
      */
-    public void dispatchToBackend() {
-        // Iterate over all orders
+    public void dispatchToBackend(){
         for (JobList jobList : this.jobListRepository.findAll()) {
-            Job job;
-            try{
-                job = jobList.getJobs().get(0);
-            }
-            catch(Exception e)
-            {
-                logger.error("Job not found: " + e);
-                return;
-            }
-
-            // Check if the first job is still busy -> if so, go to the next list to dispatch its first job
-            if (job.getStatus().equals(JobState.BUSY)) {
-                // Probably has not reached the rendezvous point yet: wait
-                logger.info("The first job (" + job.getId() + ") of the jobList (" + jobList.getId() + ") is still busy!");
-            }
-            else {
+                Job job;
+                try{
+                    job = jobList.getJobs().get(0);
+                }
+                catch(Exception e) {
+                    logger.error("Job not found: " + e);
+                    return;
+                }
+                // Check if the first job is still busy -> if so, go to the next list to dispatch its first job
+                if (job.getStatus().equals(JobState.BUSY)) {
+                    // Probably has not reached the rendezvous point yet: wait
+                    logger.info("The first job (" + job.getId() + ") of the jobList (" + jobList.getId() + ") is still busy!");
+                }
+                else {
                     if (dispatch(job) && job.getStatus().equals(JobState.TODO))
                     {
                         // If successfully dispatched, update status of the job
                         job.setStatus(JobState.BUSY);
                         jobService.save(job);
+                        float weight = job.getCost();
+                        for (Job job1:jobList.getJobs()){
+                            if(job1.getStatus().equals(JobState.TODO)){
+                                alertJob(job,weight);
+                                weight+=job.getCost();
+                            }
+                        }
                     }
                     else {
                         // An error has occurred.
                         logger.error("An error has occured while dispatching job with id: " + job.getId() + " to the backend!");
-
                         //recalculatePathAfterError(jobList.getJobs().get(0).getId(), jobList.getIdDelivery());
-
                         // For debug purposes
                         logger.debug("All joblists after dispatch error.");
                         printJobList();
                     }
+                }
+
+
             }
-        }
     }
+
+//    public void dispatchToBackend() {
+//            // Iterate over all orders
+//            for (JobList jobList : this.jobListRepository.findAll()) {
+//                Job job;
+//                try{
+//                    job = jobList.getJobs().get(0);
+//                }
+//                catch(Exception e)
+//                {
+//                    logger.error("Job not found: " + e);
+//                    return;
+//                }
+//
+//                // Check if the first job is still busy -> if so, go to the next list to dispatch its first job
+//                if (job.getStatus().equals(JobState.BUSY)) {
+//                    // Probably has not reached the rendezvous point yet: wait
+//                    logger.info("The first job (" + job.getId() + ") of the jobList (" + jobList.getId() + ") is still busy!");
+//                }
+//                else {
+//                    if (dispatch(job) && job.getStatus().equals(JobState.TODO))
+//                    {
+//                        // If successfully dispatched, update status of the job
+//                        job.setStatus(JobState.BUSY);
+//                        jobService.save(job);
+//                    }
+//                    else {
+//                        // An error has occurred.
+//                        logger.error("An error has occured while dispatching job with id: " + job.getId() + " to the backend!");
+//
+//                        //recalculatePathAfterError(jobList.getJobs().get(0).getId(), jobList.getIdDelivery());
+//
+//                        // For debug purposes
+//                        logger.debug("All joblists after dispatch error.");
+//                        printJobList();
+//                    }
+//                }
+//            }
+//    }
 
     /**
      * Communication to the Backends of the different vehicles to dispatch a job
@@ -159,6 +202,37 @@ public class JobListService
 
         if(!response.getStatusCode().is2xxSuccessful() && response.getBody().equalsIgnoreCase("false")) {
             logger.warn("Error while dispatching Job: " + job.getId());
+            logger.warn("Response body: " + response.getBody());
+            status = false;
+        }
+        else
+        {
+            status = true;
+        }
+        return status;
+    }
+    private Boolean alertJob(Job job, float weight) {
+        logger.info("Alerting Job with ID: " + job.getId());
+
+        // Get the backendInfo object from the info service
+        BackendInfo backendInfo = backendInfoService.getInfoByMapId(job.getIdMap());
+
+        String stringUrl = "http://";
+        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/alert/";
+        //stringUrl += "smartcity.ddns.net:8083/job/execute/";
+
+        boolean status;
+        stringUrl += String.valueOf(job.getIdStart()) + "/" + String.valueOf(job.getId())+ "/"+ weight;
+        logger.info("The full dispatch url of the Job is: " + stringUrl);
+
+        ResponseEntity<String> response = restTemplate.exchange(stringUrl,
+                HttpMethod.POST,
+                null,
+                String.class
+        );
+
+        if(!response.getStatusCode().is2xxSuccessful() && response.getBody().equalsIgnoreCase("false")) {
+            logger.warn("Error while Alerting Job: " + job.getId());
             logger.warn("Response body: " + response.getBody());
             status = false;
         }

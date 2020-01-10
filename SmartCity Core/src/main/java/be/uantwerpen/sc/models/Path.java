@@ -2,21 +2,22 @@ package be.uantwerpen.sc.models;
 
 import be.uantwerpen.sc.models.jobs.Job;
 import be.uantwerpen.sc.models.jobs.JobList;
+import be.uantwerpen.sc.models.map.Link;
 
 import java.util.ArrayList;
 
 public class Path {
-    ArrayList<TransitLink> transitPath;
+    ArrayList<Link> transitPath;
     JobList jobList;
     float weight;
 
     public Path(){
-        this.transitPath = new ArrayList<TransitLink>();
+        this.transitPath = new ArrayList<Link>();
         this.weight = 0;
         this.jobList = new JobList();
     }
 
-    public Path(float weight, ArrayList<TransitLink> transitPath){
+    public Path(float weight, ArrayList<Link> transitPath){
         this.transitPath = transitPath;
         this.weight = weight;
         this.jobList = new JobList();
@@ -25,11 +26,11 @@ public class Path {
         this.weight+=weight;
     }
 
-    public ArrayList<TransitLink> getTransitPath() {
+    public ArrayList<Link> getTransitPath() {
         return transitPath;
     }
 
-    public void setTransitPath(ArrayList<TransitLink> transitPath) {
+    public void setTransitPath(ArrayList<Link> transitPath) {
         this.transitPath = transitPath;
     }
 
@@ -48,7 +49,7 @@ public class Path {
     //TODO weights still in INT in database
     public int getTotalTransitWeight(){
         int transitWeight = 0;
-        for(TransitLink transitLink : transitPath){
+        for(Link transitLink : transitPath){
             transitWeight += transitLink.getWeight();
         }
         return transitWeight;
@@ -57,8 +58,8 @@ public class Path {
     @Override
     public String toString() {
         String output = "";
-        for(TransitLink link : transitPath){
-            output += "[" + link.getStartId() + "-" + link.getStopId() + "],";
+        for(Link link : transitPath){
+            output += "[" + link.getPointA() + "-" + link.getPointB() + "],";
         }
         return output;
     }
@@ -75,8 +76,8 @@ public class Path {
         jobList.addJob(job);
     }
 
-    public void addJob(long startid, long stopid, int mapid){
-        Job job = new Job(startid, stopid, mapid);
+    public void addJob(long startid, long stopid, int mapid, float cost){
+        Job job = new Job(startid, stopid, mapid, cost);
         this.addJob(job);
     }
 

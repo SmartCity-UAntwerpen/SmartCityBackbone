@@ -1,7 +1,10 @@
 package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.Delivery;
+import be.uantwerpen.sc.models.FailedJob;
+import be.uantwerpen.sc.models.jobs.Job;
 import be.uantwerpen.sc.models.jobs.JobList;
+import be.uantwerpen.sc.models.jobs.JobState;
 import be.uantwerpen.sc.services.DeliveryService;
 import be.uantwerpen.sc.services.JobListService;
 import be.uantwerpen.sc.services.JobService;
@@ -30,6 +33,14 @@ public class JobDispatchController {
     public List<JobList> findAllJobLists()
     {
         return jobListService.findAll();
+    }
+
+    @RequestMapping(value = "/jobs/failed", method = RequestMethod.POST)
+    public String jobFailed(@RequestBody FailedJob failedJob) {
+        Job job = jobService.getJob((long)failedJob.getJobId());
+        job.setStatus(JobState.FAILED);
+        jobService.save(job);
+        return "success";
     }
 
     @RequestMapping(value = "/jobs/findOneByOrder/{orderId}",method = RequestMethod.GET)
