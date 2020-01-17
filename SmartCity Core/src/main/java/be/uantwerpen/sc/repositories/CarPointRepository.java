@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface CarPointRepository extends CrudRepository<CarPoint, Long> {
     CarPoint findById(int id);
+    List<CarPoint> findAll();
 }

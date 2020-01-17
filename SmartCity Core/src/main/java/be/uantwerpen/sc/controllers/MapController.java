@@ -56,6 +56,116 @@ public class MapController {
     @Value("${backends.enabled}")
     boolean backendsEnabled;
 
+    @Produces("application/json")
+    @RequestMapping(value = "getmap", method = RequestMethod.GET)
+    public String loadMap(){
+        JsonObjectBuilder jsonRoot = Json.createObjectBuilder();
+        JsonObjectBuilder jsonCar = Json.createObjectBuilder();
+        JsonObjectBuilder jsonDrone = Json.createObjectBuilder();
+        JsonObjectBuilder jsonRobot = Json.createObjectBuilder();
+        JsonArrayBuilder jsonTransitLinks = Json.createArrayBuilder();
+
+        List<CarPoint> carpoints = mapbuilderService.findAllCarpoints();
+        List<CarLink> carlinks = mapbuilderService.findAllCarLinks();
+        List<DronePoint> dronepoints = mapbuilderService.findAllDronePoints();
+        List<DroneLink> dronelinks = mapbuilderService.findAllDroneLinks();
+        List<RobotLink> robotlinks = mapbuilderService.findAllRobotLinks();
+        List<RobotTile> robottiles = mapbuilderService.findAllRobotTiles();
+        List<LinkLock> robotlinklocks = mapbuilderService.findAllLinkLocks();
+        List<MBTransitLink> transitLinks = mapbuilderService.findAllTransitLinks();
+
+        JsonArrayBuilder jsonCarPoints = Json.createArrayBuilder();
+        for(CarPoint cp : carpoints){
+            JsonObjectBuilder jsonCarPoint = Json.createObjectBuilder();
+            jsonCarPoint.add("x", cp.getX());
+            jsonCarPoint.add("y", cp.getY());
+            jsonCarPoint.add("id", cp.getName());
+            jsonCarPoint.add("pointName", cp.getId());
+            jsonCarPoints.add(jsonCarPoint.build());
+        }
+        jsonCar.add("points", jsonCarPoints.build());
+        JsonArrayBuilder jsonCarLinks = Json.createArrayBuilder();
+        for(CarLink cl : carlinks){
+            //System.out.println("hey");
+            JsonObjectBuilder jsonCarLink = Json.createObjectBuilder();
+            jsonCarLink.add("from", cl.getLstart());
+            jsonCarLink.add("to", cl.getLend());
+            jsonCarLink.add("id", cl.getName());
+            jsonCarLinks.add(jsonCarLink.build());
+        }
+        jsonCar.add("links", jsonCarLinks.build());
+        jsonCar.add("mapId", 1);
+        jsonRoot.add("racecar", jsonCar);
+
+        JsonArrayBuilder jsonDronePoints = Json.createArrayBuilder();
+        for(DronePoint dp : dronepoints){
+            JsonObjectBuilder jsonDronePoint = Json.createObjectBuilder();
+            jsonDronePoint.add("x", dp.getX());
+            jsonDronePoint.add("y", dp.getY());
+            jsonDronePoint.add("id", dp.getName());
+            jsonDronePoint.add("pointName", dp.getId());
+            jsonDronePoints.add(jsonDronePoint.build());
+        }
+        jsonDrone.add("points", jsonDronePoints.build());
+        JsonArrayBuilder jsonDroneLinks = Json.createArrayBuilder();
+        for(DroneLink dl : dronelinks){
+            JsonObjectBuilder jsonDroneLink = Json.createObjectBuilder();
+            jsonDroneLink.add("from", dl.getLstart());
+            jsonDroneLink.add("to", dl.getLend());
+            jsonDroneLink.add("id", dl.getName());
+            jsonDroneLinks.add(jsonDroneLink.build());
+        }
+        jsonDrone.add("links", jsonDroneLinks.build());
+        jsonDrone.add("mapId", 2);
+        jsonRoot.add("drone", jsonDrone);
+
+        JsonArrayBuilder jsonRobotTiles = Json.createArrayBuilder();
+        for(RobotTile rt : robottiles){
+            JsonObjectBuilder jsonRobotTile = Json.createObjectBuilder();
+            jsonRobotTile.add("type", rt.getType());
+            jsonRobotTile.add("x", rt.getX());
+            jsonRobotTile.add("y", rt.getY());
+            jsonRobotTile.add("id", rt.getName());
+            jsonRobotTile.add("pointName", rt.getId());
+            jsonRobotTiles.add(jsonRobotTile.build());
+        }
+        jsonRobot.add("tiles", jsonRobotTiles.build());
+        JsonArrayBuilder jsonRobotLinks = Json.createArrayBuilder();
+        for(RobotLink rl : robotlinks){
+            JsonObjectBuilder jsonRobotLink = Json.createObjectBuilder();
+            jsonRobotLink.add("_startNode", rl.getStartnode());
+            jsonRobotLink.add("_startHeading", rl.getStartheading());
+            jsonRobotLink.add("_destinationNode", rl.getDestinationnode());
+            jsonRobotLink.add("_destinationHeading", rl.getDestinationheading());
+            jsonRobotLink.add("_distance", rl.getDistance());
+            jsonRobotLink.add("_angle", rl.getAngle());
+            jsonRobotLink.add("_isLocal", rl.isIslocal());
+            jsonRobotLink.add("_loopback", rl.isLoopback());
+            jsonRobotLink.add("_lockId", rl.getLockid());
+            jsonRobotLinks.add(jsonRobotLink.build());
+        }
+        jsonRobot.add("links", jsonRobotLinks.build());
+        JsonArrayBuilder jsonRobotLinkLocks = Json.createArrayBuilder();
+        for(LinkLock ll: robotlinklocks){
+            JsonObjectBuilder jsonLinkLock = Json.createObjectBuilder();
+            jsonLinkLock.add("id", ll.getId());
+            jsonRobotLinkLocks.add(jsonLinkLock.build());
+        }
+        jsonRobot.add("locks", jsonRobotLinkLocks.build());
+        jsonRobot.add("mapId", 3);
+        jsonRoot.add("robot", jsonRobot);
+
+        for(MBTransitLink tl : transitLinks){
+            JsonObjectBuilder jsonTransitLink = Json.createObjectBuilder();
+            jsonTransitLink.add("from", tl.getTlstart());
+            jsonTransitLink.add("to", tl.getTlend());
+            jsonTransitLink.add("id", tl.getId());
+            jsonTransitLinks.add(jsonTransitLink.build());
+        }
+        jsonRoot.add("transitlinks", jsonTransitLinks);
+        return jsonRoot.build().toString();
+    }
+
     @RequestMapping(value = "savemap", method = RequestMethod.POST)
     public ResponseEntity saveMap(HttpEntity<String> httpEntity){
         String rawJson = httpEntity.getBody();
@@ -146,6 +256,16 @@ public class MapController {
             int id = linkLock.getInt("id");
             LinkLock ll = new LinkLock(id);
             mapbuilderService.save(ll);
+        }
+
+        // Parse transitlinks
+        for(int i = 0; i<transitLinks.size(); i++){
+            JsonObject transitLink = transitLinks.getJsonObject(i);
+            String id = transitLink.getString("id");
+            String from = transitLink.getString("from");
+            String to = transitLink.getString("to");
+            MBTransitLink tl = new MBTransitLink(i, id, from, to);
+            mapbuilderService.save(tl);
         }
 
 

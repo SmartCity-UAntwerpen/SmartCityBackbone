@@ -1,6 +1,5 @@
 package be.uantwerpen.sc.services;
 
-import be.uantwerpen.sc.models.TransitLink;
 import be.uantwerpen.sc.models.map.Link;
 import be.uantwerpen.sc.repositories.LinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;

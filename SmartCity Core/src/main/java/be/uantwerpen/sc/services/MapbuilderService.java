@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
+import java.util.List;
 
 @Service
 public class MapbuilderService {
@@ -27,6 +27,8 @@ public class MapbuilderService {
     private RobotLinkRepository robotLinkRepository;
     @Autowired
     private LinkLockRepository linkLockRepository;
+    @Autowired
+    private MBTransitLinkRepository mbTransitLinkRepository;
 
     public CarPoint save(final CarPoint carPoint){
         return this.carPointRepository.save(carPoint);
@@ -56,6 +58,42 @@ public class MapbuilderService {
         return this.linkLockRepository.save(linkLock);
     }
 
+    public MBTransitLink save(final MBTransitLink mbTransitLink){
+        return this.mbTransitLinkRepository.save(mbTransitLink);
+    }
+
+    public List<CarPoint> findAllCarpoints(){
+        return this.carPointRepository.findAll();
+    }
+
+    public List<CarLink> findAllCarLinks(){
+        return this.carLinkRepository.findAll();
+    }
+
+    public List<DroneLink> findAllDroneLinks(){
+        return this.droneLinkRepository.findAll();
+    }
+
+    public List<DronePoint> findAllDronePoints(){
+        return this.dronePointRepository.findAll();
+    }
+
+    public List<RobotTile> findAllRobotTiles(){
+        return this.robotTileRepository.findAll();
+    }
+
+    public List<RobotLink> findAllRobotLinks(){
+        return this.robotLinkRepository.findAll();
+    }
+
+    public List<LinkLock> findAllLinkLocks(){
+        return this.linkLockRepository.findAll();
+    }
+
+    public List<MBTransitLink> findAllTransitLinks(){
+        return this.mbTransitLinkRepository.findAll();
+    }
+
     public void eraseMapdata(){
         this.carPointRepository.deleteAll();
         this.carLinkRepository.deleteAll();
@@ -64,6 +102,7 @@ public class MapbuilderService {
         this.robotLinkRepository.deleteAll();
         this.robotTileRepository.deleteAll();
         this.linkLockRepository.deleteAll();
+        this.mbTransitLinkRepository.deleteAll();
     }
 
 }
