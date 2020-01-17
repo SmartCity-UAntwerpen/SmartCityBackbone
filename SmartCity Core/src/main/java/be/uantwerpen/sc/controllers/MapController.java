@@ -166,8 +166,15 @@ public class MapController {
         return jsonRoot.build().toString();
     }
 
+    /**
+     * Save the map from the mapbuilder to the database.
+     * t.o.d.o: deze functie enablen.
+     * @param httpEntity
+     * @return
+     */
     @RequestMapping(value = "savemap", method = RequestMethod.POST)
     public ResponseEntity saveMap(HttpEntity<String> httpEntity){
+        boolean persist = false;
         String rawJson = httpEntity.getBody();
         JsonReader jsonReader = Json.createReader(new StringReader(rawJson));
         JsonObject root = jsonReader.readObject();
@@ -180,7 +187,7 @@ public class MapController {
         JsonArray robotLocks = root.getJsonObject("robot").getJsonArray("locks");
         JsonArray transitLinks = root.getJsonArray("transitlinks");
 
-        mapbuilderService.eraseMapdata();
+        if(persist) mapbuilderService.eraseMapdata();
 
         // Parse drone points
         for(int i = 0; i< dronePoints.size(); i++){
@@ -189,7 +196,7 @@ public class MapController {
             int yPos = dronePoint.getInt("y");
             String name = dronePoint.getString("id");
             DronePoint dp = new DronePoint(i, xPos, yPos, name);
-            mapbuilderService.save(dp);
+            if(persist)  mapbuilderService.save(dp);
         }
         // Parse drone links
         for(int i = 0; i< droneLinks.size(); i++){
@@ -198,7 +205,7 @@ public class MapController {
             String to = droneLink.getString("to");
             String name = droneLink.getString("id");
             DroneLink dl = new DroneLink(i, from, to, name);
-            mapbuilderService.save(dl);
+            if(persist)  mapbuilderService.save(dl);
         }
 
         // Parse car points
@@ -208,7 +215,7 @@ public class MapController {
             int yPos = carPoint.getInt("y");
             String name = carPoint.getString("id");
             CarPoint cp = new CarPoint(i, xPos, yPos, name);
-            mapbuilderService.save(cp);
+            if(persist) mapbuilderService.save(cp);
         }
 
         // Parse car links
@@ -218,7 +225,7 @@ public class MapController {
             String to = carLink.getString("to");
             String name = carLink.getString("id");
             CarLink cl = new CarLink(i, from, to, name);
-            mapbuilderService.save(cl);
+            if(persist) mapbuilderService.save(cl);
         }
 
         // Parse robot tiles
@@ -229,7 +236,7 @@ public class MapController {
             int type = robotTile.getInt("type");
             String name = robotTile.getString("id");
             RobotTile rt = new RobotTile(i, type, name, xPos, yPos);
-            mapbuilderService.save(rt);
+            if(persist) mapbuilderService.save(rt);
         }
 
         // Parse robot links
@@ -247,7 +254,7 @@ public class MapController {
             String startnode = robotLink.getString("_startNode");
             String status = robotLink.getString("_status");
             RobotLink rl = new RobotLink(id, angle, destinationheading, destinationnode, distance, islocal, lockid, loopback, startheading, startnode, status);
-            mapbuilderService.save(rl);
+            if(persist) mapbuilderService.save(rl);
         }
 
         // Parse linklocks
@@ -255,7 +262,7 @@ public class MapController {
             JsonObject linkLock = robotLocks.getJsonObject(i);
             int id = linkLock.getInt("id");
             LinkLock ll = new LinkLock(id);
-            mapbuilderService.save(ll);
+            if(persist) mapbuilderService.save(ll);
         }
 
         // Parse transitlinks
@@ -265,12 +272,14 @@ public class MapController {
             String from = transitLink.getString("from");
             String to = transitLink.getString("to");
             MBTransitLink tl = new MBTransitLink(i, id, from, to);
-            mapbuilderService.save(tl);
+            if(persist) mapbuilderService.save(tl);
         }
 
 
         jsonReader.close();
-        return new ResponseEntity(HttpStatus.CREATED) ;
+        if(persist) return new ResponseEntity(HttpStatus.CREATED) ;
+        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
+
     }
 
     /**
