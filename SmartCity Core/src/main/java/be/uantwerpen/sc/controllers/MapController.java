@@ -1,24 +1,25 @@
 package be.uantwerpen.sc.controllers;
 
 import be.uantwerpen.sc.models.BackendInfo;
-import be.uantwerpen.sc.models.jobs.Job;
-import be.uantwerpen.sc.models.jobs.JobList;
 import be.uantwerpen.sc.models.Path;
 import be.uantwerpen.sc.models.map.Map;
 import be.uantwerpen.sc.models.map.MapPoint;
+import be.uantwerpen.sc.models.mapbuilder.*;
 import be.uantwerpen.sc.services.*;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
+import javax.json.*;
 import javax.ws.rs.Produces;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -41,9 +42,6 @@ public class MapController {
     private BackendInfoService backendInfoService;
 
     @Autowired
-    private JobListService jobListService;
-
-    @Autowired
     private AStarService aStarService;
 
     @Autowired
@@ -52,8 +50,237 @@ public class MapController {
     @Autowired
     private MapService mapService;
 
+    @Autowired
+    private MapbuilderService mapbuilderService;
+
     @Value("${backends.enabled}")
     boolean backendsEnabled;
+
+    @Produces("application/json")
+    @RequestMapping(value = "getmap", method = RequestMethod.GET)
+    public String loadMap(){
+        JsonObjectBuilder jsonRoot = Json.createObjectBuilder();
+        JsonObjectBuilder jsonCar = Json.createObjectBuilder();
+        JsonObjectBuilder jsonDrone = Json.createObjectBuilder();
+        JsonObjectBuilder jsonRobot = Json.createObjectBuilder();
+        JsonArrayBuilder jsonTransitLinks = Json.createArrayBuilder();
+
+        List<CarPoint> carpoints = mapbuilderService.findAllCarpoints();
+        List<CarLink> carlinks = mapbuilderService.findAllCarLinks();
+        List<DronePoint> dronepoints = mapbuilderService.findAllDronePoints();
+        List<DroneLink> dronelinks = mapbuilderService.findAllDroneLinks();
+        List<RobotLink> robotlinks = mapbuilderService.findAllRobotLinks();
+        List<RobotTile> robottiles = mapbuilderService.findAllRobotTiles();
+        List<LinkLock> robotlinklocks = mapbuilderService.findAllLinkLocks();
+        List<MBTransitLink> transitLinks = mapbuilderService.findAllTransitLinks();
+
+        JsonArrayBuilder jsonCarPoints = Json.createArrayBuilder();
+        for(CarPoint cp : carpoints){
+            JsonObjectBuilder jsonCarPoint = Json.createObjectBuilder();
+            jsonCarPoint.add("x", cp.getX());
+            jsonCarPoint.add("y", cp.getY());
+            jsonCarPoint.add("id", cp.getName());
+            jsonCarPoint.add("pointName", cp.getId());
+            jsonCarPoints.add(jsonCarPoint.build());
+        }
+        jsonCar.add("points", jsonCarPoints.build());
+        JsonArrayBuilder jsonCarLinks = Json.createArrayBuilder();
+        for(CarLink cl : carlinks){
+            //System.out.println("hey");
+            JsonObjectBuilder jsonCarLink = Json.createObjectBuilder();
+            jsonCarLink.add("from", cl.getLstart());
+            jsonCarLink.add("to", cl.getLend());
+            jsonCarLink.add("id", cl.getName());
+            jsonCarLinks.add(jsonCarLink.build());
+        }
+        jsonCar.add("links", jsonCarLinks.build());
+        jsonCar.add("mapId", 1);
+        jsonRoot.add("racecar", jsonCar);
+
+        JsonArrayBuilder jsonDronePoints = Json.createArrayBuilder();
+        for(DronePoint dp : dronepoints){
+            JsonObjectBuilder jsonDronePoint = Json.createObjectBuilder();
+            jsonDronePoint.add("x", dp.getX());
+            jsonDronePoint.add("y", dp.getY());
+            jsonDronePoint.add("id", dp.getName());
+            jsonDronePoint.add("pointName", dp.getId());
+            jsonDronePoints.add(jsonDronePoint.build());
+        }
+        jsonDrone.add("points", jsonDronePoints.build());
+        JsonArrayBuilder jsonDroneLinks = Json.createArrayBuilder();
+        for(DroneLink dl : dronelinks){
+            JsonObjectBuilder jsonDroneLink = Json.createObjectBuilder();
+            jsonDroneLink.add("from", dl.getLstart());
+            jsonDroneLink.add("to", dl.getLend());
+            jsonDroneLink.add("id", dl.getName());
+            jsonDroneLinks.add(jsonDroneLink.build());
+        }
+        jsonDrone.add("links", jsonDroneLinks.build());
+        jsonDrone.add("mapId", 2);
+        jsonRoot.add("drone", jsonDrone);
+
+        JsonArrayBuilder jsonRobotTiles = Json.createArrayBuilder();
+        for(RobotTile rt : robottiles){
+            JsonObjectBuilder jsonRobotTile = Json.createObjectBuilder();
+            jsonRobotTile.add("type", rt.getType());
+            jsonRobotTile.add("x", rt.getX());
+            jsonRobotTile.add("y", rt.getY());
+            jsonRobotTile.add("id", rt.getName());
+            jsonRobotTile.add("pointName", rt.getId());
+            jsonRobotTiles.add(jsonRobotTile.build());
+        }
+        jsonRobot.add("tiles", jsonRobotTiles.build());
+        JsonArrayBuilder jsonRobotLinks = Json.createArrayBuilder();
+        for(RobotLink rl : robotlinks){
+            JsonObjectBuilder jsonRobotLink = Json.createObjectBuilder();
+            jsonRobotLink.add("_startNode", rl.getStartnode());
+            jsonRobotLink.add("_startHeading", rl.getStartheading());
+            jsonRobotLink.add("_destinationNode", rl.getDestinationnode());
+            jsonRobotLink.add("_destinationHeading", rl.getDestinationheading());
+            jsonRobotLink.add("_distance", rl.getDistance());
+            jsonRobotLink.add("_angle", rl.getAngle());
+            jsonRobotLink.add("_isLocal", rl.isIslocal());
+            jsonRobotLink.add("_loopback", rl.isLoopback());
+            jsonRobotLink.add("_lockId", rl.getLockid());
+            jsonRobotLinks.add(jsonRobotLink.build());
+        }
+        jsonRobot.add("links", jsonRobotLinks.build());
+        JsonArrayBuilder jsonRobotLinkLocks = Json.createArrayBuilder();
+        for(LinkLock ll: robotlinklocks){
+            JsonObjectBuilder jsonLinkLock = Json.createObjectBuilder();
+            jsonLinkLock.add("id", ll.getId());
+            jsonRobotLinkLocks.add(jsonLinkLock.build());
+        }
+        jsonRobot.add("locks", jsonRobotLinkLocks.build());
+        jsonRobot.add("mapId", 3);
+        jsonRoot.add("robot", jsonRobot);
+
+        for(MBTransitLink tl : transitLinks){
+            JsonObjectBuilder jsonTransitLink = Json.createObjectBuilder();
+            jsonTransitLink.add("from", tl.getTlstart());
+            jsonTransitLink.add("to", tl.getTlend());
+            jsonTransitLink.add("id", tl.getId());
+            jsonTransitLinks.add(jsonTransitLink.build());
+        }
+        jsonRoot.add("transitlinks", jsonTransitLinks);
+        return jsonRoot.build().toString();
+    }
+
+    /**
+     * Save the map from the mapbuilder to the database.
+     * t.o.d.o: deze functie enablen.
+     * @param httpEntity
+     * @return
+     */
+    @RequestMapping(value = "savemap", method = RequestMethod.POST)
+    public ResponseEntity saveMap(HttpEntity<String> httpEntity){
+        boolean persist = false;
+        String rawJson = httpEntity.getBody();
+        JsonReader jsonReader = Json.createReader(new StringReader(rawJson));
+        JsonObject root = jsonReader.readObject();
+        JsonArray droneLinks = root.getJsonObject("drone").getJsonArray("links");
+        JsonArray carLinks = root.getJsonObject("racecar").getJsonArray("links");
+        JsonArray dronePoints = root.getJsonObject("drone").getJsonArray("points");
+        JsonArray carPoints = root.getJsonObject("racecar").getJsonArray("points");
+        JsonArray robotTiles = root.getJsonObject("robot").getJsonArray("tiles");
+        JsonArray robotLinks = root.getJsonObject("robot").getJsonArray("links");
+        JsonArray robotLocks = root.getJsonObject("robot").getJsonArray("locks");
+        JsonArray transitLinks = root.getJsonArray("transitlinks");
+
+        if(persist) mapbuilderService.eraseMapdata();
+
+        // Parse drone points
+        for(int i = 0; i< dronePoints.size(); i++){
+            JsonObject dronePoint = dronePoints.getJsonObject(i);
+            int xPos = dronePoint.getInt("x");
+            int yPos = dronePoint.getInt("y");
+            String name = dronePoint.getString("id");
+            DronePoint dp = new DronePoint(i, xPos, yPos, name);
+            if(persist)  mapbuilderService.save(dp);
+        }
+        // Parse drone links
+        for(int i = 0; i< droneLinks.size(); i++){
+            JsonObject droneLink = droneLinks.getJsonObject(i);
+            String from  = droneLink.getString("from");
+            String to = droneLink.getString("to");
+            String name = droneLink.getString("id");
+            DroneLink dl = new DroneLink(i, from, to, name);
+            if(persist)  mapbuilderService.save(dl);
+        }
+
+        // Parse car points
+        for(int i = 0; i< carPoints.size(); i++){
+            JsonObject carPoint = carPoints.getJsonObject(i);
+            int xPos = carPoint.getInt("x");
+            int yPos = carPoint.getInt("y");
+            String name = carPoint.getString("id");
+            CarPoint cp = new CarPoint(i, xPos, yPos, name);
+            if(persist) mapbuilderService.save(cp);
+        }
+
+        // Parse car links
+        for(int i = 0; i< carLinks.size(); i++){
+            JsonObject carLink = carLinks.getJsonObject(i);
+            String from  = carLink.getString("from");
+            String to = carLink.getString("to");
+            String name = carLink.getString("id");
+            CarLink cl = new CarLink(i, from, to, name);
+            if(persist) mapbuilderService.save(cl);
+        }
+
+        // Parse robot tiles
+        for(int i = 0; i<robotTiles.size(); i++){
+            JsonObject robotTile = robotTiles.getJsonObject(i);
+            int xPos = robotTile.getInt("x");
+            int yPos = robotTile.getInt("y");
+            int type = robotTile.getInt("type");
+            String name = robotTile.getString("id");
+            RobotTile rt = new RobotTile(i, type, name, xPos, yPos);
+            if(persist) mapbuilderService.save(rt);
+        }
+
+        // Parse robot links
+        for(int i = 0; i<robotLinks.size(); i++){
+            JsonObject robotLink = robotLinks.getJsonObject(i);
+            int id = i;
+            int angle = robotLink.getInt("_angle");
+            String destinationheading = robotLink.getString("_destinationHeading");
+            String destinationnode = robotLink.getString("_destinationNode");
+            int distance = robotLink.getInt("_distance");
+            boolean islocal = robotLink.getBoolean("_isLocal");
+            int lockid = robotLink.getInt("_lockId");
+            boolean loopback = robotLink.getBoolean("_loopback");
+            String startheading = robotLink.getString("_startHeading");
+            String startnode = robotLink.getString("_startNode");
+            String status = robotLink.getString("_status");
+            RobotLink rl = new RobotLink(id, angle, destinationheading, destinationnode, distance, islocal, lockid, loopback, startheading, startnode, status);
+            if(persist) mapbuilderService.save(rl);
+        }
+
+        // Parse linklocks
+        for(int i = 0; i<robotLocks.size(); i++){
+            JsonObject linkLock = robotLocks.getJsonObject(i);
+            int id = linkLock.getInt("id");
+            LinkLock ll = new LinkLock(id);
+            if(persist) mapbuilderService.save(ll);
+        }
+
+        // Parse transitlinks
+        for(int i = 0; i<transitLinks.size(); i++){
+            JsonObject transitLink = transitLinks.getJsonObject(i);
+            String id = transitLink.getString("id");
+            String from = transitLink.getString("from");
+            String to = transitLink.getString("to");
+            MBTransitLink tl = new MBTransitLink(i, id, from, to);
+            if(persist) mapbuilderService.save(tl);
+        }
+
+
+        jsonReader.close();
+        if(persist) return new ResponseEntity(HttpStatus.CREATED) ;
+        return new ResponseEntity(HttpStatus.NOT_MODIFIED);
+
+    }
 
     /**
      * Returns a map for the given type of vehicle
@@ -151,80 +378,6 @@ public class MapController {
         return allPoints.stream().filter(mapPoint -> !mapPoint.equals(centralPoint)).collect(Collectors.toList());
     }
 
-
-
-    public JSONObject planPath(int startpid, int startmapid, int stoppid, int stopmapid) {
-        JobList jobList;
-        JSONObject response = new JSONObject();
-        ArrayList<Path> pathRank = new ArrayList<Path>();
-
-        // get list of possible paths (link ids) from A*
-
-        //Setup jobs when the job is in one map
-        if (startmapid == stopmapid) {
-            // build job
-            Path onlyPath = new Path();
-            Job job = new Job((long) startpid, (long) stoppid, stopmapid,1);
-            onlyPath.addJob(job);
-            // save and execute job
-            jobList = onlyPath.getJobList();
-            jobListService.saveJobList(jobList);
-            logger.info("start/stop point both in map:" + startmapid + ", dispatching job between [" + startpid + "-" + stoppid + "]on map ");
-            dispatchToBackend();
-            response.put("status", "dispatching");
-            return response;
-        }
-
-        // Determine (5 for now) best TransitMap routes, returns a list of integer pairs
-        List<Integer[]> possiblePaths = aStarService.determinePath(startpid, startmapid, stoppid, stopmapid);
-
-        // no paths available, send back deliveryid -1 to let the MaaS know.
-        if (possiblePaths == null || possiblePaths.isEmpty()) {
-            response.put("status", "No paths found");
-           // response.put("deliveryid", -1);
-            return response;
-        }
-
-        // check if size is 1 en linkid is -1 => ligt op dezelfde map, 1 job uitsturen naar die map
-        if ((possiblePaths.size() == 1) && (possiblePaths.get(0)[0] == -1)) {
-            // TODO catch if something went wrong in the aStar pathplanning
-        }
-
-        // Process all paths given by AStar,
-        for (Integer[] pointPairs : possiblePaths) {
-            // create a path (full transitlinks, jobs, requested weights) from the array of linkIds
-            Path path = pathService.makePathFromPointPairs(pointPairs, startpid, startmapid, stoppid, stopmapid);
-
-            // rank the path based on it's weight, if paths have the same weight, increment the key
-            // set the default rank as the last index of the ranking
-            int rank = pathRank.size();
-            for (int i = 0; i < pathRank.size(); i++) {
-                if (path.getWeight() <= pathRank.get(i).getWeight()) {
-                    rank = i;
-                    break;
-                }
-            }
-            pathRank.add(rank, path);
-        }
-
-        // print the pathranking
-        for (int i = 0; i < pathRank.size(); i++) {
-            System.out.println(i + ") weight of path: " + pathRank.get(i).getWeight());
-            System.out.println(pathRank.get(i).toString());
-        }
-
-        // Convert the chosen path to a jobs and save them as a job list.
-        // TODO Future Work: Relay the 5 best possible paths to the user, make him/her choose
-        int chosenPath = 0; // here we just choose the cheapest path;
-        jobList = pathRank.get(chosenPath).getJobList();
-        logger.info("dispatching jobList w/ rank: " + chosenPath);
-        jobListService.saveJobList(jobList);
-        dispatchToBackend();
-        response.put("status", "dispatching");
-        response.put("deliveryid", jobList.getId());
-        return response;
-    }
-
     @RequestMapping(value = "getTrafficLightStats", method = RequestMethod.GET)
     @ResponseBody
     public String getTrafficLightStats() throws IOException {
@@ -243,14 +396,4 @@ public class MapController {
         }
     }
 
-    private void dispatchToBackend() {
-        if (backendsEnabled) {
-            try {
-                jobListService.dispatchToBackend();
-            } catch (Exception e) {
-                logger.warn("Dispatching failed");
-                e.printStackTrace();
-            }
-        }
-    }
 }
