@@ -15,7 +15,6 @@ be\uantwerpen\sc\controllers\JobServiceController.class
 be\uantwerpen\sc\services\GraphBuilder.class
 be\uantwerpen\sc\configurations\SecurityConfiguration.class
 be\uantwerpen\sc\configurations\SystemLoader$StartupProcess.class
-be\uantwerpen\sc\services\TransitPointService.class
 be\uantwerpen\sc\services\DeliveryService.class
 be\uantwerpen\sc\models\map\MapPointType.class
 be\uantwerpen\sc\controllers\MapController.class

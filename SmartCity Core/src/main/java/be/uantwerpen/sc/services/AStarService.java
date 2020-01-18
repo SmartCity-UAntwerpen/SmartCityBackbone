@@ -3,7 +3,6 @@ package be.uantwerpen.sc.services;
 import be.uantwerpen.sc.models.map.Link;
 import be.uantwerpen.sc.models.map.MapPoint;
 import be.uantwerpen.sc.repositories.MapPointRepository;
-import be.uantwerpen.sc.repositories.TransitPointRepository;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.graphstream.algorithm.AStar;

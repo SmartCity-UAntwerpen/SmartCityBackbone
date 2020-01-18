@@ -29,8 +29,7 @@ public class DeliveryController {
     @Autowired
     private DeliveryService deliveryService;
 
-    @Autowired
-    private TransitPointService transitPointService;
+
 
     @Autowired
     private JobListService jobListService;
@@ -41,8 +40,6 @@ public class DeliveryController {
     @Autowired
     private PathService pathService;
 
-    @Autowired
-    private MapService mapService;
 
     @Value("${backends.enabled}")
     boolean backendsEnabled;
@@ -51,6 +48,13 @@ public class DeliveryController {
 //    {
 //        return deliveryService.findAll();
 //    }
+
+    /**
+     * Returns the delivery that is been created by the MaaS.
+     *
+     * @param delivery the parameters that are required to create a delivery
+     * @return returns a success message if everthing is dispatched correct.
+     */
     @RequestMapping(value = "createDelivery", method = RequestMethod.POST)
     public JSONObject Create(@RequestBody Delivery delivery)
     {
@@ -70,6 +74,13 @@ public class DeliveryController {
 //    {
 //        return transitPointService.getPointWithMapidAndPid(id,mapid);
 //    }
+
+    /**
+     * Returns the delivery that is been created by the MaaS.
+     *
+     * @param orderID order id
+     * @return delivert information.
+     */
     @RequestMapping(value = "getByOrderId/{orderID}", method = RequestMethod.GET)
     public Delivery getDelivery(@PathVariable("orderID") int orderID)
     {
@@ -92,6 +103,10 @@ public class DeliveryController {
 //
 //    }
 
+
+    /**
+     * Plans a path between 2 points by first checking if it is in the same map or not
+     */
     public JSONObject planPath(int startpid, int startmapid, int stoppid, int stopmapid, long deliveryId) {
         JobList jobList;
         JSONObject response = new JSONObject();
@@ -99,6 +114,7 @@ public class DeliveryController {
 
         // get list of possible paths (link ids) from A*
 
+        //if it is in the same map create job and dispatch
         if (startmapid == stopmapid) {
             // build job
             Path onlyPath = new Path();
@@ -108,17 +124,11 @@ public class DeliveryController {
             jobList = onlyPath.getJobList();
             jobList.setIdDelivery((int)deliveryId);
             jobListService.saveJobList(jobList);
-//            JobList jobList1 = new JobList();
-//            jobList1.addJob(new Job((long) startpid, (long) stoppid, stopmapid));
-//            jobList1.setIdDelivery((int)deliveryId);
-//            jobListService.saveJobList(jobList1);
             logger.info("start/stop point both in map:" + startmapid + ", dispatching job between [" + startpid + "-" + stoppid + "]on map ");
             dispatchToBackend();
             response.put("status", "dispatching");
             response.put("message", "dispatching");
             response.put("success",true);
-            // send back the delivery id to the MaaS
-            //response.put("deliveryid", jobList.getId());
             return response;
         }
 
@@ -171,6 +181,7 @@ public class DeliveryController {
         response.put("status", "dispatching");
         response.put("message", "dispatching");
         response.put("joblistID", jobList.getId());
+        response.put("success",true);
         return response;
     }
     private void dispatchToBackend() {

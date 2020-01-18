@@ -12,7 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 
 import java.util.List;
@@ -35,6 +38,9 @@ public class JobServiceController {
     @Value("${backends.enabled}")
     boolean backendsEnabled;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     /**
      * Asks JobService to search the database for all jobs and returns them
      *
@@ -46,11 +52,11 @@ public class JobServiceController {
         return jobService.findAll();
     }
 
-    @RequestMapping(value = "savejob", method = RequestMethod.POST)
-    public void save(@RequestBody Job job)
-    {
-        jobService.save(job);
-    }
+//    @RequestMapping(value = "savejob", method = RequestMethod.POST)
+//    public void save(@RequestBody Job job)
+//    {
+//        jobService.save(job);
+//    }
 
     @RequestMapping(value = "getjob/{id}", method = RequestMethod.GET)
     public Job getJob(@PathVariable("id") Long id)
@@ -63,7 +69,7 @@ public class JobServiceController {
         jobService.delete(id);
     }
 
-    @RequestMapping(value = "deletealljobs", method = RequestMethod.POST)
+    @RequestMapping(value = "deleteAllJobs", method = RequestMethod.POST)
     public void deleteAll()
     {
         jobService.deleteAll();
@@ -117,6 +123,25 @@ public class JobServiceController {
 
         return response;
     }
+    @RequestMapping(value = "abortJob/{id}", method = RequestMethod.GET)
+    public String abortJob(@PathVariable("id") Long id)
+    {
+        Job job = jobService.getJob(id);
+        BackendInfo backendInfo = backendInfoService.getInfoByMapId(job.getIdMap());
+
+        String stringUrl = "http://";
+        stringUrl += backendInfo.getHostname() + ":" + backendInfo.getPort() + "/job/cancel/" + job.getId();
+
+        ResponseEntity<String> response = restTemplate.exchange(stringUrl,
+                HttpMethod.GET,
+                null,
+                String.class
+        );
+
+        return response.getBody();
+    }
+
+
 
     private int getProgressFromBackend(Job job){
         // Get the actual progress from the backend of the vehicle
