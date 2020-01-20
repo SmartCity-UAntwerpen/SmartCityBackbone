@@ -94,42 +94,80 @@ public class JobListService
      */
     public void dispatchToBackend(){
         for (JobList jobList : this.jobListRepository.findAll()) {
-                Job job;
+                List<Job> jobs;
                 try{
-                    job = jobList.getJobs().get(0);
+                    jobs = jobList.getJobs();
                 }
                 catch(Exception e) {
-                    logger.error("Job not found: " + e);
+                    logger.error("Jobs not found: " + e);
                     return;
                 }
-                // Check if the first job is still busy -> if so, go to the next list to dispatch its first job
-                if (job.getStatus().equals(JobState.BUSY)) {
-                    // Probably has not reached the rendezvous point yet: wait
-                    logger.info("The first job (" + job.getId() + ") of the jobList (" + jobList.getId() + ") is still busy!");
-                }
-                else {
-                    if (dispatch(job) && job.getStatus().equals(JobState.TODO))
-                    {
-                        // If successfully dispatched, update status of the job
-                        job.setStatus(JobState.BUSY);
-                        jobService.save(job);
-                        float weight = job.getCost();
-                        for (Job job1:jobList.getJobs()){
-                            if(job1.getStatus().equals(JobState.TODO)){
-                                alertJob(job,weight);
-                                weight+=job.getCost();
-                            }
-                        }
+                for (Job job: jobs){
+                    if (job.getStatus().equals(JobState.BUSY)) {
+                        // Probably has not reached the rendezvous point yet: wait
+                        logger.info("The job (" + job.getId() + ") of the jobList (" + jobList.getId() + ") is still busy!");
+                        break;
+                    }
+                    else if(job.getStatus().equals(JobState.DONE)){
+
+                    }
+
+                    else if(job.getStatus().equals(JobState.FAILED)){
+                        //logger.info("The job (" + job.getId() + ") of the jobList (" + jobList.getId() + ") is failed!");
                     }
                     else {
-                        // An error has occurred.
-                        logger.error("An error has occured while dispatching job with id: " + job.getId() + " to the backend!");
-                        //recalculatePathAfterError(jobList.getJobs().get(0).getId(), jobList.getIdDelivery());
-                        // For debug purposes
-                        logger.debug("All joblists after dispatch error.");
-                        printJobList();
+                        if(dispatch(job) && job.getStatus().equals(JobState.TODO)){
+                            job.setStatus(JobState.BUSY);
+                            jobService.save(job);
+                            float weight = job.getCost();
+                            for (Job job1:jobList.getJobs()){
+                                if(job1.getStatus().equals(JobState.TODO)){
+                                    alertJob(job,weight);
+                                    weight+=job.getCost();
+                                }
+                            }
+                            break;
+                        }
+                        else {
+                            // An error has occurred.
+                            logger.error("An error has occured while dispatching job with id: " + job.getId() + " to the backend!");
+                            //recalculatePathAfterError(jobList.getJobs().get(0).getId(), jobList.getIdDelivery());
+                            // For debug purposes
+                            logger.debug("All joblists after dispatch error.");
+                            printJobList();
+                        }
                     }
+
+
                 }
+                // Check if the first job is still busy -> if so, go to the next list to dispatch its first job
+//                if (job.getStatus().equals(JobState.BUSY)) {
+//                    // Probably has not reached the rendezvous point yet: wait
+//                    logger.info("The first job (" + job.getId() + ") of the jobList (" + jobList.getId() + ") is still busy!");
+//                }
+//                else {
+//                    if (dispatch(job) && job.getStatus().equals(JobState.TODO))
+//                    {
+//                        // If successfully dispatched, update status of the job
+//                        job.setStatus(JobState.BUSY);
+//                        jobService.save(job);
+//                        float weight = job.getCost();
+//                        for (Job job1:jobList.getJobs()){
+//                            if(job1.getStatus().equals(JobState.TODO)){
+//                                alertJob(job,weight);
+//                                weight+=job.getCost();
+//                            }
+//                        }
+//                    }
+//                    else {
+//                        // An error has occurred.
+//                        logger.error("An error has occured while dispatching job with id: " + job.getId() + " to the backend!");
+//                        //recalculatePathAfterError(jobList.getJobs().get(0).getId(), jobList.getIdDelivery());
+//                        // For debug purposes
+//                        logger.debug("All joblists after dispatch error.");
+//                        printJobList();
+//                    }
+//                }
 
 
             }

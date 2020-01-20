@@ -5,7 +5,7 @@
 
     <groupId>be.uantwerpen.sc</groupId>
     <artifactId>SCCore</artifactId>
-    <version>INT-0.9</version>
+    <version>INT-0.17</version>
     <packaging>jar</packaging>
 
     <name>SmartCity Core</name>

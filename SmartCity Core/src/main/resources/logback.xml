@@ -26,10 +26,10 @@
         <dynamicMdcFields>mdc.*,(mdc|MDC)fields</dynamicMdcFields>
         <includeFullMdc>true</includeFullMdc>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
+            <level>WARN</level>
         </filter>
     </appender>
-    <root level="debug">
+    <root level="warn">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="gelf"  />
     </root>

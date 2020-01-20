@@ -77,26 +77,32 @@ public class JobDispatchController {
     public String completeJob(@PathVariable("idjob") Long idJob)
     {
         logger.info("Job " + idJob + " is complete");
-        for (JobList jl : jobListService.findAll()) {
-            if (jl.getJobs().get(0).getId().equals(idJob)) {
-                jl.getJobs().remove(0);
-                jobService.delete(idJob);
-                logger.info("Job with id: " + idJob + " is deleted because it was completed.");
-            } else if (jl.getJobs().size() > 1 && jl.getJobs().get(1).getId().equals(idJob)) {
-                // Rendezvous
-                jl.getJobs().remove(1);
-                jobService.delete(idJob);
-                logger.info("Job with id:" + idJob + " is deleted because it was completed.");
-            }
 
-            if (jl.getJobs().isEmpty())
-            {
-                //When all jobs of the delivery are finished -> Delete the JobList
-                jobListService.deleteOrder(jl.getId());
-            } else {
-                jobListService.dispatchToBackend();
-            }
-        }
+        Job job = jobService.getJob(idJob);
+        job.setStatus(JobState.DONE);
+        logger.info("Job with id: " + idJob + " is completed.");
+        jobService.save(job);
+        jobListService.dispatchToBackend();
+//        for (JobList jl : jobListService.findAll()) {
+//            if (jl.getJobs().get(0).getId().equals(idJob)) {
+//                jl.getJobs().remove(0);
+//                jobService.delete(idJob);
+//                logger.info("Job with id: " + idJob + " is deleted because it was completed.");
+//            } else if (jl.getJobs().size() > 1 && jl.getJobs().get(1).getId().equals(idJob)) {
+//                // Rendezvous
+//                jl.getJobs().remove(1);
+//                jobService.delete(idJob);
+//                logger.info("Job with id:" + idJob + " is deleted because it was completed.");
+//            }
+//
+//            if (jl.getJobs().isEmpty())
+//            {
+//                //When all jobs of the delivery are finished -> Delete the JobList
+//                jobListService.deleteOrder(jl.getId());
+//            } else {
+//                jobListService.dispatchToBackend();
+//            }
+//        }
         return "Ok";
     }
 }

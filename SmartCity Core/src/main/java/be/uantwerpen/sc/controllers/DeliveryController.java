@@ -177,7 +177,7 @@ public class DeliveryController {
         logger.info("dispatching jobList w/ rank: " + chosenPath);
         jobList.setIdDelivery((int)deliveryId);
         jobListService.saveJobList(jobList);
-      dispatchToBackend();
+        dispatchToBackend();
         response.put("status", "dispatching");
         response.put("message", "dispatching");
         response.put("joblistID", jobList.getId());
